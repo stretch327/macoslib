@@ -3,10 +3,10 @@ Class NSCountedSet
 Inherits NSMutableSet
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSCountedSet")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSCountedSet")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -135,7 +135,7 @@ Inherits NSMutableSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSCountedSet
+		Shared Function Create() As NSCountedSet
 		  //# Creates and returns an empty set.
 		  
 		  #if TargetMacOS
@@ -152,7 +152,7 @@ Inherits NSMutableSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithArray(anArray as NSArray) As NSCountedSet
+		Shared Function CreateWithArray(anArray as NSArray) As NSCountedSet
 		  //# Creates and returns a set containing a uniqued collection of the objects contained in a given array.
 		  
 		  #if TargetMacOS
@@ -175,7 +175,7 @@ Inherits NSMutableSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithCapacity(numItems as UInt32) As NSCountedSet
+		Shared Function CreateWithCapacity(numItems as UInt32) As NSCountedSet
 		  //# Creates and returns a mutable set with a given initial capacity.
 		  
 		  #if TargetMacOS
@@ -194,7 +194,7 @@ Inherits NSMutableSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObject(anObject as NSObject) As NSCountedSet
+		Shared Function CreateWithObject(anObject as NSObject) As NSCountedSet
 		  //# Creates and returns a set that contains a single given object.
 		  
 		  #if TargetMacOS
@@ -217,7 +217,7 @@ Inherits NSMutableSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObjects(objects() as NSObject) As NSCountedSet
+		Shared Function CreateWithObjects(objects() as NSObject) As NSCountedSet
 		  //# Creates and returns a set containing the objects in a given argument list.
 		  
 		  #if TargetMacOS
@@ -251,7 +251,7 @@ Inherits NSMutableSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithSet(aSet as NSSet) As NSCountedSet
+		Shared Function CreateWithSet(aSet as NSSet) As NSCountedSet
 		  //# Creates and returns a set containing the objects from another set.
 		  
 		  #if TargetMacOS
@@ -281,7 +281,6 @@ Inherits NSMutableSet
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSMutableSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -289,7 +288,6 @@ Inherits NSMutableSet
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSMutableSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -297,21 +295,18 @@ Inherits NSMutableSet
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSMutableSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSMutableSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSMutableSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -319,7 +314,6 @@ Inherits NSMutableSet
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSMutableSet"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

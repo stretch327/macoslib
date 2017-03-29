@@ -39,10 +39,10 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSDictionary")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSDictionary")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -145,7 +145,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSDictionary
+		Shared Function Create() As NSDictionary
 		  //# Creates and returns an empty dictionary.
 		  
 		  #if TargetMacOS
@@ -163,7 +163,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromDictionary(dict as Dictionary) As NSDictionary
+		Shared Function CreateFromDictionary(dict as Dictionary) As NSDictionary
 		  #if TargetMacOS
 		    dim md as new NSMutableDictionary
 		    
@@ -187,7 +187,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateFromDictionary(otherDictionary as NSDictionary) As NSDictionary
+		Shared Function CreateFromDictionary(otherDictionary as NSDictionary) As NSDictionary
 		  //# Creates and returns a dictionary containing the keys and values from another given dictionary.
 		  
 		  #if TargetMacOS
@@ -208,7 +208,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromFile(file as FolderItem) As NSDictionary
+		Shared Function CreateFromFile(file as FolderItem) As NSDictionary
 		  //# Create a new NSDictionary from a file (like as .plist file)
 		  
 		  #if TargetMacOS
@@ -227,7 +227,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateFromObject(key as Ptr, anObject as Ptr) As NSDictionary
+		Shared Function CreateFromObject(key as Ptr, anObject as Ptr) As NSDictionary
 		  //# Creates and returns a dictionary containing a given key and value.
 		  
 		  #if TargetMacOS
@@ -247,7 +247,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateFromObjects(keys() as NSObject, objects() as NSObject) As NSDictionary
+		Shared Function CreateFromObjects(keys() as NSObject, objects() as NSObject) As NSDictionary
 		  //# Creates and returns a dictionary containing entries constructed from the contents of an array of keys and an array of values.
 		  
 		  #if TargetMacOS
@@ -270,7 +270,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateFromURL(aURL as NSURL) As NSDictionary
+		Shared Function CreateFromURL(aURL as NSURL) As NSDictionary
 		  //# Creates and returns a dictionary using the keys and values found in a resource specified by a given URL.
 		  
 		  #if TargetMacOS
@@ -714,7 +714,6 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -722,7 +721,6 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -730,21 +728,18 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -752,7 +747,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

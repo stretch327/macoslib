@@ -48,10 +48,10 @@ Inherits NSIndexSet
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSMutableIndexSet")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSMutableIndexSet")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -115,7 +115,7 @@ Inherits NSIndexSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSMutableIndexSet
+		Shared Function Create() As NSMutableIndexSet
 		  
 		  #if targetMacOS
 		    declare function indexSet lib CocoaLib selector "indexSet" (class_id as Ptr) as Ptr
@@ -133,7 +133,7 @@ Inherits NSIndexSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithIndex(index as UInt32) As NSMutableIndexSet
+		Shared Function CreateWithIndex(index as UInt32) As NSMutableIndexSet
 		  
 		  #if targetMacOS
 		    declare function indexSetWithIndex lib CocoaLib selector "indexSetWithIndex:" (class_id as Ptr, index as UInt32) as Ptr
@@ -153,7 +153,7 @@ Inherits NSIndexSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithRange(range as Cocoa.NSRange) As NSMutableIndexSet
+		Shared Function CreateWithRange(range as Cocoa.NSRange) As NSMutableIndexSet
 		  
 		  #if targetMacOS
 		    declare function indexSetWithIndexesInRange lib CocoaLib selector "indexSetWithIndexesInRange:" (class_id as Ptr, range as Cocoa.NSRange) as Ptr
@@ -257,20 +257,17 @@ Inherits NSIndexSet
 			Name="Count"
 			Group="Behavior"
 			Type="Integer"
-			InheritedFrom="NSIndexSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Description"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="FirstIndex"
 			Group="Behavior"
 			Type="Integer"
-			InheritedFrom="NSIndexSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -278,13 +275,11 @@ Inherits NSIndexSet
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LastIndex"
 			Group="Behavior"
 			Type="Integer"
-			InheritedFrom="NSIndexSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -292,21 +287,18 @@ Inherits NSIndexSet
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -314,7 +306,6 @@ Inherits NSIndexSet
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

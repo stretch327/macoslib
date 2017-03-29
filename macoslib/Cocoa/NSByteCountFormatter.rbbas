@@ -2,7 +2,7 @@
 Class NSByteCountFormatter
 Inherits NSFormatter
 	#tag Method, Flags = &h0
-		 Shared Function ByteCount(byteCount as Int64) As NSString
+		Shared Function ByteCount(byteCount as Int64) As NSString
 		  #if targetMacOS
 		    declare function stringFromByteCount lib CocoaLib selector "stringFromByteCount:countStyle:" (obj_id as Ptr, byteCount as UInt64) as CFStringRef
 		    
@@ -12,7 +12,7 @@ Inherits NSFormatter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ByteCountWithStyle(byteCount as Int64, countStyle as CountStyle) As NSString
+		Shared Function ByteCountWithStyle(byteCount as Int64, countStyle as CountStyle) As NSString
 		  #if targetMacOS
 		    declare function stringFromByteCount lib CocoaLib selector "stringFromByteCount:countStyle:" (obj_id as Ptr, byteCount as UInt64, countStyle as CountStyle) as CFStringRef
 		    
@@ -23,8 +23,10 @@ Inherits NSFormatter
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  static ref as Ptr = NSClassFromString("NSByteCountFormatter")
-		  return ref
+		  #if TargetCocoa
+		    static ref as Ptr = NSClassFromString("NSByteCountFormatter")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -285,11 +287,15 @@ Inherits NSFormatter
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="CountStyle"
+			Group="Behavior"
+			Type="CountStyle"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Description"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSFormatter"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="includesActualByteCount"
@@ -312,7 +318,6 @@ Inherits NSFormatter
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSFormatter"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsAdaptive"
@@ -325,21 +330,18 @@ Inherits NSFormatter
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSFormatter"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSFormatter"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSFormatter"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -347,7 +349,6 @@ Inherits NSFormatter
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSFormatter"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ZeroPadsFractionDigits"

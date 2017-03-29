@@ -2,7 +2,7 @@
 Class NSCalendar
 Inherits NSObject
 	#tag Method, Flags = &h1000
-		 Shared Function AutoupdatingCurrentCalendar() As NSCalendar
+		Shared Function AutoupdatingCurrentCalendar() As NSCalendar
 		  //# Returns the current logical calendar for the current user.
 		  
 		  #if TargetMacOS
@@ -19,10 +19,10 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSCalendar")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSCalendar")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -103,7 +103,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CurrentCalendar() As NSCalendar
+		Shared Function CurrentCalendar() As NSCalendar
 		  //# Returns the logical calendar for the current user.
 		  
 		  //@ The returned calendar is formed from the settings for the current user’s chosen system locale _
@@ -488,7 +488,11 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FirstWeekday"
+			Group="Behavior"
+			Type="UInt32"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Identifier"
@@ -502,7 +506,6 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -510,21 +513,23 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="MinimumDaysInFirstWeek"
+			Group="Behavior"
+			Type="UInt32"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -532,7 +537,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

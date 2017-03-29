@@ -43,10 +43,10 @@ Inherits NSSet
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSMutableSet")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSMutableSet")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -158,7 +158,7 @@ Inherits NSSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSMutableSet
+		Shared Function Create() As NSMutableSet
 		  
 		  #if TargetMacOS
 		    declare function set_ lib CocoaLib selector "set" (class_id as Ptr) as Ptr
@@ -174,7 +174,7 @@ Inherits NSSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithArray(anArray as NSArray) As NSMutableSet
+		Shared Function CreateWithArray(anArray as NSArray) As NSMutableSet
 		  
 		  #if TargetMacOS
 		    declare function setWithArray lib CocoaLib selector "setWithArray:" (class_id as Ptr, anArray as Ptr) as Ptr
@@ -197,7 +197,7 @@ Inherits NSSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithCapacity(numItems as UInt32) As NSMutableSet
+		Shared Function CreateWithCapacity(numItems as UInt32) As NSMutableSet
 		  
 		  #if TargetMacOS
 		    declare function setWithCapacity lib CocoaLib selector "setWithCapacity:" (class_id as Ptr, numItems as UInt32) as Ptr
@@ -215,7 +215,7 @@ Inherits NSSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObject(anObject as NSObject) As NSMutableSet
+		Shared Function CreateWithObject(anObject as NSObject) As NSMutableSet
 		  
 		  #if TargetMacOS
 		    declare function setWithObject lib CocoaLib selector "setWithObject:" (class_id as Ptr, anObject as Ptr) as Ptr
@@ -238,7 +238,7 @@ Inherits NSSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObjects(objects() as NSObject) As NSMutableSet
+		Shared Function CreateWithObjects(objects() as NSObject) As NSMutableSet
 		  
 		  #if TargetMacOS
 		    declare function setWithObjects lib CocoaLib selector "setWithObjects:count:" (class_id as Ptr, objects as Ptr, count as UInt32) as Ptr
@@ -272,7 +272,7 @@ Inherits NSSet
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithSet(aSet as NSSet) As NSMutableSet
+		Shared Function CreateWithSet(aSet as NSSet) As NSMutableSet
 		  
 		  #if TargetMacOS
 		    declare function setWithSet lib CocoaLib selector "setWithSet:" (class_id as Ptr, aSet as Ptr) as Ptr
@@ -434,7 +434,6 @@ Inherits NSSet
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -442,7 +441,6 @@ Inherits NSSet
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -450,21 +448,18 @@ Inherits NSSet
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSSet"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -472,7 +467,6 @@ Inherits NSSet
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSSet"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

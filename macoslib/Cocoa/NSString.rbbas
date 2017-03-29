@@ -47,7 +47,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function AvailableStringEncodings() As NSStringEncoding()
+		Shared Function AvailableStringEncodings() As NSStringEncoding()
 		  
 		  #if TargetMacOS
 		    declare function availableStringEncodings lib CocoaLib selector "availableStringEncodings" (class_id as Ptr) as Ptr
@@ -182,10 +182,10 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSString")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSString")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -408,7 +408,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSString
+		Shared Function Create() As NSString
 		  
 		  #if TargetMacOS
 		    declare function string_ lib CocoaLib selector "string" (class_id as Ptr) as Ptr
@@ -426,7 +426,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithString(aString as NSString) As NSString
+		Shared Function CreateWithString(aString as NSString) As NSString
 		  
 		  #if TargetMacOS
 		    declare function stringWithString lib CocoaLib selector "stringWithString:" (class_id as Ptr, aString as Ptr) as Ptr
@@ -451,7 +451,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithString(aString as String) As NSString
+		Shared Function CreateWithString(aString as String) As NSString
 		  
 		  #if TargetMacOS
 		    declare function stringWithString lib CocoaLib selector "stringWithString:" (class_id as Ptr, aString as CFStringRef) as Ptr
@@ -824,7 +824,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function LocalizedNameOfStringEncoding(anEncoding as NSStringEncoding) As String
+		Shared Function LocalizedNameOfStringEncoding(anEncoding as NSStringEncoding) As String
 		  
 		  #if TargetMacOS
 		    declare function localizedNameOfStringEncoding lib CocoaLib selector "localizedNameOfStringEncoding:" _
@@ -1380,7 +1380,6 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoubleValue"
@@ -1392,7 +1391,12 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Int64Value"
+			Group="Behavior"
+			Type="Int64"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IntegerValue"
@@ -1404,7 +1408,7 @@ Inherits NSObject
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Length"
@@ -1415,7 +1419,7 @@ Inherits NSObject
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="SingleValue"
@@ -1432,14 +1436,14 @@ Inherits NSObject
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

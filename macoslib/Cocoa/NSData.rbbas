@@ -3,10 +3,10 @@ Class NSData
 Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSData")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSData")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -85,7 +85,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSData
+		Shared Function Create() As NSData
 		  //# Creates and returns an empty data object.
 		  
 		  #if TargetMacOS
@@ -101,7 +101,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithData(aData as NSData) As NSData
+		Shared Function CreateWithData(aData as NSData) As NSData
 		  //# Creates and returns a data object containing the contents of another data object.
 		  
 		  #if TargetMacOS
@@ -121,7 +121,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithFile(file as FolderItem) As NSData
+		Shared Function CreateWithFile(file as FolderItem) As NSData
 		  //# Creates and returns a data object by reading every byte from the file specified by a given path.
 		  
 		  #if TargetMacOS
@@ -141,7 +141,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithMemoryBlock(dataBlock as MemoryBlock, length as UInt32) As NSData
+		Shared Function CreateWithMemoryBlock(dataBlock as MemoryBlock, length as UInt32) As NSData
 		  //# Creates and returns a data object containing a given number of bytes copied from a given buffer.
 		  
 		  #if TargetMacOS
@@ -170,14 +170,14 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithString(dataString as String) As NSData
+		Shared Function CreateWithString(dataString as String) As NSData
 		  
 		  return NSData.CreateWithMemoryBlock(dataString, dataString.lenB)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithURL(aURL as NSURL) As NSData
+		Shared Function CreateWithURL(aURL as NSURL) As NSData
 		  //# Initializes a newly allocated data object initialized with the data from the location specified by aURL.
 		  
 		  #if TargetMacOS
@@ -409,7 +409,6 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -417,7 +416,6 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -425,7 +423,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Length"
@@ -437,14 +434,12 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -452,7 +447,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

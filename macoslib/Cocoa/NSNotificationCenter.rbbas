@@ -14,13 +14,15 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  static ref as Ptr = Cocoa.NSClassFromString("NSNotificationCenter")
-		  return ref
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSNotificationCenter")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function DefaultCenter() As NSNotificationCenter
+		Shared Function DefaultCenter() As NSNotificationCenter
 		  #if targetCocoa
 		    declare function defaultCenter lib CocoaLib selector "defaultCenter" (class_id as Ptr) as Ptr
 		    
@@ -155,7 +157,6 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -163,7 +164,6 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -171,21 +171,18 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -193,7 +190,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

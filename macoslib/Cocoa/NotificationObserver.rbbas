@@ -12,8 +12,10 @@ Class NotificationObserver
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  static class_id as Ptr = MakeClass(NSClassName)
-		  return class_id
+		  #if TargetCocoa
+		    static class_id as Ptr = MakeClass(NSClassName)
+		    return class_id
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -240,33 +242,32 @@ Class NotificationObserver
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

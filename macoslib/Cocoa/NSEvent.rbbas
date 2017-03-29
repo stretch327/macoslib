@@ -3,14 +3,15 @@ Class NSEvent
 Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  static ref as Ptr = Cocoa.NSClassFromString("NSEvent")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSEvent")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function DoubleClickInterval() As Double
+		Shared Function DoubleClickInterval() As Double
 		  //# Returns the system-wide double-click time interval in seconds
 		  // To convert it to Ticks, multiply the value by 60.
 		  
@@ -71,7 +72,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function MouseLocation() As NSPoint
+		Shared Function MouseLocation() As NSPoint
 		  #if TargetMacOS
 		    declare function mouseLocation lib CocoaLib selector "mouseLocation" (id as Ptr) as NSPoint
 		    
@@ -272,7 +273,6 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -280,7 +280,6 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsARepeat"
@@ -291,6 +290,11 @@ Inherits NSObject
 			Name="IsARepeat"
 			Group="Behavior"
 			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="KeyCode"
+			Group="Behavior"
+			Type="UInt64"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -298,21 +302,23 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ModifierFlags"
+			Group="Behavior"
+			Type="UInt64"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -320,7 +326,11 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Type"
+			Group="Behavior"
+			Type="EventType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="WindowNumber"

@@ -19,10 +19,10 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSScreen")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSScreen")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -57,7 +57,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function DeepestScreen() As NSScreen
+		Shared Function DeepestScreen() As NSScreen
 		  
 		  #if TargetMacOS
 		    declare function deepestScreen lib CocoaLib selector "deepestScreen" (class_id as Ptr) as Ptr
@@ -73,7 +73,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function MainScreen() As NSScreen
+		Shared Function MainScreen() As NSScreen
 		  
 		  #if TargetMacOS
 		    declare function mainScreen lib CocoaLib selector "mainScreen" (class_id as Ptr) as Ptr
@@ -89,7 +89,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Screens() As NSScreen()
+		Shared Function Screens() As NSScreen()
 		  
 		  #if TargetMacOS
 		    declare function screens lib CocoaLib selector "screens" (class_id as Ptr) as Ptr
@@ -271,40 +271,39 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

@@ -67,7 +67,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function App() As NSApplication
+		Shared Function App() As NSApplication
 		  #if TargetMacOS
 		    
 		    declare function sharedApplication_ lib CocoaLib selector "sharedApplication" (class_id as Ptr) as Ptr
@@ -162,8 +162,10 @@ Inherits NSResponder
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  static ref as Ptr = Cocoa.NSClassFromString(NSClassName)
-		  return ref
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString(NSClassName)
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -471,7 +473,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSEventTrackingRunLoopMode() As String
+		Shared Function NSEventTrackingRunLoopMode() As String
 		  
 		  return Cocoa.StringConstant("NSEventTrackingRunLoopMode")
 		  
@@ -479,7 +481,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSModalPanelRunLoopMode() As String
+		Shared Function NSModalPanelRunLoopMode() As String
 		  
 		  return Cocoa.StringConstant("NSModalPanelRunLoopMode")
 		  
@@ -1274,7 +1276,6 @@ Inherits NSResponder
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSResponder"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -1282,7 +1283,6 @@ Inherits NSResponder
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSResponder"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -1290,21 +1290,23 @@ Inherits NSResponder
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSResponder"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSResponder"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PresentationOptions"
+			Group="Behavior"
+			Type="UInt32"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSResponder"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -1312,7 +1314,6 @@ Inherits NSResponder
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSResponder"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

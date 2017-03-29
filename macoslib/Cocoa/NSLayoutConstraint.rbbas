@@ -3,15 +3,15 @@ Class NSLayoutConstraint
 Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSLayoutConstraint")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSLayoutConstraint")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreatesWithVisualFormat(aFormat as String, options as UInt32, metrics as NSDictionary, views as NSDictionary) As NSLayoutConstraint()
+		Shared Function CreatesWithVisualFormat(aFormat as String, options as UInt32, metrics as NSDictionary, views as NSDictionary) As NSLayoutConstraint()
 		  
 		  #if TargetMacOS
 		    declare function constraintsWithVisualFormat lib CocoaLib selector "constraintsWithVisualFormat:options:metrics:views:" _
@@ -60,7 +60,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateWithItem(view1 as NSView, attrib1 as NSLayoutAttribute, relation as NSLayoutRelation, view2 as NSView, attrib2 as NSLayoutAttribute, multiplier as Single, constant as Single) As NSLayoutConstraint
+		Shared Function CreateWithItem(view1 as NSView, attrib1 as NSLayoutAttribute, relation as NSLayoutRelation, view2 as NSView, attrib2 as NSLayoutAttribute, multiplier as Single, constant as Single) As NSLayoutConstraint
 		  
 		  #if TargetMacOS
 		    declare function constraintWithItem lib CocoaLib selector "constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:" _
@@ -390,7 +390,11 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FirstAttribute"
+			Group="Behavior"
+			Type="NSLayoutAttribute"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -398,7 +402,6 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -406,7 +409,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Multiplier"
@@ -418,7 +420,21 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Priority"
+			Group="Behavior"
+			Type="NSLayoutPriority"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Relation"
+			Group="Behavior"
+			Type="NSLayoutRelation"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="SecondAttribute"
+			Group="Behavior"
+			Type="NSLayoutAttribute"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ShouldBeArchived"
@@ -430,7 +446,6 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -438,7 +453,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

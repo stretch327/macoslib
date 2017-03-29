@@ -244,10 +244,10 @@ Inherits NSResponder
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSView")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSView")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -666,7 +666,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function FocusView() As NSView
+		Shared Function FocusView() As NSView
 		  
 		  #if TargetMacOS then
 		    declare function focusView lib CocoaLib selector "focusView" (obj_id as Ptr) as Ptr
@@ -2106,7 +2106,17 @@ Inherits NSResponder
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FocusRingType"
+			Group="Behavior"
+			Type="NSFocusRingType"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - Default"
+				"1 - None"
+				"2 - Exterior"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="FrameRotation"
@@ -2129,7 +2139,6 @@ Inherits NSResponder
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InLiveResize"
@@ -2166,13 +2175,13 @@ Inherits NSResponder
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="NeedsDisplay"
@@ -2203,7 +2212,7 @@ Inherits NSResponder
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Tag"
@@ -2215,7 +2224,7 @@ Inherits NSResponder
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="WantsDefaultClipping"

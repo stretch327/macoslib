@@ -3,9 +3,10 @@ Class NSDateFormatter
 Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSDateFormatter")
-		  return ref
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSDateFormatter")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -77,7 +78,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function LocalizedDateFormat(template as String, locale as NSLocale) As String
+		Shared Function LocalizedDateFormat(template as String, locale as NSLocale) As String
 		  //# Returns a localized date format string representing the given date format components arranged appropriately for the specified locale.
 		  
 		  #if TargetMacOS
@@ -100,7 +101,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function LocalizedString(aDate as NSDate, dateStyle as NSDateFormatterStyle, timeStyle as NSDateFormatterStyle) As String
+		Shared Function LocalizedString(aDate as NSDate, dateStyle as NSDateFormatterStyle, timeStyle as NSDateFormatterStyle) As String
 		  //# Returns string representation of a given date formatted for the current locale using the specified date and time styles.
 		  
 		  #if TargetMacOS
@@ -1338,11 +1339,15 @@ Inherits NSObject
 			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="DateStyle"
+			Group="Behavior"
+			Type="NSDateFormatterStyle"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Description"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoesRelativeDateFormatting"
@@ -1350,12 +1355,16 @@ Inherits NSObject
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="FormatterBehavior"
+			Group="Behavior"
+			Type="NSDateFormatterBehavior"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -1363,7 +1372,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Lenient"
@@ -1375,7 +1383,6 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="PMSymbol"
@@ -1388,7 +1395,11 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TimeStyle"
+			Group="Behavior"
+			Type="NSDateFormatterStyle"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -1396,7 +1407,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

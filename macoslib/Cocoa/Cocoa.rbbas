@@ -315,7 +315,7 @@ Protected Module Cocoa
 
 	#tag Method, Flags = &h1
 		Protected Function NSClassFromString(aClassName as CFStringRef) As Ptr
-		  #if TargetMacOS
+		  #if TargetCocoa
 		    Declare Function NSClassFromString Lib CocoaLib (aClassName as CFStringRef) As Ptr
 		    Return NSClassFromString(aClassName)
 		  #endif
@@ -913,33 +913,33 @@ Protected Module Cocoa
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Module

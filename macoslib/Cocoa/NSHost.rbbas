@@ -21,15 +21,15 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSHost")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSHost")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateWithAddress(address as String) As NSHost
+		Shared Function CreateWithAddress(address as String) As NSHost
 		  
 		  #if targetMacOS
 		    declare function hostWithAddress lib CocoaLib selector "hostWithAddress:" (class_id as Ptr, address as CFStringRef) as Ptr
@@ -47,7 +47,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateWithName(name as String) As NSHost
+		Shared Function CreateWithName(name as String) As NSHost
 		  
 		  #if targetMacOS
 		    declare function hostWithName lib CocoaLib selector "hostWithName:" (class_id as Ptr, name as CFStringRef) as Ptr
@@ -65,7 +65,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CurrentHost() As NSHost
+		Shared Function CurrentHost() As NSHost
 		  #if targetMacOS
 		    declare function currentHost lib CocoaLib selector "currentHost" (class_id as Ptr) as Ptr
 		    
@@ -76,7 +76,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function GetByAddress(address as String) As NSHost
+		Shared Function GetByAddress(address as String) As NSHost
 		  #if targetMacOS
 		    declare function hostWithAddress lib CocoaLib selector "hostWithAddress:" (class_id as Ptr, address as CFStringRef) as Ptr
 		    
@@ -91,7 +91,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function GetByName(name as String) As NSHost
+		Shared Function GetByName(name as String) As NSHost
 		  #if targetMacOS
 		    declare function hostWithName lib CocoaLib selector "hostWithName:" (class_id as Ptr, name as CFStringRef) as Ptr
 		    
@@ -251,7 +251,6 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -259,7 +258,6 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -267,7 +265,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LocalizedName"
@@ -280,14 +277,12 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -295,7 +290,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

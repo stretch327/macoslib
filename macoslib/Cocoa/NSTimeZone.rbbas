@@ -17,10 +17,10 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSTimeZone")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSTimeZone")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -40,7 +40,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromAbbreviation(abbreviation as String) As NSTimeZone
+		Shared Function CreateFromAbbreviation(abbreviation as String) As NSTimeZone
 		  #if targetMacOS
 		    declare function timeZoneWithAbbreviation lib CocoaLib selector "timeZoneWithAbbreviation:" (class_id as Ptr, name as CFStringRef) as Ptr
 		    
@@ -55,7 +55,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromName(name as String) As NSTimeZone
+		Shared Function CreateFromName(name as String) As NSTimeZone
 		  #if targetMacOS
 		    declare function timeZoneWithName lib CocoaLib selector "timeZoneWithName:" (class_id as Ptr, name as CFStringRef) as Ptr
 		    
@@ -148,7 +148,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function KnownTimeZoneNames() As String()
+		Shared Function KnownTimeZoneNames() As String()
 		  #if targetMacOS
 		    declare function knownTimeZoneNames lib CocoaLib selector "knownTimeZoneNames" (class_id as Ptr) as Ptr
 		    
@@ -192,7 +192,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function LocalTimeZone() As NSTimeZone
+		Shared Function LocalTimeZone() As NSTimeZone
 		  #if targetMacOS
 		    declare function localTimeZone lib CocoaLib selector "localTimeZone" (class_id as Ptr) as Ptr
 		    
@@ -241,7 +241,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ResetSystemTimeZone() As NSTimeZone
+		Shared Function ResetSystemTimeZone() As NSTimeZone
 		  #if targetMacOS
 		    declare sub resetSystemTimeZone lib CocoaLib selector "resetSystemTimeZone" (class_id as Ptr)
 		    
@@ -271,7 +271,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function SystemTimeZone() As NSTimeZone
+		Shared Function SystemTimeZone() As NSTimeZone
 		  #if targetMacOS
 		    declare function systemTimeZone lib CocoaLib selector "systemTimeZone" (class_id as Ptr) as Ptr
 		    
@@ -490,7 +490,7 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsDST"
@@ -502,14 +502,13 @@ Inherits NSObject
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="SecondsFromGMT"
@@ -520,14 +519,14 @@ Inherits NSObject
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

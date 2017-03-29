@@ -35,10 +35,10 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSSet")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSSet")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -168,7 +168,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSSet
+		Shared Function Create() As NSSet
 		  
 		  #if TargetMacOS
 		    declare function set_ lib CocoaLib selector "set" (class_id as Ptr) as Ptr
@@ -184,7 +184,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithArray(anArray as NSArray) As NSSet
+		Shared Function CreateWithArray(anArray as NSArray) As NSSet
 		  
 		  #if TargetMacOS
 		    declare function setWithArray lib CocoaLib selector "setWithArray:" (class_id as Ptr, anArray as Ptr) as Ptr
@@ -207,7 +207,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObject(anObject as NSObject) As NSSet
+		Shared Function CreateWithObject(anObject as NSObject) As NSSet
 		  
 		  #if TargetMacOS
 		    declare function setWithObject lib CocoaLib selector "setWithObject:" (class_id as Ptr, anObject as Ptr) as Ptr
@@ -230,7 +230,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObjects(objects() as NSObject) As NSSet
+		Shared Function CreateWithObjects(objects() as NSObject) As NSSet
 		  
 		  #if TargetMacOS
 		    declare function setWithObjects lib CocoaLib selector "setWithObjects:count:" (class_id as Ptr, objects as Ptr, count as UInt32) as Ptr
@@ -264,7 +264,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithSet(aSet as NSSet) As NSSet
+		Shared Function CreateWithSet(aSet as NSSet) As NSSet
 		  
 		  #if TargetMacOS
 		    declare function setWithSet lib CocoaLib selector "setWithSet:" (class_id as Ptr, aSet as Ptr) as Ptr
@@ -583,40 +583,39 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

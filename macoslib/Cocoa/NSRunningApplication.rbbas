@@ -13,15 +13,15 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSRunningApplication")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSRunningApplication")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CurrentApplication() As NSRunningApplication
+		Shared Function CurrentApplication() As NSRunningApplication
 		  #if targetMacOS
 		    declare function currentApplication lib CocoaLib selector "currentApplication" (class_id as Ptr) as Ptr
 		    
@@ -74,7 +74,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function RunningApplication(pid as Integer) As NSRunningApplication
+		Shared Function RunningApplication(pid as Integer) As NSRunningApplication
 		  
 		  #if targetMacOS
 		    declare function runningApplicationWithProcessIdentifier lib CocoaLib selector "runningApplicationWithProcessIdentifier:" _
@@ -95,7 +95,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function RunningApplication(bundleIdentifier as String) As NSRunningApplication
+		Shared Function RunningApplication(bundleIdentifier as String) As NSRunningApplication
 		  
 		  #if targetMacOS
 		    declare function runningApplicationsWithBundleIdentifier lib CocoaLib selector "runningApplicationsWithBundleIdentifier:" _
@@ -128,7 +128,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub TerminateAutomaticallyTerminableApplications()
+		Shared Sub TerminateAutomaticallyTerminableApplications()
 		  
 		  #if targetMacOS
 		    declare sub terminateAutomaticallyTerminableApplications lib CocoaLib selector "terminateAutomaticallyTerminableApplications" (class_id as Ptr)
@@ -396,6 +396,11 @@ Inherits NSObject
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="ActivationPolicy"
+			Group="Behavior"
+			Type="NSApplicationActivationPolicy"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Active"
 			Group="Behavior"
 			Type="Boolean"
@@ -411,7 +416,6 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="FinishedLaunching"
@@ -428,14 +432,14 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LocalizedName"
@@ -447,7 +451,7 @@ Inherits NSObject
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="OwnsMenuBar"
@@ -463,7 +467,7 @@ Inherits NSObject
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Terminated"
@@ -475,7 +479,7 @@ Inherits NSObject
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

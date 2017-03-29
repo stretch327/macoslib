@@ -200,10 +200,10 @@ Inherits NSResponder
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSWindow")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSWindow")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -394,7 +394,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ContentRect(windowFrame as Cocoa.NSRect, styleMask as UInt32) As Cocoa.NSRect
+		Shared Function ContentRect(windowFrame as Cocoa.NSRect, styleMask as UInt32) As Cocoa.NSRect
 		  
 		  #if TargetCocoa
 		    declare function contentRectForFrameRect lib CocoaLib selector "contentRectForFrameRect:styleMask:" _
@@ -505,7 +505,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function DefaultDepthLimit() As Integer
+		Shared Function DefaultDepthLimit() As Integer
 		  
 		  #if TargetCocoa
 		    declare function defaultDepthLimit lib CocoaLib selector "defaultDepthLimit" (class_id as Ptr) as Integer
@@ -886,7 +886,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function FrameRect(windowContentRect as Cocoa.NSRect, styleMask as UInt32) As Cocoa.NSRect
+		Shared Function FrameRect(windowContentRect as Cocoa.NSRect, styleMask as UInt32) As Cocoa.NSRect
 		  
 		  #if TargetCocoa
 		    declare function frameRectForContentRect lib CocoaLib selector "frameRectForContentRect:styleMask:" _
@@ -1055,7 +1055,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function MinFrameWidth(windowTitle as String, styleMask as UInt32) As Single
+		Shared Function MinFrameWidth(windowTitle as String, styleMask as UInt32) As Single
 		  
 		  #if TargetCocoa
 		    declare function minFrameWidthWithTitle lib CocoaLib selector "minFrameWidthWithTitle:styleMask:" _
@@ -1085,7 +1085,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceBitsPerSample() As String
+		Shared Function NSDeviceBitsPerSample() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceBitsPerSample")
 		  return name
@@ -1094,7 +1094,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceColorSpaceName() As String
+		Shared Function NSDeviceColorSpaceName() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceColorSpaceName")
 		  return name
@@ -1103,7 +1103,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceIsPrinter() As String
+		Shared Function NSDeviceIsPrinter() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceIsPrinter")
 		  return name
@@ -1112,7 +1112,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceIsScreen() As String
+		Shared Function NSDeviceIsScreen() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceIsScreen")
 		  return name
@@ -1121,7 +1121,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceResolution() As String
+		Shared Function NSDeviceResolution() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceResolution")
 		  return name
@@ -1130,7 +1130,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceSize() As String
+		Shared Function NSDeviceSize() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceSize")
 		  return name
@@ -1329,7 +1329,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub RemoveFrame(frameName as String)
+		Shared Sub RemoveFrame(frameName as String)
 		  
 		  #if TargetCocoa
 		    declare sub removeFrameUsingName lib CocoaLib selector "removeFrameUsingName:" (class_id as Ptr, frameName as CFStringRef)
@@ -1547,7 +1547,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function StandardWindowButton(windowButtonKind as NSWindowButton, styleMask as UInt32) As Ptr
+		Shared Function StandardWindowButton(windowButtonKind as NSWindowButton, styleMask as UInt32) As Ptr
 		  
 		  #if TargetCocoa
 		    declare function standardWindowButton lib CocoaLib selector "standardWindowButton:forStyleMask:" _
@@ -1694,7 +1694,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function WindowNumberAtPoint(point as NSPoint, startingBelowWinNumber as Integer) As Integer
+		Shared Function WindowNumberAtPoint(point as NSPoint, startingBelowWinNumber as Integer) As Integer
 		  
 		  #if TargetCocoa
 		    declare function windowNumberAtPoint lib CocoaLib selector "windowNumberAtPoint:belowWindowWithWindowNumber:" _
@@ -1711,7 +1711,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function WindowNumbers(options as UInt32) As Integer()
+		Shared Function WindowNumbers(options as UInt32) As Integer()
 		  
 		  #if TargetCocoa
 		    declare function windowNumbersWithOptions lib CocoaLib selector "windowNumbersWithOptions:" (class_id as Ptr, options as UInt32) as Ptr
@@ -4721,6 +4721,19 @@ Inherits NSResponder
 			Type="Single"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="AnimationBehavior"
+			Group="Behavior"
+			Type="NSWindowAnimationBehavior"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - NSWindowAnimationBehaviorDefault"
+				"2 - NSWindowAnimationBehaviorNone"
+				"3 - NSWindowAnimationBehaviorDocumentWindow"
+				"4 - NSWindowAnimationBehaviorUtilityWindow"
+				"5 - NSWindowAnimationBehaviorAlertPanel"
+			#tag EndEnumValues
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="AreCursorRectsEnabled"
 			Group="Behavior"
 			Type="Boolean"
@@ -4736,9 +4749,31 @@ Inherits NSResponder
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="BackingLocation"
+			Group="Behavior"
+			Type="NSWindowBackingLocation"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - NSWindowBackingLocationDefault"
+				"1 - NSWindowBackingLocationVideoMemory"
+				"2 - NSWindowBackingLocationMainMemory"
+			#tag EndEnumValues
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="BackingScaleFactor"
 			Group="Behavior"
 			Type="Single"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="BackingType"
+			Group="Behavior"
+			Type="NSBackingStoreType"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - NSBackingStoreRetained"
+				"1 - NSBackingStoreNonretained"
+				"2 - NSBackingStoreBuffered"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="CanBecomeKeyWindow"
@@ -4785,7 +4820,6 @@ Inherits NSResponder
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DisplaysWhenScreenProfileChanges"
@@ -4859,7 +4893,7 @@ Inherits NSResponder
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InLiveResize"
@@ -4942,11 +4976,22 @@ Inherits NSResponder
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="KeyViewSelectionDirection"
+			Group="Behavior"
+			Type="NSSelectionDirection"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - NSDirectSelection"
+				"1 - NSSelectingNext"
+				"2 - NSSelectingPrevious"
+			#tag EndEnumValues
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Managed"
@@ -4973,7 +5018,7 @@ Inherits NSResponder
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="OneShot"
@@ -4984,6 +5029,17 @@ Inherits NSResponder
 			Name="ParticipatesInCycle"
 			Group="Behavior"
 			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PreferredBackingLocation"
+			Group="Behavior"
+			Type="NSWindowBackingLocation"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - NSWindowBackingLocationDefault"
+				"1 - NSWindowBackingLocationVideoMemory"
+				"2 - NSWindowBackingLocationMainMemory"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="PreservesContentDuringLiveResize"
@@ -5002,6 +5058,17 @@ Inherits NSResponder
 			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="SharingType"
+			Group="Behavior"
+			Type="NSWindowSharingType"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - NSWindowSharingNone"
+				"1 - NSWindowSharingReadOnly"
+				"2 - NSWindowSharingReadWrite"
+			#tag EndEnumValues
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="ShowsResizeIndicator"
 			Group="Behavior"
 			Type="Boolean"
@@ -5017,10 +5084,15 @@ Inherits NSResponder
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="StyleMask"
+			Group="Behavior"
+			Type="UInt32"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Title"
@@ -5038,7 +5110,7 @@ Inherits NSResponder
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Transient"
@@ -5051,9 +5123,37 @@ Inherits NSResponder
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="WindowLevel"
+			Group="Behavior"
+			Type="NSWindowLevel"
+			EditorType="Enum"
+			#tag EnumValues
+				"4 - NSNormalWindowLevel"
+				"5 - NSFloatingWindowLevel"
+				"6 - NSSubmenuWindowLevel"
+				"6 - NSTornOffMenuWindowLevel"
+				"8 - NSMainMenuWindowLevel"
+				"9 - NSStatusWindowLevel"
+				"10 - NSModalPanelWindowLevel"
+				"11 - NSPopUpMenuWindowLevel"
+				"13 - NSScreenSaverWindowLevel"
+			#tag EndEnumValues
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="WindowNumber"
 			Group="Behavior"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="WindowTitleVisibility"
+			Group="Behavior"
+			Type="NSWindowTitleVisibility"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - Visible"
+				"1 - Hidden"
+				"2 - HiddenWhenActive"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="WorksWhenModal"

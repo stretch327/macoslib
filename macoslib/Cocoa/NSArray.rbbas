@@ -53,10 +53,10 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSArray")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSArray")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -240,7 +240,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSArray
+		Shared Function Create() As NSArray
 		  
 		  #if TargetMacOS
 		    declare function array_ lib CocoaLib selector "array" (class_id as Ptr) as Ptr
@@ -256,7 +256,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromArrayOfStrings(Strings() as String) As NSArray
+		Shared Function CreateFromArrayOfStrings(Strings() as String) As NSArray
 		  #if TargetMacOS
 		    dim cfa as new CFArray( Strings )
 		    dim nsa as new NSArray( cfa )
@@ -269,7 +269,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromNSArray(theArray as NSArray, indexSet as NSIndexSet) As NSArray
+		Shared Function CreateFromNSArray(theArray as NSArray, indexSet as NSIndexSet) As NSArray
 		  //# Returns the objects in the ordered set at the specified indexes.
 		  
 		  #if TargetMacOS
@@ -290,7 +290,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromObjectsArray(theArray as variant) As NSArray
+		Shared Function CreateFromObjectsArray(theArray as variant) As NSArray
 		  dim nsma as new NSMutableArray
 		  
 		  select case theArray.ArrayElementType
@@ -338,7 +338,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithArray(anArray as NSArray) As NSArray
+		Shared Function CreateWithArray(anArray as NSArray) As NSArray
 		  //# Creates and returns an array containing the objects in another given array.
 		  
 		  #if TargetMacOS
@@ -362,7 +362,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithFile(file as FolderItem) As NSArray
+		Shared Function CreateWithFile(file as FolderItem) As NSArray
 		  //# Creates and returns an array containing the contents of the file specified by a given path.
 		  
 		  #if TargetMacOS
@@ -383,7 +383,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObject(anObject as NSObject) As NSArray
+		Shared Function CreateWithObject(anObject as NSObject) As NSArray
 		  //# Creates and returns an array containing a given object.
 		  
 		  #if TargetMacOS
@@ -404,7 +404,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObjects(objects() as NSObject) As NSArray
+		Shared Function CreateWithObjects(objects() as NSObject) As NSArray
 		  //# Creates and returns an array containing the objects in the argument list.
 		  
 		  #if TargetMacOS
@@ -439,7 +439,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithURL(aURL as NSURL) As NSArray
+		Shared Function CreateWithURL(aURL as NSURL) As NSArray
 		  //# Creates and returns an array containing the contents specified by a given URL.
 		  
 		  #if TargetMacOS
@@ -918,7 +918,6 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -926,7 +925,6 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -934,21 +932,18 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -956,7 +951,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

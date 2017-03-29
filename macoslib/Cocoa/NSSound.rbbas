@@ -3,8 +3,10 @@ Class NSSound
 Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  static ref as Ptr = NSClassFromString("NSSound")
-		  return ref
+		  #if TargetCocoa
+		    static ref as Ptr = NSClassFromString("NSSound")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -230,7 +232,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function SoundNamed(soundName As NSString) As NSSound
+		Shared Function SoundNamed(soundName As NSString) As NSSound
 		  dim r as NSSound
 		  
 		  #if TargetMacOS
@@ -495,14 +497,13 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsPlaying"
@@ -514,7 +515,7 @@ Inherits NSObject
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Loops"
@@ -525,7 +526,7 @@ Inherits NSObject
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="StopOnDestruct"
@@ -536,14 +537,14 @@ Inherits NSObject
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Volume"

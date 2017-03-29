@@ -20,10 +20,10 @@ Inherits NSDictionary
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSMutableDictionary")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSMutableDictionary")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -127,7 +127,7 @@ Inherits NSDictionary
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSMutableDictionary
+		Shared Function Create() As NSMutableDictionary
 		  //# Creates and returns an empty dictionary.
 		  
 		  #if TargetMacOS
@@ -145,7 +145,7 @@ Inherits NSDictionary
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithCapacity(numItems as Integer) As NSMutableDictionary
+		Shared Function CreateWithCapacity(numItems as Integer) As NSMutableDictionary
 		  
 		  #if TargetMacOS
 		    declare function dictionaryWithCapacity lib CocoaLib selector "dictionaryWithCapacity:" (class_id as Ptr, numItems as UInt32) as Ptr
@@ -165,7 +165,7 @@ Inherits NSDictionary
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithDictionary(otherDictionary as NSDictionary) As NSMutableDictionary
+		Shared Function CreateWithDictionary(otherDictionary as NSDictionary) As NSMutableDictionary
 		  
 		  #if TargetMacOS
 		    declare function dictionaryWithDictionary lib CocoaLib selector "dictionaryWithDictionary:" _
@@ -186,7 +186,7 @@ Inherits NSDictionary
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithFile(file as FolderItem) As NSMutableDictionary
+		Shared Function CreateWithFile(file as FolderItem) As NSMutableDictionary
 		  
 		  #if TargetMacOS
 		    declare function dictionaryWithContentsOfFile lib CocoaLib selector "dictionaryWithContentsOfFile:" _
@@ -207,7 +207,7 @@ Inherits NSDictionary
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObject(key as Ptr, anObject as Ptr) As NSMutableDictionary
+		Shared Function CreateWithObject(key as Ptr, anObject as Ptr) As NSMutableDictionary
 		  
 		  #if TargetMacOS
 		    declare function dictionaryWithObject lib CocoaLib selector "dictionaryWithObject:forKey:" _
@@ -227,7 +227,7 @@ Inherits NSDictionary
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObjects(keys() as NSObject, objects() as NSObject) As NSMutableDictionary
+		Shared Function CreateWithObjects(keys() as NSObject, objects() as NSObject) As NSMutableDictionary
 		  
 		  #if TargetMacOS
 		    declare function dictionaryWithObjects lib CocoaLib selector "dictionaryWithObjects:forKeys:" _
@@ -250,7 +250,7 @@ Inherits NSDictionary
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithURL(aURL as NSURL) As NSMutableDictionary
+		Shared Function CreateWithURL(aURL as NSURL) As NSMutableDictionary
 		  
 		  #if TargetMacOS
 		    declare function dictionaryWithContentsOfURL lib CocoaLib selector "dictionaryWithContentsOfURL:" _
@@ -361,14 +361,12 @@ Inherits NSDictionary
 			Name="Count"
 			Group="Behavior"
 			Type="Integer"
-			InheritedFrom="NSDictionary"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Description"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -376,7 +374,6 @@ Inherits NSDictionary
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -384,21 +381,18 @@ Inherits NSDictionary
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -406,7 +400,6 @@ Inherits NSDictionary
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

@@ -123,15 +123,15 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  
-		  static ref as Ptr = Cocoa.NSClassFromString("NSRunLoop")
-		  return ref
-		  
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSRunLoop")
+		    return ref
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Current() As NSRunLoop
+		Shared Function Current() As NSRunLoop
 		  #if targetCocoa
 		    declare function currentRunLoop lib CocoaLib selector "currentRunLoop" (class_id as Ptr) as Ptr
 		    
@@ -172,7 +172,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Main() As NSRunLoop
+		Shared Function Main() As NSRunLoop
 		  #if targetCocoa
 		    declare function mainRunLoop lib CocoaLib selector "mainRunLoop" (class_id as Ptr) as Ptr
 		    
@@ -182,7 +182,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDefaultRunLoopMode() As String
+		Shared Function NSDefaultRunLoopMode() As String
 		  
 		  return Cocoa.StringConstant("NSDefaultRunLoopMode")
 		  
@@ -190,7 +190,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSRunLoopCommonModes() As String
+		Shared Function NSRunLoopCommonModes() As String
 		  
 		  return Cocoa.StringConstant("NSRunLoopCommonModes")
 		  
@@ -316,40 +316,39 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
