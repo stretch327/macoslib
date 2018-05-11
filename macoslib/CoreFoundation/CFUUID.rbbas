@@ -3,19 +3,19 @@ Class CFUUID
 Inherits CFType
 	#tag Event
 		Function ClassID() As UInt32
-		  return self.ClassID
+		  return  me.ClassID
 		End Function
 	#tag EndEvent
 
 	#tag Event
 		Function VariantValue() As Variant
-		  return self.StringValue
+		  return  me.StringValue
 		End Function
 	#tag EndEvent
 
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if targetMacOS
 		    declare function TypeID lib CarbonLib alias "CFUUIDGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
@@ -25,22 +25,14 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Sub Constructor()
-		  #if targetMacOS
-		    declare function CFUUIDCreate lib CoreFoundation.framework (alloc as Ptr) as CFTypeRef
-		    
-		    self.Constructor(CFUUIDCreate(nil), hasOwnership)
-		  #endif
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1000
-		Sub Constructor(bytes as CFUUIDBytes)
+		Sub Constructor(mb as MemoryBlock)
 		  #if TargetMacOS
-		    soft declare function CFUUIDCreateFromUUIDBytes lib CoreFoundation.framework (alloc as Ptr, bytes as CFUUIDBytes) as CFTypeRef
+		    soft declare function CFUUIDCreateFromUUIDBytes lib CarbonLib (alloc as Ptr, bytes as CFUUIDBytesStructure ) as Ptr
 		    
-		    self.Constructor(CFUUIDCreateFromUUIDBytes(nil, bytes), hasOwnership)
+		    dim bytes as CFUUIDBytesStructure
+		    bytes.StringValue( mb.LittleEndian ) = mb.StringValue( 0, 16 )
+		    
+		    Super.Constructor   CFUUIDCreateFromUUIDBytes( nil, bytes ), true
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -48,24 +40,25 @@ Inherits CFType
 	#tag Method, Flags = &h1000
 		Sub Constructor(uuid as String)
 		  #if TargetMacOS
-		    soft declare function CFUUIDCreateFromString lib CoreFoundation.framework (alloc as Ptr, uuidStr as CFStringRef) as CFTypeRef
+		    soft declare function CFUUIDCreateFromString lib CarbonLib (alloc as Ptr, uuidStr as CFStringRef ) as Ptr
 		    
-		    self.Constructor(CFUUIDCreateFromString(nil, uuid), hasOwnership)
+		    Super.Constructor   CFUUIDCreateFromString( nil, uuid ), true
 		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetBytes() As CFUUIDBytes
+		Function GetBytes() As MemoryBlock
+		  //Get the UUID as a group of endianness-independent MemoryBlock
+		  
 		  #if TargetMacOS
-		    soft declare function CFUUIDGetUUIDBytes lib CoreFoundation.framework (ref as CFTypeRef) as CFUUIDBytes
+		    soft declare function CFUUIDGetUUIDBytes lib CarbonLib (ref as Ptr) as CFUUIDBytesStructure
 		    
-		    if (self = nil) then
-		      dim x as CFUUIDBytes
-		      return x
-		    end if
+		    dim bytes as CFUUIDBytesStructure = CFUUIDGetUUIDBytes( me.Reference )
+		    dim mb as new MemoryBlock( 16 )
 		    
-		    return CFUUIDGetUUIDBytes(self)
+		    mb.StringValue( 0, 16 ) = bytes.StringValue( mb.LittleEndian )
+		    return   mb
 		  #endif
 		  
 		End Function
@@ -74,7 +67,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As String
 		  #if TargetMacOS
-		    return self.StringValue
+		    return  me.StringValue
 		  #endif
 		End Function
 	#tag EndMethod
@@ -82,7 +75,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(uuid as String)
 		  #if TargetMacOS
-		    self.Constructor(uuid)
+		    me.Constructor( uuid )
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -90,39 +83,16 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Function StringValue() As String
 		  #if TargetMacOS
-		    soft declare function CFUUIDCreateString lib CoreFoundation.framework (alloc as ptr, uuid as Ptr) as CFStringRef
+		    soft declare function CFUUIDCreateString lib CarbonLib (alloc as ptr, uuid as Ptr) as CFStringRef
 		    
-		    if self <> nil then
-		      return CFUUIDCreateString(nil, self)
-		    else
-		      return ""
-		    end if
+		    return   CFUUIDCreateString( nil, me.Reference )
 		  #endif
 		End Function
 	#tag EndMethod
 
 
 	#tag Note, Name = Documentation
-		CFUUID is the RB object corresponding to CFUUIDRef in CoreFoundation. 
-		
-		
-		dim uuid as new CFUUID() generates a new UUID.
-		
-		dim uuid as new CFUUID( "07AE3B9B-587E-397C-A731-AD4B1BA1B00E" ) creates a CFUUID object from the string passed. There doesn't
-		appear to be much validation of the string by CFUUID.
-		
-		If you have a uuid in the form of 16 bytes of MemoryBlock, you can create a CFUUID object as follows.
-		
-		dim p as Ptr = uuidBlock
-		dim bytes as CFUUIDBytes = p.CFUUIDBytes(0)
-		dim uuid as new CFUUID(bytes)
-		
-		
-		
-		
-		
-		
-		It is an endianness-independent group of 16 bytes (128 bits)
+		CFUUID is the RB object corresponding to CFUUIDRef in CoreFoundation. It is an endianness-independent group of 16 bytes (128 bits)
 		
 		You can create it as:
 		uuid = new CFUUID( "07AE3B9B-587E-397C-A731-AD4B1BA1B00E" )
@@ -139,23 +109,23 @@ Inherits CFType
 	#tag EndNote
 
 
-	#tag Structure, Name = CFUUIDBytes, Flags = &h0
-		byte0 as UInt8
-		  byte1 as UInt8
-		  byte2 as UInt8
-		  byte3 as UInt8
-		  byte4 as UInt8
-		  byte5 as UInt8
-		  byte6 as UInt8
-		  byte7 as UInt8
-		  byte8 as UInt8
-		  byte9 as UInt8
-		  byte10 as UInt8
-		  byte11 as UInt8
-		  byte12 as UInt8
-		  byte13 as UInt8
-		  byte14 as UInt8
-		byte15 as UInt8
+	#tag Structure, Name = CFUUIDBytesStructure, Flags = &h0
+		byte0 as Int8
+		  byte1 as Int8
+		  byte2 as Int8
+		  byte3 as Int8
+		  byte4 as Int8
+		  byte5 as Int8
+		  byte6 as Int8
+		  byte7 as Int8
+		  byte8 as Int8
+		  byte9 as Int8
+		  byte10 as Int8
+		  byte11 as Int8
+		  byte12 as Int8
+		  byte13 as Int8
+		  byte14 as Int8
+		byte15 as Int8
 	#tag EndStructure
 
 
@@ -165,40 +135,39 @@ Inherits CFType
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

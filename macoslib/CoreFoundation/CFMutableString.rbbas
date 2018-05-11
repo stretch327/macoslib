@@ -36,8 +36,7 @@ Inherits CFString
 	#tag Method, Flags = &h0
 		Sub Constructor(s as string)
 		  //15% faster than previous implementation (running Cocoa)
-		  
-		  #if TargetMacOS
+		  #If TargetMacOS
 		    
 		    declare function CFStringCreateMutableCopy Lib CarbonLib (alloc as Ptr, maxLength as Integer, theString as CFStringRef ) as Ptr
 		    
@@ -45,17 +44,12 @@ Inherits CFString
 		    theRef = CFStringCreateMutableCopy( nil, 0, s )
 		    super.Constructor   theRef, true
 		    
-		  #else
-		    
-		    #pragma unused s
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListFile(file as FolderItem) As CFMutableString
+		Shared Function CreateFromPListFile(file as FolderItem) As CFMutableString
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListFile( file, CoreFoundation.kCFPropertyListMutableContainersAndLeaves )
@@ -72,7 +66,7 @@ Inherits CFString
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListString(plistString as String) As CFMutableString
+		Shared Function CreateFromPListString(plistString as String) As CFMutableString
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListString( plistString, CoreFoundation.kCFPropertyListMutableContainersAndLeaves )
@@ -177,52 +171,51 @@ Inherits CFString
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			InheritedFrom="CFType"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="CFString"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="CFString"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Length"
 			Group="Behavior"
 			Type="Integer"
-			InheritedFrom="CFString"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="CFString"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="StringValue"
 			Group="Behavior"
 			Type="String"
-			InheritedFrom="CFString"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="CFString"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="CFString"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

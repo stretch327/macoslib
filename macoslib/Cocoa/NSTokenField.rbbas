@@ -620,6 +620,20 @@ Inherits NSControl
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Shared Function FPtr(p as Ptr) As Ptr
+		  //This function is a workaround for the inability to convert a Variant containing a delegate to Ptr:
+		  //dim v as Variant = AddressOf Foo
+		  //dim p as Ptr = v
+		  //results in a TypeMismatchException
+		  //So now I do
+		  //dim v as Variant = FPtr(AddressOf Foo)
+		  //dim p as Ptr = v
+		  
+		  return p
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function GetAttributedStringValue() As NSAttributedString
 		  
@@ -629,9 +643,10 @@ Inherits NSControl
 		    dim p as Ptr = m_attributedStringValue( me.id )
 		    
 		    if p<>nil then
+		      'DReport   CurrentMethodName, "pointer corresponds to object", Cocoa.ClassNameTreeForObjectPointer( p )
 		      return   Cocoa.NSObjectFromNSPtr( p )
 		    else
-		      return nil
+		      'DReportError   CurrentMethodName, "pointer if nil"
 		    end if
 		  #endif
 		End Function
@@ -649,8 +664,7 @@ Inherits NSControl
 
 	#tag Method, Flags = &h0
 		Function GetSelectionRange() As NSRange
-		  #if TargetMacOS
-		    
+		  #If TargetCocoa
 		    declare function selectedRange lib CocoaLib selector "selectedRange" ( id as Ptr ) as NSRange
 		    
 		    dim p as Ptr = myNSText
@@ -664,9 +678,7 @@ Inherits NSControl
 		    'report  "selectedRange:", nsr.location, nsr.length
 		    
 		    return  nsr
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
@@ -1013,39 +1025,59 @@ Inherits NSControl
 
 	#tag Method, Flags = &h21
 		Private Shared Function MakeDelegateClass(className as String = DelegateClassName, superclassName as String = "NSObject") As Ptr
-		  #if TargetMacOS then
+		  //this is Objective-C 2.0 code (available in Leopard).  For 1.0, we'd need to do it differently.
+		  
+		  #if targetCocoa
+		    declare function objc_allocateClassPair lib CocoaLib (superclass as Ptr, name as CString, extraBytes as Integer) as Ptr
+		    declare sub objc_registerClassPair lib CocoaLib (cls as Ptr)
+		    declare function class_addMethod lib CocoaLib (cls as Ptr, name as Ptr, imp as Ptr, types as CString) as Boolean
+		    
+		    dim newClassId as Ptr = objc_allocateClassPair(Cocoa.NSClassFromString(superclassName), className, 0)
+		    if newClassId = nil then
+		      raise new macoslibException( "Unable to create ObjC subclass " + className + " from " + superclassName ) //perhaps the class already exists.  We could check for this, and raise an exception for other errors.
+		      return nil
+		    end if
+		    
+		    objc_registerClassPair newClassId
+		    
 		    dim methodList() as Tuple
+		    methodList.Append  "tokenField:displayStringForRepresentedObject:" : FPtr( AddressOf  delegate_displayStringForRepresentedObject ) : "@@:@@"
+		    methodList.Append  "tokenField:completionsForSubstring:indexOfToken:indexOfSelectedItem:" : FPtr( AddressOf  delegate_completionsForSubstring ) : "@@:@@i^i"
+		    methodList.Append  "tokenField:representedObjectForEditingString:" : FPtr( AddressOf  delegate_representedObjectForEditingString ) : "@@:@@"
+		    methodList.Append  "tokenField:hasMenuForRepresentedObject:" : FPtr( AddressOf delegate_hasMenuForRepresentedObject ) : "B@:@@"
+		    methodList.Append  "tokenField:menuForRepresentedObject:" : FPtr ( AddressOf delegate_menuForRepresentedObject ) : "@@:@@"
+		    methodList.Append  "menuAction:" : FPtr( AddressOf delegate_menuAction ) : "v@:@"
+		    methodList.Append  "tokenField:writeRepresentedObjects:toPasteboard:" : FPtr( AddressOf delegate_writeRepresentedObjectstoPasteboard ) : "B@:@@@"
+		    methodList.Append  "tokenField:readFromPasteboard:" : FPtr( AddressOf delegate_readRepresentedObjectsFromPasteboard ) : "@@:@@"
+		    methodList.Append  "tokenField:shouldAddObjects:atIndex:" : FPtr( AddressOf delegate_shouldAddObjects ) : "@@:@@i"
+		    methodList.Append  "tokenField:editingStringForRepresentedObject:" : FPtr( AddressOf delegate_editingStringForRepresentedObject ) : "@@:@@"
 		    
-		    methodList.Append  "tokenField:displayStringForRepresentedObject:" : CType( AddressOf  delegate_displayStringForRepresentedObject, Ptr ) : "@@:@@"
-		    methodList.Append  "tokenField:completionsForSubstring:indexOfToken:indexOfSelectedItem:" : CType( AddressOf  delegate_completionsForSubstring, Ptr ) : "@@:@@i^i"
-		    methodList.Append  "tokenField:representedObjectForEditingString:" : CType( AddressOf  delegate_representedObjectForEditingString, Ptr ) : "@@:@@"
-		    methodList.Append  "tokenField:hasMenuForRepresentedObject:" : CType( AddressOf delegate_hasMenuForRepresentedObject, Ptr ) : "B@:@@"
-		    methodList.Append  "tokenField:menuForRepresentedObject:" : CType( AddressOf delegate_menuForRepresentedObject, Ptr ) : "@@:@@"
-		    methodList.Append  "menuAction:" : CType( AddressOf delegate_menuAction, Ptr ) : "v@:@"
-		    methodList.Append  "tokenField:writeRepresentedObjects:toPasteboard:" : CType( AddressOf delegate_writeRepresentedObjectstoPasteboard, Ptr ) : "B@:@@@"
-		    methodList.Append  "tokenField:readFromPasteboard:" : CType( AddressOf delegate_readRepresentedObjectsFromPasteboard, Ptr ) : "@@:@@"
-		    methodList.Append  "tokenField:shouldAddObjects:atIndex:" : CType( AddressOf delegate_shouldAddObjects, Ptr ) : "@@:@@i"
-		    methodList.Append  "tokenField:editingStringForRepresentedObject:" : CType( AddressOf delegate_editingStringForRepresentedObject, Ptr ) : "@@:@@"
+		    dim methodsAdded as Boolean = true
+		    for each item as Tuple in methodList
+		      methodsAdded = methodsAdded and class_addMethod(newClassId, Cocoa.NSSelectorFromString(item(0)), item(1), item(2))
+		    next
 		    
-		    return Cocoa.MakeDelegateClass (className, superclassName, methodList)
+		    if methodsAdded then
+		      return newClassId
+		    else
+		      return nil
+		    end if
+		    
 		  #else
 		    #pragma unused className
 		    #pragma unused superClassName
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Function myNSText() As Ptr
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare function currentEditor lib CocoaLib selector "currentEditor" ( id as Ptr ) as Ptr
 		    
 		    dim p as Ptr = currentEditor( me.id )
 		    
 		    return   p
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -1150,28 +1182,6 @@ Inherits NSControl
 		Event WriteObjectToPasteboard(obj as variant, ValuesForPasteboard as Dictionary) As boolean
 	#tag EndHook
 
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  #if targetCocoa
-			    declare function isBordered lib CocoaLib selector "isBordered" (this as Ptr) as Boolean
-			    
-			    return isBordered(self)
-			  #endif
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  #if targetCocoa
-			    declare sub setBordered lib CocoaLib selector "setBordered:" (this as Ptr, value as Boolean)
-			    
-			    setBordered(self, value)
-			  #endif
-			End Set
-		#tag EndSetter
-		Bordered As Boolean
-	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
 		#tag Note
@@ -1284,9 +1294,11 @@ Inherits NSControl
 			Set
 			  #if TargetMacOS
 			    declare sub setTokenStyle lib CocoaLib selector "setTokenStyle::" (id as Ptr, newValue as integer)
-			    
-			    setTokenStyle( me.id, Int32( value ) )
-			    
+			    #if Target64Bit
+			      setTokenStyle( me.id, Int64( value ) )
+			    #elseif Target32Bit
+			      setTokenStyle( me.id, Int32( value ) )
+			    #endif
 			  #else
 			    #pragma unused value
 			  #endif

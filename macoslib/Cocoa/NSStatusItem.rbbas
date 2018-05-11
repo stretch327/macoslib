@@ -323,28 +323,6 @@ Inherits NSObject
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  #If TargetMacOS Then
-			    Declare Function getAttributedTitle Lib CocoaLib Selector "attributedTitle" (obj_id As Ptr) As Ptr
-			    Return New NSAttributedString(getAttributedTitle(Self))
-			  #EndIf
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  #If TargetMacOS Then
-			    Declare Sub setAttributedTitle Lib CocoaLib Selector "setAttributedTitle:" (obj_id As Ptr, value As Ptr)
-			    setAttributedTitle Self, value
-			  #Else
-			    #pragma Unused value
-			  #EndIf
-			End Set
-		#tag EndSetter
-		AttributedTitle As NSAttributedString
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
 			  
 			  #if TargetMacOS
 			    declare function doubleAction Lib CocoaLib selector "doubleAction" (obj_id as Ptr) as Ptr

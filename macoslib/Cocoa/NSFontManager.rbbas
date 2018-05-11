@@ -283,18 +283,20 @@ Inherits NSObject
 		    dim arrayRef as Ptr = fontDescriptorsInCollection(self, collectionName)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      
-		      #if RBVersion > 2013.01
-		        #if Target64Bit
-		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		        #endif
+		      #if Target64Bit then
+		        const sizeOfPtr = 8
+		      #else
+		        const sizeOfPtr = 4
 		      #endif
-		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        retArray.append new NSFontDescriptor(Ptr(m.UInt32Value(i*SizeOfPointer)))
+		        #if target64bit then
+		          retArray.append new NSFontDescriptor(Ptr(m.UInt64Value(i*sizeOfPtr)))
+		        #else
+		          retArray.append new NSFontDescriptor(Ptr(m.UInt32Value(i*sizeOfPtr)))
+		        #endif
 		      next
 		    end if
 		    
@@ -505,7 +507,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function SharedManager() As NSFontManager
+		Shared Function SharedManager() As NSFontManager
 		  #if targetMacOS
 		    declare function m_sharedFontManager lib CocoaLib selector "sharedFontManager" (Cls as Ptr) as Ptr
 		    
@@ -634,7 +636,6 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Enabled"
@@ -647,7 +648,6 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -655,21 +655,18 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -677,7 +674,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

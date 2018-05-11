@@ -5,7 +5,7 @@ Protected Module AppearanceManager
 		  #if targetMacOS then
 		    Const depth = 32
 		    
-		    soft declare Function GetThemeBrushAsColor lib CarbonLib (inColor as Integer, inDepth as Short, inColorDev as Boolean, outColor as Ptr) as Integer
+		    soft declare Function GetThemeBrushAsColor lib CarbonLib (inColor as Integer, inDepth as Int16, inColorDev as Boolean, outColor as Ptr) as Integer
 		    
 		    dim colorPtr as New MemoryBlock(6)
 		    dim OSErr    as Integer = GetThemeBrushAsColor(ID, depth, true, colorPtr)
@@ -108,33 +108,33 @@ Protected Module AppearanceManager
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Module

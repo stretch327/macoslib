@@ -10,7 +10,7 @@ Class FSAliasRecord
 		    end if
 		    
 		    declare function FSNewAlias lib CarbonLib _
-		    ( fromFile as Ptr, fsRef as Ptr, ByRef inAlias as Ptr)  as Short
+		    ( fromFile as Ptr, fsRef as Ptr, ByRef inAlias as Ptr)  as Int16
 		    
 		    dim fileRef as FSRef = FileManager.GetFSRefFromFolderItem( f )
 		    dim relativeToRef as FSRef

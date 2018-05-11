@@ -2,21 +2,18 @@
 Class CarbonPasteboard
 	#tag Method, Flags = &h0
 		Sub Clear()
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    #pragma DisableBackgroundTasks
 		    
 		    declare function PasteboardClear lib CarbonLib (ref as Integer) as Integer
 		    
 		    mLastError = PasteboardClear (mRef)
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Clipboard() As CarbonPasteboard
+		Shared Function Clipboard() As CarbonPasteboard
 		  return new CarbonPasteboard()
 		End Function
 	#tag EndMethod
@@ -31,59 +28,41 @@ Class CarbonPasteboard
 
 	#tag Method, Flags = &h1
 		Protected Sub Constructor(name as CFStringRef)
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare function PasteboardCreate lib CarbonLib (name as CFStringRef, ByRef ref as Integer) as Integer
 		    
 		    mLastError = PasteboardCreate (name, mRef)
 		    if mLastError <> 0 then
 		      raise new NilObjectException
 		    end if
-		    
-		  #else
-		    
-		    #pragma unused name
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Sub Constructor(pbRef as Integer)
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    mRef = pbRef
 		    
 		    declare sub CFRetain lib CarbonLib (cf as Integer)
 		    CFRetain (mRef)
-		    
-		  #else
-		    
-		    #pragma unused pbRef
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Sub Destructor()
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare sub CFRelease lib CarbonLib (cf as Integer)
 		    CFRelease mRef
 		    mRef = 0
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function DragPasteboard(dragHandle as Integer) As CarbonPasteboard
-		  #if TargetMacOS
-		    
+		Shared Function DragPasteboard(dragHandle as Integer) As CarbonPasteboard
+		  #If TargetMacOS
 		    declare function GetDragPasteboard lib CarbonLib (dragRef as Integer, ByRef pbRefOut as Integer) as Integer
 		    
 		    dim r as Integer
@@ -91,18 +70,12 @@ Class CarbonPasteboard
 		      dim pb as CarbonPasteboard = new CarbonPasteboard (r)
 		      return pb
 		    end
-		    
-		  #else
-		    
-		    #pragma unused dragHandle
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function FindPasteboard() As CarbonPasteboard
+		Shared Function FindPasteboard() As CarbonPasteboard
 		  return new CarbonPasteboard("com.apple.pasteboard.find")
 		End Function
 	#tag EndMethod
@@ -115,10 +88,8 @@ Class CarbonPasteboard
 
 	#tag Method, Flags = &h0
 		Function ItemFlavorData(itemID as Ptr, flavor as String) As MemoryBlock
-		  #if TargetMacOS
-		    
-		    #pragma DisableBackgroundTasks
-		    
+		  #pragma DisableBackgroundTasks
+		  #If TargetMacOS
 		    declare function PasteboardCopyItemFlavorData lib CarbonLib (ref as Integer, id as Ptr, type as CFStringRef, ByRef data as Ptr) as Integer
 		    
 		    dim d as Ptr
@@ -128,23 +99,15 @@ Class CarbonPasteboard
 		      dim data as new CFData (d, CFData.hasOwnership)
 		      return data.Data
 		    end if
-		    
-		  #else
-		    
-		    #pragma unused itemID
-		    #pragma unused flavor
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function ItemFlavorFlags(itemID as Ptr, flavor as String) As UInt32
-		  #if TargetMacOS
-		    
-		    #pragma DisableBackgroundTasks
-		    
+		  #pragma DisableBackgroundTasks
+		  
+		  #If TargetMacOS
 		    declare function PasteboardGetItemFlavorFlags lib CarbonLib (ref as Integer, id as Ptr, type as CFStringRef, ByRef data as UInt32) as Integer
 		    
 		    dim d as UInt32
@@ -153,23 +116,15 @@ Class CarbonPasteboard
 		    if mLastError = 0 then
 		      return d
 		    end if
-		    
-		  #else
-		    
-		    #pragma unused itemID
-		    #pragma unused flavor
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function ItemFlavors(itemID as Ptr) As String()
-		  #if TargetMacOS
-		    
-		    #pragma DisableBackgroundTasks
-		    
+		  #pragma DisableBackgroundTasks
+		  
+		  #If TargetMacOS
 		    declare function PasteboardCopyItemFlavors lib CarbonLib (ref as Integer, id as Ptr, ByRef data as Ptr) as Integer
 		    
 		    dim d as Ptr
@@ -179,22 +134,15 @@ Class CarbonPasteboard
 		      dim a as new CFArray (d, CFArray.hasOwnership)
 		      return a.StringValues
 		    end if
-		    
-		  #else
-		    
-		    #pragma unused itemID
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function ItemIdentifier(index_1based as Integer) As Ptr
-		  #if TargetMacOS
-		    
-		    #pragma DisableBackgroundTasks
-		    
+		  #pragma DisableBackgroundTasks
+		  
+		  #If TargetMacOS
 		    declare function PasteboardGetItemIdentifier lib CarbonLib (ref as Integer, idx as Integer, ByRef data as Ptr) as Integer
 		    
 		    dim d as Ptr
@@ -205,13 +153,7 @@ Class CarbonPasteboard
 		    else
 		      return Ptr(index_1based)
 		    end if
-		    
-		  #else
-		    
-		    #pragma unused index_1based
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
@@ -223,10 +165,9 @@ Class CarbonPasteboard
 
 	#tag Method, Flags = &h0
 		Function PasteLocation() As CFURL
-		  #if TargetMacOS
-		    
-		    #pragma DisableBackgroundTasks
-		    
+		  #pragma DisableBackgroundTasks
+		  
+		  #If TargetMacOS
 		    declare function PasteboardCopyPasteLocation lib CarbonLib (ref as Integer, ByRef data as Ptr) as Integer
 		    
 		    dim d as Ptr
@@ -236,76 +177,53 @@ Class CarbonPasteboard
 		      dim url as new CFURL (d, CFData.hasOwnership)
 		      return url
 		    end if
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function PutItemFlavor(itemID as Ptr, flavor as String, data as MemoryBlock, flags as UInt32) As Boolean
-		  #if TargetMacOS
-		    
-		    #pragma DisableBackgroundTasks
-		    
+		  #pragma DisableBackgroundTasks
+		  
+		  #If TargetMacOS
 		    declare function PasteboardPutItemFlavor lib CarbonLib (ref as Integer, id as Ptr, flavor as CFStringRef, data as Ptr, flags as UInt32) as Integer
 		    
 		    mLastError = PasteboardPutItemFlavor (mRef, itemID, flavor, new CFData (data), flags)
 		    
 		    return mLastError = 0
-		    
-		  #else
-		    
-		    #pragma unused itemID
-		    #pragma unused flavor
-		    #pragma unused data
-		    #pragma unused flags
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub ResolvePromises()
-		  #if TargetMacOS
-		    
-		    #pragma DisableBackgroundTasks
-		    
+		  #pragma DisableBackgroundTasks
+		  
+		  #If TargetMacOS
 		    declare function PasteboardResolvePromises lib CarbonLib (ref as Integer) as Integer
 		    
 		    mLastError = PasteboardResolvePromises (mRef)
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function SetPasteLocation(url as CFURL) As Boolean
-		  #if TargetMacOS
-		    
-		    #pragma DisableBackgroundTasks
-		    
+		  #pragma DisableBackgroundTasks
+		  
+		  #If TargetMacOS
 		    declare function PasteboardSetPasteLocation lib CarbonLib (ref as Integer, url as Ptr) as Integer
 		    
 		    mLastError = PasteboardSetPasteLocation (mRef, url.Reference)
 		    
 		    return mLastError = 0
-		    
-		  #else
-		    
-		    #pragma unused url
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Synchronize(ByRef modified as Boolean, ByRef isOwn as Boolean)
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    #pragma DisableBackgroundTasks
 		    
 		    declare function PasteboardSynchronize lib CarbonLib (ref as Integer) as UInt32
@@ -316,21 +234,13 @@ Class CarbonPasteboard
 		    isOwn = (n and 2) <> 0
 		    
 		    mLastError = 0
-		    
-		  #else
-		    
-		    #pragma unused modified
-		    #pragma unused isOwn
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function UniquePasteboard() As CarbonPasteboard
-		  #if TargetMacOS
-		    
+		Shared Function UniquePasteboard() As CarbonPasteboard
+		  #If TargetMacOS
 		    declare function PasteboardCreate lib CarbonLib (name as Ptr, ByRef ref as Integer) as Integer
 		    
 		    dim ref as Integer
@@ -342,9 +252,7 @@ Class CarbonPasteboard
 		    end if
 		    
 		    return new CarbonPasteboard (ref)
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
@@ -359,8 +267,7 @@ Class CarbonPasteboard
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  #if TargetMacOS
-			    
+			  #If TargetMacOS
 			    declare function PasteboardGetItemCount lib CarbonLib (ref as Integer, ByRef n as UInt32) as Integer
 			    
 			    dim n as UInt32
@@ -369,9 +276,7 @@ Class CarbonPasteboard
 			    if mLastError = 0 then
 			      return n
 			    end if
-			    
 			  #endif
-			  
 			End Get
 		#tag EndGetter
 		ItemCount As Integer
@@ -414,7 +319,7 @@ Class CarbonPasteboard
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ItemCount"
@@ -426,26 +331,26 @@ Class CarbonPasteboard
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

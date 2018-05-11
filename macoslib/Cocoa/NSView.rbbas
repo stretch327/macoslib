@@ -245,8 +245,10 @@ Inherits NSResponder
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
+		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSView")
 		    return ref
+		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -299,35 +301,35 @@ Inherits NSResponder
 
 	#tag Method, Flags = &h0
 		Function DataWithEPSInsideRect(aRect as Cocoa.NSRect) As NSData
-		  
-		  #if TargetCocoa
-		    declare function dataWithEPSInsideRect lib CocoaLib selector "dataWithEPSInsideRect:" (obj_id as Ptr, aRect as Cocoa.NSRect) as Ptr
+		  #if TargetMacOS then
+		    declare sub setDataWithEPSInsideRect lib CocoaLib selector "dataWithEPSInsideRect:" (obj_id as Ptr, aRect as Cocoa.NSRect)
 		    
-		    dim dataRef as Ptr = dataWithEPSInsideRect(self, aRect)
-		    if dataRef <> nil then
-		      return new NSData(dataRef)
-		    end if
-		    
+		    setDataWithEPSInsideRect self, aRect
 		  #else
-		    #pragma unused aRect
+		    #pragma Unused aRect
 		  #endif
+		  
+		  
+		  
+		  
+		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function DataWithPDFInsideRect(aRect as Cocoa.NSRect) As NSData
-		  
 		  #if TargetMacOS then
-		    declare function dataWithPDFInsideRect lib CocoaLib selector "dataWithPDFInsideRect:" (obj_id as Ptr, aRect as Cocoa.NSRect) as Ptr
+		    declare sub setDataWithPDFInsideRect lib CocoaLib selector "dataWithPDFInsideRect:" (obj_id as Ptr, aRect as Cocoa.NSRect)
 		    
-		    dim dataRef as Ptr = dataWithPDFInsideRect(self, aRect)
-		    if dataRef <> nil then
-		      return new NSData(dataRef)
-		    end if
-		    
+		    setDataWithPDFInsideRect self, aRect
 		  #else
 		    #pragma Unused aRect
 		  #endif
+		  
+		  
+		  
+		  
+		  
 		End Function
 	#tag EndMethod
 
@@ -1981,35 +1983,6 @@ Inherits NSResponder
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			Specifies whether the receiver and its subviews use a Core Animation layer as a backing store.
-		#tag EndNote
-		#tag Getter
-			Get
-			  
-			  #if TargetMacOS then
-			    declare function wantsLayer lib CocoaLib selector "wantsLayer" (obj_id as Ptr) as Boolean
-			    
-			    return wantsLayer( self )
-			  #endif
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  
-			  #if TargetMacOS then
-			    declare sub setWantsLayer lib CocoaLib selector "setWantsLayer:" (obj_id as Ptr, value As Boolean )
-			    
-			    setWantsLayer self, value
-			  #else
-			    #pragma Unused value
-			  #endif
-			End Set
-		#tag EndSetter
-		WantsLayer As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
 			  #if TargetMacOS
@@ -2228,11 +2201,6 @@ Inherits NSResponder
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="WantsDefaultClipping"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="WantsLayer"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty

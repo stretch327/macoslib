@@ -2,7 +2,7 @@
 Class NSColorspace
 Inherits NSObject
 	#tag Method, Flags = &h0
-		Shared Function AdobeRGB1998ColorSpace() As NSColorspace
+		 Shared Function AdobeRGB1998ColorSpace() As NSColorspace
 		  //# Returns an NSColorSpace object representing an Adobe RGB (1998) color space.
 		  
 		  #if TargetMacOS
@@ -14,7 +14,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function AvailableColorSpaces(model as NSColorSpaceModel) As NSColorspace()
+		 Shared Function AvailableColorSpaces(model as NSColorSpaceModel) As NSColorspace()
 		  //# Returns the list of color spaces available on the system that are displayed in the color panel, in the order they are displayed in the color panel.
 		  
 		  #if targetMacOS
@@ -25,18 +25,20 @@ Inherits NSObject
 		    dim arrayRef as Ptr = availableColorSpacesWithModel(ClassRef, model)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      
-		      #if RBVersion > 2013.01
-		        #if Target64Bit
-		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		        #endif
-		      #endif
-		      
+		          #if Target64Bit then
+		              const sizeOfPtr = 8
+		          #else
+		              const sizeOfPtr = 4
+		          #endif
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        retArray.append new NSColorspace(Ptr(m.UInt32Value(i*SizeOfPointer)))
+		        #if target64bit then
+		          retArray.append new NSColorspace(Ptr(m.UInt64Value(i*sizeOfPtr)))
+		        #else
+		          retArray.append new NSColorspace(Ptr(m.UInt32Value(i*sizeOfPtr)))
+		        #endif
 		      next
 		    end if
 		    
@@ -50,8 +52,10 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
+		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSColorspace")
 		    return ref
+		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -63,7 +67,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function DeviceCMYKColorSpace() As NSColorspace
+		 Shared Function DeviceCMYKColorSpace() As NSColorspace
 		  //# Returns an NSColorSpace object representing a calibrated or device-dependent CMYK color space.
 		  
 		  #if TargetMacOS
@@ -75,7 +79,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function DeviceGrayColorSpace() As NSColorspace
+		 Shared Function DeviceGrayColorSpace() As NSColorspace
 		  //# Returns an NSColorSpace object representing a calibrated or device-dependent gray color space.
 		  
 		  #if TargetMacOS
@@ -87,7 +91,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function DeviceRGBColorSpace() As NSColorspace
+		 Shared Function DeviceRGBColorSpace() As NSColorspace
 		  //# Returns an NSColorSpace object representing a calibrated or device-dependent RGB color space.
 		  
 		  #if TargetMacOS
@@ -99,7 +103,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function GenericCMYKColorSpace() As NSColorspace
+		 Shared Function GenericCMYKColorSpace() As NSColorspace
 		  //# Returns an NSColorSpace object representing a device-independent RGB color space.
 		  
 		  #if TargetMacOS
@@ -111,7 +115,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function GenericGamma22GrayColorSpace() As NSColorspace
+		 Shared Function GenericGamma22GrayColorSpace() As NSColorspace
 		  //# Returns an NSColorSpace object representing a gray color space with a gamma value of 2.2.
 		  
 		  #if TargetMacOS
@@ -123,7 +127,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function GenericGrayColorSpace() As NSColorspace
+		 Shared Function GenericGrayColorSpace() As NSColorspace
 		  //# Returns an NSColorSpace object representing a device-independent gray color space.
 		  
 		  #if TargetMacOS
@@ -135,7 +139,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function GenericRGBColorSpace() As NSColorspace
+		 Shared Function GenericRGBColorSpace() As NSColorspace
 		  //# Returns an NSColorSpace object representing a device-independent RGB color space.
 		  
 		  #if TargetMacOS
@@ -153,7 +157,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function sRGBColorSpace() As NSColorspace
+		 Shared Function sRGBColorSpace() As NSColorspace
 		  //# Returns an NSColorSpace object representing an sRGB color space.
 		  
 		  #if TargetMacOS

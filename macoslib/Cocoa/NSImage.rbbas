@@ -199,7 +199,7 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
-		  #if TargetCocoa
+		  #if targetMacOS
 		    return Cocoa.NSClassFromString("NSImage")
 		  #endif
 		End Function
@@ -1594,18 +1594,20 @@ Inherits NSObject
 		    dim arrayRef as Ptr = representations(self)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      
-		      #if RBVersion > 2013.01
-		        #if Target64Bit
-		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		        #endif
+		      #if Target64Bit then
+		        const sizeOfPtr = 8
+		      #else
+		        const sizeOfPtr = 4
 		      #endif
-		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        retArray.append new NSImageRep(Ptr(m.UInt32Value(i*SizeOfPointer)))
+		        #if target64bit then
+		          retArray.append new NSImageRep(Ptr(m.UInt64Value(i*sizeOfPtr)))
+		        #else
+		          retArray.append new NSImageRep(Ptr(m.UInt32Value(i*sizeOfPtr)))
+		        #endif
 		      next
 		    end if
 		    
@@ -2263,6 +2265,13 @@ Inherits NSObject
 			Name="CacheMode"
 			Group="Behavior"
 			Type="NSCacheMode"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - NSImageCacheDefault"
+				"1 - NSImageCacheAlways"
+				"2 - NSImageCacheBySize"
+				"3 - NSImageCacheNever"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Description"

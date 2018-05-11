@@ -20,8 +20,10 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
+		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSScreen")
 		    return ref
+		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -57,7 +59,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function DeepestScreen() As NSScreen
+		 Shared Function DeepestScreen() As NSScreen
 		  
 		  #if TargetMacOS
 		    declare function deepestScreen lib CocoaLib selector "deepestScreen" (class_id as Ptr) as Ptr
@@ -73,7 +75,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function MainScreen() As NSScreen
+		 Shared Function MainScreen() As NSScreen
 		  
 		  #if TargetMacOS
 		    declare function mainScreen lib CocoaLib selector "mainScreen" (class_id as Ptr) as Ptr
@@ -89,7 +91,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function Screens() As NSScreen()
+		 Shared Function Screens() As NSScreen()
 		  
 		  #if TargetMacOS
 		    declare function screens lib CocoaLib selector "screens" (class_id as Ptr) as Ptr
@@ -99,18 +101,20 @@ Inherits NSObject
 		    dim arrayRef as Ptr = screens(ClassRef)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      
-		      #if RBVersion > 2013.01
-		        #if Target64Bit
-		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		        #endif
-		      #endif
-		      
+		          #if Target64Bit then
+		              const sizeOfPtr = 8
+		          #else
+		              const sizeOfPtr = 4
+		          #endif
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        retArray.append new NSScreen(Ptr(m.UInt32Value(i*SizeOfPointer)))
+		        #if target64bit then
+		          retArray.append new NSScreen(Ptr(m.UInt64Value(i*sizeOfPtr)))
+		        #else
+		          retArray.append new NSScreen(Ptr(m.UInt32Value(i*sizeOfPtr)))
+		        #endif
 		      next
 		    end if
 		    

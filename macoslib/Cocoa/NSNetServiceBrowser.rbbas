@@ -174,6 +174,20 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Shared Function FPtr(p as Ptr) As Ptr
+		  //This function is a workaround for the inability to convert a Variant containing a delegate to Ptr:
+		  //dim v as Variant = AddressOf Foo
+		  //dim p as Ptr = v
+		  //results in a TypeMismatchException
+		  //So now I do
+		  //dim v as Variant = FPtr(AddressOf Foo)
+		  //dim p as Ptr = v
+		  
+		  return p
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Function GetDelegate() As Ptr
 		  #if targetCocoa
 		    declare function delegate_ lib CocoaLib selector "delegate" (obj_id as Ptr) as Ptr
@@ -212,11 +226,15 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Sub HandleDidNotSearch(errDict as Dictionary)
+		  'dim bc as BonjourControl = me.AttachedPropertyLookup( "ParentBonjourControl", nil )
+		  '
+		  'if bc<>nil then
+		  'bc.Private_HandleCallbacks( me, "DidNotSearch", errDict )
+		  'end if
 		  
-		  #if TargetMacOS
-		    RaiseEvent   SearchError( errDict.Lookup( Cocoa.StringConstant( "NSNetServicesErrorCode" ), 0 ), errDict.Lookup( Cocoa.StringConstant( "NSNetServicesErrorDomain" ), 0 ))
-		  #endif
+		  RaiseEvent   SearchError( errDict.Lookup( Cocoa.StringConstant( "NSNetServicesErrorCode" ), 0 ), errDict.Lookup( Cocoa.StringConstant( "NSNetServicesErrorDomain" ), 0 ))
 		  
+		  'DReportError   "DidNotResolved", errDict.Lookup( Cocoa.StringConstant( "NSNetServicesErrorCode" ), 0 ), errDict.Lookup( Cocoa.StringConstant( "NSNetServicesErrorDomain" ), 0 )
 		End Sub
 	#tag EndMethod
 
@@ -262,22 +280,47 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function MakeDelegateClass(className as String = DelegateClassName, superclassName as String = "NSObject") As Ptr
-		  #if TargetMacOS then
+		  //this is Objective-C 2.0 code (available in Leopard).  For 1.0, we'd need to do it differently.
+		  
+		  #if targetCocoa
+		    declare function objc_allocateClassPair lib CocoaLib (superclass as Ptr, name as CString, extraBytes as Integer) as Ptr
+		    declare sub objc_registerClassPair lib CocoaLib (cls as Ptr)
+		    declare function class_addMethod lib CocoaLib (cls as Ptr, name as Ptr, imp as Ptr, types as CString) as Boolean
+		    
+		    dim newClassId as Ptr = objc_allocateClassPair(Cocoa.NSClassFromString(superclassName), className, 0)
+		    if newClassId = nil then
+		      raise new macoslibException( "Unable to create ObjC subclass " + className + " from " + superclassName ) //perhaps the class already exists.  We could check for this, and raise an exception for other errors.
+		      return nil
+		    end if
+		    
+		    objc_registerClassPair newClassId
+		    
 		    dim methodList() as Tuple
+		    methodList.Append  "netServiceBrowser:didFindDomain:moreComing:" : FPtr( AddressOf  delegate_DidFindDomain ) : "v@:@@B"
+		    methodList.Append  "netServiceBrowser:didRemoveDomain:moreComing:" : FPtr( AddressOf  delegate_DidRemoveDomain ) : "v@:@@B"
+		    methodList.Append  "netServiceBrowser:didFindService:moreComing:" : FPtr( AddressOf  delegate_DidFindService ) : "v@:@@B"
+		    methodList.Append  "netServiceBrowser:didRemoveService:moreComing:" : FPtr( AddressOf delegate_DidRemoveService ) : "v@:@@B"
+		    methodList.Append  "netServiceBrowser:didNotSearch:" : FPtr ( AddressOf delegate_DidNotSearch ) : "v@:@@"
+		    methodList.Append  "netServiceBrowserDidStopSearch:" : FPtr( AddressOf delegate_DidStopSearch ) : "v@:@"
 		    
-		    methodList.Append  "netServiceBrowser:didFindDomain:moreComing:" : CType( AddressOf  delegate_DidFindDomain, Ptr ) : "v@:@@B"
-		    methodList.Append  "netServiceBrowser:didRemoveDomain:moreComing:" : CType( AddressOf  delegate_DidRemoveDomain, Ptr ) : "v@:@@B"
-		    methodList.Append  "netServiceBrowser:didFindService:moreComing:" : CType( AddressOf  delegate_DidFindService, Ptr ) : "v@:@@B"
-		    methodList.Append  "netServiceBrowser:didRemoveService:moreComing:" : CType( AddressOf delegate_DidRemoveService, Ptr ) : "v@:@@B"
-		    methodList.Append  "netServiceBrowser:didNotSearch:" : CType( AddressOf delegate_DidNotSearch, Ptr ) : "v@:@@"
-		    methodList.Append  "netServiceBrowserDidStopSearch:" : CType( AddressOf delegate_DidStopSearch, Ptr ) : "v@:@"
+		    dim methodsAdded as Boolean = true
+		    for each item as Tuple in methodList
+		      methodsAdded = methodsAdded and class_addMethod(newClassId, Cocoa.NSSelectorFromString(item(0)), item(1), item(2))
+		    next
 		    
-		    return Cocoa.MakeDelegateClass (className, superclassName, methodList)
+		    if methodsAdded then
+		      return newClassId
+		    else
+		      dim e as new ObjCException
+		      e.Message = CurrentMethodName + ". Couldn't create delegate"
+		      raise  e
+		      return nil
+		    end if
+		    
 		  #else
 		    #pragma unused className
 		    #pragma unused superClassName
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
@@ -471,7 +514,6 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -479,7 +521,6 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -487,21 +528,18 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -509,7 +547,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

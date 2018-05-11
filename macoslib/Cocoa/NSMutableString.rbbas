@@ -34,8 +34,10 @@ Inherits NSString
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
+		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSMutableString")
 		    return ref
+		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -129,7 +131,7 @@ Inherits NSString
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function Create() As NSMutableString
+		 Shared Function Create() As NSMutableString
 		  
 		  #if TargetMacOS
 		    declare function string_ lib CocoaLib selector "string" (class_id as Ptr) as Ptr
@@ -147,7 +149,7 @@ Inherits NSString
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CreateWithCapacity(capacity as UInt32) As NSMutableString
+		 Shared Function CreateWithCapacity(capacity as UInt32) As NSMutableString
 		  
 		  #if TargetMacOS
 		    declare function stringWithCapacity lib CocoaLib selector "stringWithCapacity" (class_id as Ptr, capacity as UInt32) as Ptr
@@ -167,7 +169,7 @@ Inherits NSString
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CreateWithString(aString as NSString) As NSMutableString
+		 Shared Function CreateWithString(aString as NSString) As NSMutableString
 		  
 		  #if TargetMacOS
 		    declare function stringWithString lib CocoaLib selector "stringWithString:" (class_id as Ptr, aString as Ptr) as Ptr
@@ -192,7 +194,7 @@ Inherits NSString
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CreateWithString(characters as String) As NSMutableString
+		 Shared Function CreateWithString(characters as String) As NSMutableString
 		  
 		  #if TargetMacOS
 		    declare function stringWithCharacters lib CocoaLib selector "stringWithCharacters:length:" (class_id as Ptr, chars as Ptr, length as UInt32) as Ptr
@@ -308,11 +310,6 @@ Inherits NSString
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Int64Value"
-			Group="Behavior"
-			Type="Int64"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IntegerValue"

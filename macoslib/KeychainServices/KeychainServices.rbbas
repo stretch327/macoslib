@@ -48,7 +48,7 @@ Protected Module KeychainServices
 			  #endif
 			End Set
 		#tag EndSetter
-		Protected IsUserInteractionAllowed As Boolean
+		Protected UserInteractionAllowed_ As Boolean
 	#tag EndComputedProperty
 
 

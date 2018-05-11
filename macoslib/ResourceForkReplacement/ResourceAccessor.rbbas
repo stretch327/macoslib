@@ -3,8 +3,7 @@ Protected Class ResourceAccessor
 Inherits ResourceForkReplacement.ResourceChainSaver
 	#tag Method, Flags = &h0
 		Sub Constructor(resFileRef as Integer)
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare sub UseResFile lib CarbonLib (refNum as Integer)
 		    
 		    super.Constructor // saves the current res file
@@ -14,13 +13,7 @@ Inherits ResourceForkReplacement.ResourceChainSaver
 		    end
 		    
 		    UseResFile resFileRef
-		    
-		  #else
-		    
-		    #pragma unused resFileRef
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
@@ -31,33 +24,33 @@ Inherits ResourceForkReplacement.ResourceChainSaver
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

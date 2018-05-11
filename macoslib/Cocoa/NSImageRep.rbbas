@@ -2,7 +2,7 @@
 Class NSImageRep
 Inherits NSObject
 	#tag Method, Flags = &h1000
-		Shared Function CanInitWithData(data as NSData) As Boolean
+		 Shared Function CanInitWithData(data as NSData) As Boolean
 		  
 		  #if TargetMacOS
 		    declare function canInitWithData lib CocoaLib selector "canInitWithData:" (class_id as Ptr, data as Ptr) as Boolean
@@ -22,7 +22,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CanInitWithPasteboard(pasteboard as NSPasteboard) As Boolean
+		 Shared Function CanInitWithPasteboard(pasteboard as NSPasteboard) As Boolean
 		  
 		  #if TargetMacOS
 		    declare function canInitWithPasteboard lib CocoaLib selector "canInitWithPasteboard:" (class_id as Ptr, pasteboard as Ptr) as Boolean
@@ -73,7 +73,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function ClassForData(data as NSData) As Ptr
+		 Shared Function ClassForData(data as NSData) As Ptr
 		  
 		  #if TargetMacOS
 		    declare function imageRepClassForData lib CocoaLib selector "imageRepClassForData:" (class_id as Ptr, data as Ptr) as Ptr
@@ -93,7 +93,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function ClassForFileType(fileType as String) As Ptr
+		 Shared Function ClassForFileType(fileType as String) As Ptr
 		  
 		  #if TargetMacOS
 		    declare function imageRepClassForFileType lib CocoaLib selector "imageRepClassForFileType:" (class_id as Ptr, fileType as CFStringRef) as Ptr
@@ -108,7 +108,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function ClassForPasteboardType(pboardType as String) As Ptr
+		 Shared Function ClassForPasteboardType(pboardType as String) As Ptr
 		  
 		  #if TargetMacOS
 		    declare function imageRepClassForPasteboardType lib CocoaLib selector "imageRepClassForPasteboardType:" (class_id as Ptr, pboardType as CFStringRef) as Ptr
@@ -123,7 +123,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function ClassForType(type as String) As Ptr
+		 Shared Function ClassForType(type as String) As Ptr
 		  
 		  #if TargetMacOS
 		    declare function imageRepClassForType lib CocoaLib selector "imageRepClassForType:" (class_id as Ptr, type as CFStringRef) as Ptr
@@ -140,14 +140,16 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
+		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSImageRep")
 		    return ref
+		    
 		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CreatesWithFile(file as FolderItem) As NSImageRep()
+		 Shared Function CreatesWithFile(file as FolderItem) As NSImageRep()
 		  
 		  #if TargetMacOS
 		    declare function imageRepsWithContentsOfFile lib CocoaLib selector "imageRepsWithContentsOfFile:" (class_id as Ptr, aPath as CFStringRef) as Ptr
@@ -158,18 +160,20 @@ Inherits NSObject
 		      dim arrayRef as Ptr = imageRepsWithContentsOfFile(ClassRef, file.POSIXPath)
 		      if arrayRef <> nil then
 		        dim ns_array as new NSArray(arrayRef)
-		        
-		        #if RBVersion > 2013.01
-		          #if Target64Bit
-		            #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		          #endif
-		        #endif
-		        
+		            #if Target64Bit then
+		                const sizeOfPtr = 8
+		            #else
+		                const sizeOfPtr = 4
+		            #endif
 		        dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		        dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		        dim n as UInt32 = arrayRange.length-1
 		        for i as integer = 0 to n
-		          retArray.append new NSImageRep(Ptr(m.UInt32Value(i*SizeOfPointer)))
+		          #if target64bit then
+		            retArray.append new NSImageRep(Ptr(m.UInt64Value(i*sizeOfPtr)))
+		          #else
+		            retArray.append new NSImageRep(Ptr(m.UInt32Value(i*sizeOfPtr)))
+		          #endif
 		        next
 		      end if
 		    end if
@@ -184,7 +188,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CreatesWithPasteboard(pasteboard as NSPasteboard) As NSImageRep()
+		 Shared Function CreatesWithPasteboard(pasteboard as NSPasteboard) As NSImageRep()
 		  
 		  #if TargetMacOS
 		    declare function imageRepsWithPasteboard lib CocoaLib selector "imageRepsWithPasteboard:" (class_id as Ptr, pasteboard as Ptr) as Ptr
@@ -199,18 +203,20 @@ Inherits NSObject
 		    dim arrayRef as Ptr = imageRepsWithPasteboard(ClassRef, pasteboardRef)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      
-		      #if RBVersion > 2013.01
-		        #if Target64Bit
-		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		        #endif
-		      #endif
-		      
+		          #if Target64Bit then
+		              const sizeOfPtr = 8
+		          #else
+		              const sizeOfPtr = 4
+		          #endif
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        retArray.append new NSImageRep(Ptr(m.UInt32Value(i*SizeOfPointer)))
+		        #if target64bit then
+		          retArray.append new NSImageRep(Ptr(m.UInt64Value(i*sizeOfPtr)))
+		        #else
+		          retArray.append new NSImageRep(Ptr(m.UInt32Value(i*sizeOfPtr)))
+		        #endif
 		      next
 		    end if
 		    
@@ -224,7 +230,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CreatesWithURL(aURL as NSURL) As NSImageRep()
+		 Shared Function CreatesWithURL(aURL as NSURL) As NSImageRep()
 		  
 		  #if TargetMacOS
 		    declare function imageRepsWithContentsOfURL lib CocoaLib selector "imageRepsWithContentsOfURL:" (class_id as Ptr, aURL as Ptr) as Ptr
@@ -239,18 +245,20 @@ Inherits NSObject
 		    dim arrayRef as Ptr = imageRepsWithContentsOfURL(ClassRef, urlRef)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      
-		      #if RBVersion > 2013.01
-		        #if Target64Bit
-		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		        #endif
-		      #endif
-		      
+		          #if Target64Bit then
+		              const sizeOfPtr = 8
+		          #else
+		              const sizeOfPtr = 4
+		          #endif
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        retArray.append new NSImageRep(Ptr(m.UInt32Value(i*SizeOfPointer)))
+		        #if target64bit then
+		          retArray.append new NSImageRep(Ptr(m.UInt64Value(i*sizeOfPtr)))
+		        #else
+		          retArray.append new NSImageRep(Ptr(m.UInt32Value(i*sizeOfPtr)))
+		        #endif
 		      next
 		    end if
 		    
@@ -264,7 +272,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CreateWithFile(file as FolderItem) As NSImageRep
+		 Shared Function CreateWithFile(file as FolderItem) As NSImageRep
 		  
 		  #if TargetMacOS
 		    declare function imageRepWithContentsOfFile lib CocoaLib selector "imageRepWithContentsOfFile:" (class_id as Ptr, aPath as CFStringRef) as Ptr
@@ -284,7 +292,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CreateWithPasteboard(pasteboard as NSPasteboard) As NSImageRep
+		 Shared Function CreateWithPasteboard(pasteboard as NSPasteboard) As NSImageRep
 		  
 		  #if TargetMacOS
 		    declare function imageRepWithPasteboard lib CocoaLib selector "imageRepWithPasteboard:" (class_id as Ptr, pasteboard as Ptr) as Ptr
@@ -307,7 +315,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CreateWithURL(aURL as NSURL) As NSImageRep
+		 Shared Function CreateWithURL(aURL as NSURL) As NSImageRep
 		  
 		  #if TargetMacOS
 		    declare function imageRepWithContentsOfURL lib CocoaLib selector "imageRepWithContentsOfURL:" (class_id as Ptr, aURL as Ptr) as Ptr
@@ -399,7 +407,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function ImageFileTypes() As String()
+		 Shared Function ImageFileTypes() As String()
 		  
 		  #if TargetMacOS
 		    declare function imageFileTypes lib CocoaLib selector "imageFileTypes" (class_id as Ptr) as Ptr
@@ -419,7 +427,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function ImagePasteboardTypes() As String()
+		 Shared Function ImagePasteboardTypes() As String()
 		  
 		  #if TargetMacOS
 		    declare function imagePasteboardTypes lib CocoaLib selector "imagePasteboardTypes" (class_id as Ptr) as Ptr
@@ -439,7 +447,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function ImageTypes() As String()
+		 Shared Function ImageTypes() As String()
 		  
 		  #if TargetMacOS
 		    declare function imageTypes lib CocoaLib selector "imageTypes" (class_id as Ptr) as Ptr
@@ -459,7 +467,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function ImageUnfilteredFileTypes() As String()
+		 Shared Function ImageUnfilteredFileTypes() As String()
 		  
 		  #if TargetMacOS
 		    declare function imageUnfilteredFileTypes lib CocoaLib selector "imageUnfilteredFileTypes" (class_id as Ptr) as Ptr
@@ -479,7 +487,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function ImageUnfilteredPasteboardTypes() As String()
+		 Shared Function ImageUnfilteredPasteboardTypes() As String()
 		  
 		  #if TargetMacOS
 		    declare function imageUnfilteredPasteboardTypes lib CocoaLib selector "imageUnfilteredPasteboardTypes" (class_id as Ptr) as Ptr
@@ -499,7 +507,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function ImageUnfilteredTypes() As String()
+		 Shared Function ImageUnfilteredTypes() As String()
 		  
 		  #if TargetMacOS
 		    declare function imageUnfilteredTypes lib CocoaLib selector "imageUnfilteredTypes" (class_id as Ptr) as Ptr
@@ -519,7 +527,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function RegisteredImageRepClasses() As Ptr()
+		 Shared Function RegisteredImageRepClasses() As Ptr()
 		  
 		  #if TargetMacOS
 		    declare function registeredImageRepClasses lib CocoaLib selector "registeredImageRepClasses" (class_id as Ptr) as Ptr
@@ -529,18 +537,20 @@ Inherits NSObject
 		    dim arrayRef as Ptr = registeredImageRepClasses(ClassRef)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      
-		      #if RBVersion > 2013.01
-		        #if Target64Bit
-		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		        #endif
-		      #endif
-		      
+		          #if Target64Bit then
+		              const sizeOfPtr = 8
+		          #else
+		              const sizeOfPtr = 4
+		          #endif
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        retArray.append Ptr(m.UInt32Value(i*SizeOfPointer))
+		        #if target64bit then
+		          retArray.append Ptr(m.UInt64Value(i*sizeOfPtr))
+		        #else
+		          retArray.append Ptr(m.UInt32Value(i*sizeOfPtr))
+		        #endif
 		      next
 		    end if
 		    
@@ -552,7 +562,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Sub RegisterImageRepClass(imageRepClass as Ptr)
+		 Shared Sub RegisterImageRepClass(imageRepClass as Ptr)
 		  
 		  #if TargetMacOS
 		    declare sub registerImageRepClass lib CocoaLib selector "registerImageRepClass:" (class_id as Ptr, imageRepClass as Ptr)
@@ -567,7 +577,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Sub UnregisterImageRepClass(imageRepClass as Ptr)
+		 Shared Sub UnregisterImageRepClass(imageRepClass as Ptr)
 		  
 		  #if TargetMacOS
 		    declare sub unregisterImageRepClass lib CocoaLib selector "unregisterImageRepClass:" (class_id as Ptr, imageRepClass as Ptr)

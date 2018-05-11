@@ -41,18 +41,23 @@ Protected Module CFArrayExtension
 		    declare function CFStringGetTypeID lib CarbonLib () as UInt32
 		    declare function CFRetain lib CarbonLib (cf as Ptr) as CFStringRef
 		    
+		    #if Target64Bit then
+		      const sizeOfPtr = 8
+		    #else
+		      const sizeOfPtr = 4
+		    #endif
 		    static StringTypeID as UInt32 = CFStringGetTypeID
 		    
 		    dim p as Ptr
 		    dim mb as MemoryBlock
 		    dim L() as String
 		    
-		    mb = new MemoryBlock( SizeOfPointer * theArray.Count )
+		    mb = new MemoryBlock( sizeOfPtr * theArray.Count )
 		    CFArrayGetValues   theArray.Reference, CFRangeMake( 0, theArray.Count ), mb
 		    
-		    dim lastIndex as Integer = theArray.Count - 1
-		    for index as Integer = 0 to lastIndex
-		      p = mb.bsPtrValueFromCArray( index )
+		    dim lastIndex as Integer = ( theArray.Count - 1 ) * sizeOfPtr
+		    for index as Integer = 0 to lastIndex step sizeOfPtr
+		      p = mb.Ptr( index )
 		      if CFGetTypeID( p )=StringTypeID then
 		        L.Append   CFRetain( p )
 		      else
@@ -81,33 +86,33 @@ Protected Module CFArrayExtension
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Module

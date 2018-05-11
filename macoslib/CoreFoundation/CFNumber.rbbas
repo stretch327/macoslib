@@ -16,7 +16,7 @@ Implements CFPropertyList
 
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if targetMacOS
 		    declare function TypeID lib CarbonLib alias "CFNumberGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
@@ -42,10 +42,10 @@ Implements CFPropertyList
 		    case value.TypeSingle
 		      numType = kCFNumberFloat32Type
 		      mb.SingleValue(0) = value
-		    case value.TypeInteger
+		    case value.TypeInt32
 		      numType = kCFNumberSInt32Type
 		      mb.Int32Value(0) = value
-		    case value.TypeLong
+		    case value.TypeInt64
 		      numType = kCFNumberSInt64Type
 		      mb.Int64Value(0) = value
 		    else
@@ -61,7 +61,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListFile(file as FolderItem) As CFNumber
+		Shared Function CreateFromPListFile(file as FolderItem) As CFNumber
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListFile( file, CoreFoundation.kCFPropertyListImmutable )
@@ -78,7 +78,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListString(plistString as String) As CFNumber
+		Shared Function CreateFromPListString(plistString as String) As CFNumber
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListString( plistString, CoreFoundation.kCFPropertyListImmutable )
@@ -95,7 +95,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NaN() As CFNumber
+		Shared Function NaN() As CFNumber
 		  const kCFNumberNaN = "kCFNumberNaN"
 		  static v as CFNumber = SpecialValue(kCFNumberNaN)
 		  return v
@@ -103,7 +103,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NegativeInfinity() As CFNumber
+		Shared Function NegativeInfinity() As CFNumber
 		  const kCFNumberNegativeInfinity = "kCFNumberNegativeInfinity"
 		  static v as CFNumber = SpecialValue(kCFNumberNegativeInfinity)
 		  return v
@@ -153,7 +153,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function PositiveInfinity() As CFNumber
+		Shared Function PositiveInfinity() As CFNumber
 		  const kCFNumberPositiveInfinity = "kCFNumberPositiveInfinity"
 		  static v as CFNumber = SpecialValue(kCFNumberPositiveInfinity)
 		  return v
@@ -172,6 +172,12 @@ Implements CFPropertyList
 		  
 		  dim value as new CFNumber(p.Ptr(0), false)
 		  return value
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function WriteToFile(file as FolderItem, asXML as Boolean = True) As Boolean
+		  
 		End Function
 	#tag EndMethod
 
@@ -351,7 +357,7 @@ Implements CFPropertyList
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			InheritedFrom="CFType"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoubleValue"
@@ -364,7 +370,12 @@ Implements CFPropertyList
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Int64Value"
+			Group="Behavior"
+			Type="Int64"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IntegerValue"
@@ -383,26 +394,26 @@ Implements CFPropertyList
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Type"

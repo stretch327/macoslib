@@ -10,10 +10,20 @@ Implements CFPropertyList
 
 	#tag Event
 		Function VariantValue() As Variant
-		  // Uses Operator_Convert
+		  // Convert to a NativeSubclass.DictionaryCaseSensitive.
+		  // This is a Dictionary subclass that can be assigned to a variable defined
+		  // as a Dictionary.
 		  
-		  dim r as NativeSubclass.DictionaryCaseSensitive = me.Operator_Convert
-		  return r
+		  dim outDict as new NativeSubclass.DictionaryCaseSensitive
+		  
+		  dim k() as CFType = me.Keys
+		  dim key as CFType
+		  for i as integer = 0 to k.Ubound // Switched from For Each to ensure that order is preserved
+		    key = k( i )
+		    outDict.Value(key.VariantValue) = me.Value(key).VariantValue
+		  next
+		  
+		  return outDict
 		  
 		End Function
 	#tag EndEvent
@@ -39,7 +49,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if targetMacOS
 		    declare function TypeID lib CarbonLib alias "CFDictionaryGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
@@ -96,7 +106,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromDictionary(dict as Dictionary) As CFDictionary
+		Shared Function CreateFromDictionary(dict as Dictionary) As CFDictionary
 		  #if TargetMacOS
 		    dim md as new CFMutableDictionary
 		    
@@ -122,7 +132,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListFile(file as FolderItem) As CFDictionary
+		Shared Function CreateFromPListFile(file as FolderItem) As CFDictionary
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListFile( file, CoreFoundation.kCFPropertyListImmutable )
@@ -139,7 +149,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListString(plistString as String) As CFDictionary
+		Shared Function CreateFromPListString(plistString as String) As CFDictionary
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListString( plistString, CoreFoundation.kCFPropertyListImmutable )
@@ -230,24 +240,17 @@ Implements CFPropertyList
 
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As NativeSubclass.DictionaryCaseSensitive
-		  // Convert to a NativeSubclass.DictionaryCaseSensitive.
-		  // This is a Dictionary subclass that can be assigned to a variable defined
-		  // as a Dictionary. Preserves the case-sensitivity of the CFDictionary.
+		  // Added by Kem Tekinay.
+		  
+		  dim d as NativeSubclass.DictionaryCaseSensitive
 		  
 		  #if TargetMacOS
 		    
-		    dim outDict as new NativeSubclass.DictionaryCaseSensitive
-		    
-		    dim k() as CFType = me.Keys
-		    dim key as CFType
-		    for i as integer = 0 to k.Ubound // Switched from For Each to ensure that order is preserved
-		      key = k( i )
-		      outDict.Value(key.VariantValue) = me.Value(key).VariantValue
-		    next
-		    
-		    return outDict
+		    d = me.VariantValue
 		    
 		  #endif
+		  
+		  return d
 		  
 		End Function
 	#tag EndMethod
@@ -266,6 +269,12 @@ Implements CFPropertyList
 		      end if
 		    end if
 		  #endif
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function WriteToFile(file as FolderItem, asXML as Boolean = True) As Boolean
+		  
 		End Function
 	#tag EndMethod
 
@@ -297,40 +306,40 @@ Implements CFPropertyList
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			InheritedFrom="CFType"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

@@ -22,7 +22,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if TargetMacOS
 		    declare function TypeID lib CarbonLib alias "CFSocketGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
@@ -34,14 +34,14 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Sub Close()
 		  #if TargetMacOS
-		    declare sub CFSocketInvalidate lib CarbonLib (socketRef as CFTypeRef)
+		    declare sub CFSocketInvalidate lib CarbonLib (socketRef as Ptr)
 		    declare sub CFRunLoopRemoveSource lib CarbonLib (runLoopRef as Ptr, source as Ptr, mode as CFStringRef)
 		    
-		    CFSocketInvalidate(self)
+		    CFSocketInvalidate (me.Reference)
 		    
 		    if me.theRLSrc <> nil then
 		      CFRunLoopRemoveSource (me.theRunLoop, me.theRLSrc, CFConstant("kCFRunLoopCommonModes"))
-		      CoreFoundation.Release(me.theRLSrc)
+		      CFType.Release (me.theRLSrc)
 		      me.theRLSrc = nil
 		    end if
 		  #endif
@@ -110,8 +110,7 @@ Inherits CFType
 
 	#tag Method, Flags = &h21
 		Private Sub installRunLoopHandler()
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare function CFRunLoopGetCurrent lib CarbonLib () as Ptr
 		    declare function CFSocketCreateRunLoopSource lib CarbonLib (allocator as Ptr, socketRef as Ptr, order as Integer) as Ptr
 		    declare sub CFRunLoopAddSource lib CarbonLib (runLoopRef as Ptr, source as Ptr, mode as CFStringRef)
@@ -119,14 +118,12 @@ Inherits CFType
 		    me.theRunLoop = CFRunLoopGetCurrent()
 		    me.theRLSrc = CFSocketCreateRunLoopSource (nil, me.Reference, 0)
 		    CFRunLoopAddSource (me.theRunLoop, me.theRLSrc, CFConstant("kCFRunLoopCommonModes"))
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function IP4Address(ip4address as String, port as UInt16) As CFData
+		Shared Function IP4Address(ip4address as String, port as UInt16) As CFData
 		  // struct sockaddr_in
 		  
 		  'TODO: turn into subclasses: CFSocketIP4Address, etc.
@@ -201,7 +198,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function UnixDomainAddress(unixPath as String) As CFData
+		Shared Function UnixDomainAddress(unixPath as String) As CFData
 		  // struct sockaddr_un
 		  
 		  if unixPath.Encoding <> nil then
@@ -370,7 +367,6 @@ Inherits CFType
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HasConnected"
@@ -383,33 +379,33 @@ Inherits CFType
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

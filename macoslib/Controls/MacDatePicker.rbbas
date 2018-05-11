@@ -83,50 +83,45 @@ Inherits Canvas
 
 	#tag Method, Flags = &h21
 		Private Function ContentViewRef() As Ptr
-		  #if TargetMacOS
-		    
-		    'OSStatus HIViewFindByID (
-		    'HIViewRef inStartView,
-		    'HIViewID inID,
-		    'HIViewRef * outControl
-		    ');
-		    '
-		    'struct ControlID {
-		    'OSType signature;
-		    'SInt32 id;
-		    '};
-		    'typedef struct ControlID ControlID;
-		    'typedef ControlID HIViewID;
-		    
-		    declare Function CFBundleGetBundleWithIdentifier lib CarbonLib (bundleID as CFStringRef) as Integer
-		    
-		    dim carbonBundle as Integer = CFBundleGetBundleWithIdentifier(Carbon.BundleID)
-		    
-		    declare Function CFBundleGetDataPointerForName lib CarbonLib (bundle as Integer, symbolName as CFStringRef) as Ptr
-		    dim contentViewID as Ptr = CFBundleGetDataPointerForName(carbonBundle, "kHIViewWindowContentID")
-		    if contentViewID = nil then
-		      return nil
-		    end if
-		    
-		    declare Function HIViewFindByID lib CarbonLib (inStartView as Ptr, signature as Integer, id as Integer, byRef outControl as Ptr) as Integer
-		    
-		    dim theViewRef as Ptr
-		    dim OSError as Integer = HIViewFindByID(me.RootView, contentViewID.Integer(0), contentViewID.Integer(4), theViewRef)
-		    If OSError <> 0 then
-		      break
-		      theViewRef = nil
-		    End if
-		    Return theViewRef
-		    
-		  #endif
+		  'OSStatus HIViewFindByID (
+		  'HIViewRef inStartView,
+		  'HIViewID inID,
+		  'HIViewRef * outControl
+		  ');
+		  '
+		  'struct ControlID {
+		  'OSType signature;
+		  'SInt32 id;
+		  '};
+		  'typedef struct ControlID ControlID;
+		  'typedef ControlID HIViewID;
 		  
+		  declare Function CFBundleGetBundleWithIdentifier lib CarbonLib (bundleID as CFStringRef) as Integer
+		  
+		  dim carbonBundle as Integer = CFBundleGetBundleWithIdentifier(Carbon.BundleID)
+		  
+		  declare Function CFBundleGetDataPointerForName lib CarbonLib (bundle as Integer, symbolName as CFStringRef) as Ptr
+		  dim contentViewID as Ptr = CFBundleGetDataPointerForName(carbonBundle, "kHIViewWindowContentID")
+		  if contentViewID = nil then
+		    return nil
+		  end if
+		  
+		  declare Function HIViewFindByID lib CarbonLib (inStartView as Ptr, signature as Integer, id as Integer, byRef outControl as Ptr) as Integer
+		  
+		  dim theViewRef as Ptr
+		  dim OSError as Integer = HIViewFindByID(me.RootView, contentViewID.Integer(0), contentViewID.Integer(4), theViewRef)
+		  If OSError <> 0 then
+		    break
+		    theViewRef = nil
+		  End if
+		  Return theViewRef
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Function CreateControl() As Ptr
-		  #if targetMacOS
-		    declare function CreateClockControl lib CarbonLib (window as WindowPtr, ByRef boundsRect as MacRect, clockType as UInt16, clockFlags as UInt32, ByRef outControl as Ptr) as Int32
+		  #if TargetCarbon
+		    declare function CreateClockControl lib CarbonLib (Window as Integer, ByRef boundsRect as MacRect, clockType as UInt16, clockFlags as UInt32, ByRef outControl as Ptr) as Int32
 		    
 		    dim bounds as MacRect
 		    bounds.top = me.LocalTop
@@ -134,7 +129,7 @@ Inherits Canvas
 		    bounds.bottom = bounds.Top + me.Height
 		    bounds.right = bounds.left + me.Width
 		    dim p as Ptr
-		    dim OSError as Integer = CreateClockControl(me.ParentWindow, bounds, me.InitialType, me.InitialFlags, p)
+		    dim OSError as Integer = CreateClockControl(me.ParentWindow.Handle, bounds, me.InitialType, me.InitialFlags, p)
 		    if OSError = noErr then
 		      return p
 		    else
@@ -177,105 +172,97 @@ Inherits Canvas
 
 	#tag Method, Flags = &h21
 		Private Function HandleCarbonEvent(EventHandlerCallRef As Ptr, EventRef As Ptr) As Integer
-		  #if TargetMacOS
+		  declare function GetEventClass lib CarbonLib (inEvent as Ptr) as OSType
+		  declare function GetEventKind lib CarbonLib (inEvent as Ptr) as UInt32
+		  
+		  if not me.Visible or not me.Enabled then
+		    return eventNotHandledErr
+		  end if
+		  
+		  dim err as Integer
+		  
+		  dim eventClass as String = GetEventClass(EventRef)
+		  dim eventKind as UInt32 = GetEventKind(EventRef)
+		  
+		  select case eventClass
 		    
-		    declare function GetEventClass lib CarbonLib (inEvent as Ptr) as OSType
-		    declare function GetEventKind lib CarbonLib (inEvent as Ptr) as UInt32
-		    
-		    if not me.Visible or not me.Enabled then
-		      return eventNotHandledErr
-		    end if
-		    
-		    dim err as Integer
-		    
-		    dim eventClass as String = GetEventClass(EventRef)
-		    dim eventKind as UInt32 = GetEventKind(EventRef)
-		    
-		    select case eventClass
+		  case kEventClassMouse
+		    if eventKind = kEventMouseDown then
+		      declare function GetEventParameter lib CarbonLib (inEvent as Ptr, inName as OSType, inDesiredType as OSType, outActualType as Ptr, inBufferSize as Integer, outBufferSize as Ptr, ByRef outData as CGPoint) as Integer
+		      declare function HIViewConvertPoint lib CarbonLib (ByRef ioPoint as CGPoint, inSourceView as Ptr, inDestView as Ptr) as Integer
+		      declare function HIViewClick lib CarbonLib (inView as Ptr, inEvent as Ptr) as Integer
 		      
-		    case kEventClassMouse
-		      if eventKind = kEventMouseDown then
-		        declare function GetEventParameter lib CarbonLib (inEvent as Ptr, inName as OSType, inDesiredType as OSType, outActualType as Ptr, inBufferSize as Integer, outBufferSize as Ptr, ByRef outData as CGPoint) as Integer
-		        declare function HIViewConvertPoint lib CarbonLib (ByRef ioPoint as CGPoint, inSourceView as Ptr, inDestView as Ptr) as Integer
-		        declare function HIViewClick lib CarbonLib (inView as Ptr, inEvent as Ptr) as Integer
-		        
-		        // check coordinates to see if the click targeted our control
-		        dim hiPoint as CGPoint
-		        err = GetEventParameter(EventRef, kEventParamWindowMouseLocation, typeHIPoint, nil, CGPoint.Size, nil, hiPoint)
-		        err = HIViewConvertPoint(hiPoint, nil, me.ContentViewRef)
-		        if CGRectContainsPoint(CGRectMake(me.Left, me.Top, me.Width, me.Height), hiPoint) <> 0 then
-		          err = HIViewClick(me.ControlRef, EventRef)
-		          return noErr
-		        else
-		          if not me.ParentWindow.Composite then
-		            declare function SetKeyboardFocus lib CarbonLib (inWindow as WindowPtr, inControl as Ptr, inPart as Int16) as Int16
-		            err = SetKeyboardFocus(me.ParentWindow, me.ControlRef, kControlNoPart)
-		            if err = noErr then
-		              return noErr
-		            end if
-		            break // odd, an error occured
-		          end if
-		        end if
-		      end if
-		      
-		    case kEventClassTextInput
-		      
-		      if true or HasFocus then
-		        if eventKind = kEventTextInputUnicodeForKeyEvent then
-		          declare function GetEventParameter lib CarbonLib (inEvent as Ptr, inName as OSType, inDesiredType as OSType, outActualType as Ptr, inBufferSize as Integer, outBufferSize as Ptr, ByRef outData as UInt16) as Integer
-		          declare function GetCurrentEventKeyModifiers lib CarbonLib () as UInt32
-		          
-		          dim code as UInt16
-		          err = GetEventParameter(EventRef, kEventParamTextInputSendText, typeUnicodeText, nil, 2, nil, code)
-		          if err = 0 and code = 9 then // Tab key? (no need to mess with encodings here because we already requested to get the code as unicode)
-		            declare function HIViewAdvanceFocus lib CarbonLib (inRootForFocus as Ptr, inModifiers as Integer) as Integer
-		            me.AcceptFocus = false // so that that our superclass (Canvas) isn't getting the focus
-		            err = HIViewAdvanceFocus(me.ContentViewRef, GetCurrentEventKeyModifiers())
-		            me.AcceptFocus = true
+		      // check coordinates to see if the click targeted our control
+		      dim hiPoint as CGPoint
+		      err = GetEventParameter(EventRef, kEventParamWindowMouseLocation, typeHIPoint, nil, CGPoint.Size, nil, hiPoint)
+		      err = HIViewConvertPoint(hiPoint, nil, me.ContentViewRef)
+		      if CGRectContainsPoint(CGRectMake(me.Left, me.Top, me.Width, me.Height), hiPoint) <> 0 then
+		        err = HIViewClick(me.ControlRef, EventRef)
+		        return noErr
+		      else
+		        if not me.ParentWindow.Composite then
+		          declare function SetKeyboardFocus lib CarbonLib (Window as Integer, inControl as Ptr, inPart as Int16) as Int16
+		          err = SetKeyboardFocus(me.ParentWindow.Handle, me.ControlRef, kControlNoPart)
+		          if err = noErr then
 		            return noErr
 		          end if
+		          break // odd, an error occured
 		        end if
 		      end if
-		      
-		    case kEventClassControl
-		      if eventKind = kEventControlSetFocusPart then
-		        declare function GetEventParameter lib CarbonLib (inEvent as Ptr, inName as OSType, inDesiredType as OSType, outActualType as Ptr, inBufferSize as Integer, outBufferSize as Ptr, ByRef outData as Int16) as Integer
-		        declare function SendEventToEventTarget lib CarbonLib (eventRef as Ptr, target as Ptr) as Integer
-		        declare function GetControlEventTarget lib CarbonLib (ctrlRef as Ptr) as Ptr
-		        declare function GetUserFocusEventTarget lib CarbonLib () as Ptr
-		        declare function GetKeyboardFocus lib CarbonLib (windowRef as WindowPtr, ByRef ctrlRef as Ptr) as Integer
-		        declare function HIViewSubtreeContainsFocus lib CarbonLib (ref as Ptr) as Boolean
+		    end if
+		    
+		  case kEventClassTextInput
+		    
+		    if true or HasFocus then
+		      if eventKind = kEventTextInputUnicodeForKeyEvent then
+		        declare function GetEventParameter lib CarbonLib (inEvent as Ptr, inName as OSType, inDesiredType as OSType, outActualType as Ptr, inBufferSize as Integer, outBufferSize as Ptr, ByRef outData as UInt16) as Integer
+		        declare function GetCurrentEventKeyModifiers lib CarbonLib () as UInt32
 		        
-		        dim part as Int16
-		        call GetEventParameter(EventRef, kEventParamControlPart, typeControlPartCode, nil, 2, nil, part)
-		        
-		        if suppressEvents = 0 then
-		          suppressEvents = 1
-		          err = SendEventToEventTarget (EventRef, GetControlEventTarget(me.ControlRef))
-		          suppressEvents = 0
-		          if err <> 0 then break
-		          
-		          if part <> 0 then
-		            suppressEvents = suppressEvents + 1
-		            'super.SetFocus
-		            suppressEvents = suppressEvents - 1
-		          end
-		          
+		        dim code as UInt16
+		        err = GetEventParameter(EventRef, kEventParamTextInputSendText, typeUnicodeText, nil, 2, nil, code)
+		        if err = 0 and code = 9 then // Tab key? (no need to mess with encodings here because we already requested to get the code as unicode)
+		          declare function HIViewAdvanceFocus lib CarbonLib (inRootForFocus as Ptr, inModifiers as Integer) as Integer
+		          me.AcceptFocus = false // so that that our superclass (Canvas) isn't getting the focus
+		          err = HIViewAdvanceFocus(me.ContentViewRef, GetCurrentEventKeyModifiers())
+		          me.AcceptFocus = true
 		          return noErr
-		          
+		        end if
+		      end if
+		    end if
+		    
+		  case kEventClassControl
+		    if eventKind = kEventControlSetFocusPart then
+		      declare function GetEventParameter lib CarbonLib (inEvent as Ptr, inName as OSType, inDesiredType as OSType, outActualType as Ptr, inBufferSize as Integer, outBufferSize as Ptr, ByRef outData as Int16) as Integer
+		      declare function SendEventToEventTarget lib CarbonLib (eventRef as Ptr, target as Ptr) as Integer
+		      declare function GetControlEventTarget lib CarbonLib (ctrlRef as Ptr) as Ptr
+		      declare function GetUserFocusEventTarget lib CarbonLib () as Ptr
+		      declare function GetKeyboardFocus lib CarbonLib (Window as Integer, ByRef ctrlRef as Ptr) as Integer
+		      declare function HIViewSubtreeContainsFocus lib CarbonLib (ref as Ptr) as Boolean
+		      
+		      dim part as Int16
+		      call GetEventParameter(EventRef, kEventParamControlPart, typeControlPartCode, nil, 2, nil, part)
+		      
+		      if suppressEvents = 0 then
+		        suppressEvents = 1
+		        err = SendEventToEventTarget (EventRef, GetControlEventTarget(me.ControlRef))
+		        suppressEvents = 0
+		        if err <> 0 then break
+		        
+		        if part <> 0 then
+		          suppressEvents = suppressEvents + 1
+		          'super.SetFocus
+		          suppressEvents = suppressEvents - 1
 		        end
+		        
+		        return noErr
 		        
 		      end
 		      
-		    end select
+		    end
 		    
-		    return eventNotHandledErr
-		    
-		  #else
-		    
-		    #pragma unused EventRef
-		    
-		  #endif
+		  end select
+		  
+		  return eventNotHandledErr
 		  
 		  #pragma unused EventHandlerCallRef
 		End Function
@@ -347,76 +334,58 @@ Inherits Canvas
 
 	#tag Method, Flags = &h21
 		Private Sub RegisterCarbonEventHandler(eventTarget as Ptr, eventClasses() as UInt32, eventKinds() as Integer)
-		  #if TargetMacOS
+		  if eventTarget <> nil then
+		    declare function NewEventHandlerUPP lib CarbonLib (userRoutine as Ptr) as Ptr
+		    declare function InstallEventHandler lib CarbonLib (inTarget as Ptr, inHandler as Ptr, inNumTypes as Integer, inList as Ptr,  inUserData as Integer, handlerRef as Ptr) as Integer
 		    
-		    if eventTarget <> nil then
-		      declare function NewEventHandlerUPP lib CarbonLib (userRoutine as Ptr) as Ptr
-		      declare function InstallEventHandler lib CarbonLib (inTarget as Ptr, inHandler as Ptr, inNumTypes as Integer, inList as Ptr,  inUserData as Integer, handlerRef as Ptr) as Integer
-		      
-		      static CallbackUPP as Ptr = NewEventHandlerUPP(AddressOf ForwardCarbonEventToObject)
-		      
-		      dim eventList() as EventTypeSpec
-		      redim eventList(eventClasses.Ubound)
-		      for i as Integer = 0 to eventClasses.Ubound
-		        eventList(i).eventClass = eventClasses(i)
-		        eventList(i).eventKind = eventKinds(i)
-		      next
-		      
-		      dim v as Variant = me // inUserData
-		      dim err as Integer
-		      
-		      err = InstallEventHandler(eventTarget, CallbackUPP, 1 + UBound(eventList), eventList.CArray, v.Hash, Nil)
-		    end if
+		    static CallbackUPP as Ptr = NewEventHandlerUPP(AddressOf ForwardCarbonEventToObject)
 		    
-		  #else
+		    dim eventList() as EventTypeSpec
+		    redim eventList(eventClasses.Ubound)
+		    for i as Integer = 0 to eventClasses.Ubound
+		      eventList(i).eventClass = eventClasses(i)
+		      eventList(i).eventKind = eventKinds(i)
+		    next
 		    
-		    #pragma unused eventTarget
+		    dim v as Variant = me // inUserData
+		    dim err as Integer
 		    
-		  #endif
-		  
+		    err = InstallEventHandler(eventTarget, CallbackUPP, 1 + UBound(eventList), eventList.CArray, v.Hash, Nil)
+		  end if
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Sub RegisterCarbonEventHandlers()
-		  #if TargetMacOS
-		    
-		    declare function GetUserFocusEventTarget lib CarbonLib () as Ptr
-		    declare function GetWindowEventTarget lib CarbonLib (windowRef as WindowPtr) as Ptr
-		    declare function GetControlEventTarget lib CarbonLib (ctrlRef as Ptr) as Ptr
-		    
-		    dim targetWin as Ptr = GetWindowEventTarget(me.ParentWindow)
-		    dim targetCtrl as Ptr = GetControlEventTarget(me.ControlRef)
-		    dim targetFocus as Ptr = GetUserFocusEventTarget()
-		    
-		    if targetWin = nil or targetCtrl = nil or targetFocus = nil then
-		      return
-		    end if
-		    
-		    RegisterCarbonEventHandler targetFocus, Array(OSTypeToUInt32(kEventClassTextInput)), Array(kEventTextInputUnicodeForKeyEvent)
-		    RegisterCarbonEventHandler targetWin, Array(OSTypeToUInt32(kEventClassMouse)), Array(kEventMouseDown)
-		    RegisterCarbonEventHandler targetCtrl, Array(OSTypeToUInt32(kEventClassControl)), Array(kEventControlSetFocusPart)
-		    
-		  #endif
+		  declare function GetUserFocusEventTarget lib CarbonLib () as Ptr
+		  declare function GetWindowEventTarget lib CarbonLib (Window as Integer) as Ptr
+		  declare function GetControlEventTarget lib CarbonLib (ctrlRef as Ptr) as Ptr
+		  
+		  dim targetWin as Ptr = GetWindowEventTarget(me.ParentWindow.Handle)
+		  dim targetCtrl as Ptr = GetControlEventTarget(me.ControlRef)
+		  dim targetFocus as Ptr = GetUserFocusEventTarget()
+		  
+		  if targetWin = nil or targetCtrl = nil or targetFocus = nil then
+		    return
+		  end if
+		  
+		  RegisterCarbonEventHandler targetFocus, Array(OSTypeToUInt32(kEventClassTextInput)), Array(kEventTextInputUnicodeForKeyEvent)
+		  RegisterCarbonEventHandler targetWin, Array(OSTypeToUInt32(kEventClassMouse)), Array(kEventMouseDown)
+		  RegisterCarbonEventHandler targetCtrl, Array(OSTypeToUInt32(kEventClassControl)), Array(kEventControlSetFocusPart)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Function RootView() As Ptr
-		  #if TargetMacOS
-		    
-		    declare function HIViewGetRoot lib CarbonLib (inWindow as WindowPtr) as Ptr
-		    
-		    dim w as Window = me.ParentWindow
-		    if w = nil then
-		      return nil
-		    end if
-		    
-		    return HIViewGetRoot(w)
-		    
-		  #endif
+		  declare function HIViewGetRoot lib CarbonLib (Window as Integer) as Ptr
 		  
+		  dim w as Window = me.ParentWindow
+		  if w = nil then
+		    return nil
+		  end if
+		  
+		  return HIViewGetRoot(w.Handle)
 		End Function
 	#tag EndMethod
 
@@ -428,29 +397,20 @@ Inherits Canvas
 
 	#tag Method, Flags = &h21
 		Private Sub SetKbdFocus(gained as Boolean)
-		  #if TargetMacOS
-		    
-		    dim err as Integer
-		    if me.Visible and me.Enabled then
-		      if gained then
-		        declare function SetKeyboardFocus lib CarbonLib (inWindow as WindowPtr, inControl as Ptr, inPart as Int16) as Integer
-		        dim part as Integer
-		        part = -1
-		        err = SetKeyboardFocus(me.ParentWindow, me.ControlRef, part)
-		        super.SetFocus
-		      else
-		        declare sub ClearKeyboardFocus lib CarbonLib (window as WindowPtr)
-		        declare sub HIViewAdvanceFocus lib CarbonLib (view as WindowPtr, modifiers as Integer)
-		        'ClearKeyboardFocus me.ParentWindow
-		      end if
+		  dim err as Integer
+		  if me.Visible and me.Enabled then
+		    if gained then
+		      declare function SetKeyboardFocus lib CarbonLib (Window as Integer, inControl as Ptr, inPart as Int16) as Integer
+		      dim part as Integer
+		      part = -1
+		      err = SetKeyboardFocus(me.ParentWindow.Handle, me.ControlRef, part)
+		      super.SetFocus
+		    else
+		      declare sub ClearKeyboardFocus lib CarbonLib (Window as Integer)
+		      declare sub HIViewAdvanceFocus lib CarbonLib (view as Ptr, modifiers as Integer)
+		      'ClearKeyboardFocus me.ParentWindow.Handle
 		    end if
-		    
-		  #else
-		    
-		    #pragma unused gained
-		    
-		  #endif
-		  
+		  end if
 		End Sub
 	#tag EndMethod
 
@@ -782,13 +742,11 @@ Inherits Canvas
 			Name="AcceptFocus"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AcceptTabs"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoDeactivate"
@@ -796,14 +754,12 @@ Inherits Canvas
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Backdrop"
 			Group="Appearance"
 			Type="Picture"
 			EditorType="Picture"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoubleBuffer"
@@ -811,7 +767,6 @@ Inherits Canvas
 			Group="Behavior"
 			InitialValue="False"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Enabled"
@@ -819,7 +774,6 @@ Inherits Canvas
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EraseBackground"
@@ -827,7 +781,6 @@ Inherits Canvas
 			Group="Behavior"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Height"
@@ -835,7 +788,6 @@ Inherits Canvas
 			Group="Position"
 			InitialValue="100"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HelpTag"
@@ -843,26 +795,24 @@ Inherits Canvas
 			Group="Appearance"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			Type="Integer"
-			InheritedFrom="Canvas"
+			EditorType="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InitialParent"
 			Group="Behavior"
-			InheritedFrom="Canvas"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Live"
@@ -876,35 +826,31 @@ Inherits Canvas
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockLeft"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockRight"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockTop"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="Canvas"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ReadOnly"
@@ -917,7 +863,8 @@ Inherits Canvas
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Canvas"
+			Type="String"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabIndex"
@@ -925,14 +872,12 @@ Inherits Canvas
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabPanelIndex"
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabStop"
@@ -940,14 +885,20 @@ Inherits Canvas
 			Group="Position"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			Type="Integer"
-			InheritedFrom="Canvas"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Transparent"
+			Visible=true
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Type"
@@ -967,7 +918,6 @@ Inherits Canvas
 			Name="UseFocusRing"
 			Group="Appearance"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Visible"
@@ -975,7 +925,6 @@ Inherits Canvas
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Width"
@@ -983,7 +932,6 @@ Inherits Canvas
 			Group="Position"
 			InitialValue="100"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

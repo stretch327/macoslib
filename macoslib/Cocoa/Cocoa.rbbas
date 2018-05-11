@@ -113,40 +113,6 @@ Protected Module Cocoa
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function CMTimeAbsoluteValue(time As CMTime) As CMTime
-		  #if TargetMacOS
-		    soft declare function getCMTimeAbsoluteValue lib "CoreMedia.framework" alias "CMTimeAbsoluteValue" ( time As CMTime ) As CMTime
-		    // Introduced in MacOS X 10.7.
-		    
-		    return getCMTimeAbsoluteValue( time )
-		    
-		  #else
-		    #pragma unused time
-		  #endif
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function CMTimeGetSeconds(time As CMTime) As Double
-		  #if TargetMacOS
-		    soft declare function getCMTimeGetSeconds lib "CoreMedia.framework" alias "CMTimeGetSeconds" ( time As CMTime ) As Double
-		    // Introduced in MacOS X 10.7.
-		    
-		    return getCMTimeGetSeconds( time )
-		    
-		  #else
-		    #pragma unused time
-		  #endif
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function CMTimeIsValid(time As CMTime) As Boolean
-		  return ( time.Flags and kCMTimeFlags_Valid ) <> 0
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Attributes( deprecated = "FileManager.GetFolderItemFromPOSIXPath" ) Protected Function GetFolderItemFromPOSIXPath(absolutePath as String) As FolderItem
 		  // THIS FUNCTION IS DEPRECATED.
 		  // Use FileManager.GetFolderItemFromPOSIXPath or just GetFolderItemFromPOSIXPath instead.
@@ -225,8 +191,7 @@ Protected Module Cocoa
 		    
 		    if searchPublicFrameworks then
 		      const expandTilde = true
-		      dim p as Ptr = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSAllDomainsMask, expandTilde)
-		      dim libraryPathArray as new CFArray(p, not CFType.hasOwnership)
+		      dim libraryPathArray as new CFArray(NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSAllDomainsMask, expandTilde), not CFType.hasOwnership)
 		      for i as Integer = 0 to libraryPathArray.Count - 1
 		        frameworkURLs.Append CFURL.CreateFromPOSIXPath(libraryPathArray.CFStringRefValue(i), isDirectory).AppendComponent(FrameworksDirectoryName, isDirectory).AppendComponent(frameworkName, not isDirectory)
 		      next
@@ -258,69 +223,9 @@ Protected Module Cocoa
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function MakeDelegateClass(className as String, superclassName as String, methodList() as Tuple, ParamArray protocolNames as String) As Ptr
-		  // This is Objective-C 2.0 code (available in Leopard).  For 1.0, we'd need to do it differently.
-		  
-		  #if TargetMacOS then
-		    declare function objc_allocateClassPair lib CocoaLib (superclass as Ptr, name as CString, extraBytes as Integer) as Ptr
-		    declare sub objc_registerClassPair lib CocoaLib (cls as Ptr)
-		    declare function class_addMethod lib CocoaLib (cls as Ptr, name as Ptr, imp as Ptr, types as CString) as Boolean
-		    declare function objc_getProtocol lib CocoaLib (name as CString) as Ptr
-		    declare function class_addProtocol lib CocoaLib (Cls as Ptr, protocol as Ptr) as Boolean
-		    
-		    dim newClassId as Ptr = objc_allocateClassPair(Cocoa.NSClassFromString(superclassName), className, 0)
-		    if newClassId = nil then
-		      raise new macoslibException ("Could not create new class " + className)
-		      return nil
-		    end if
-		    
-		    objc_registerClassPair newClassId
-		    
-		    for each protocolName as String in protocolNames
-		      if not class_addProtocol (newClassId, objc_getProtocol(protocolName)) then
-		        raise new macoslibException ("Could not add protocol " + protocolName + " to class " + className)
-		      end if
-		    next
-		    
-		    for each item as Tuple in methodList
-		      if not class_addMethod (newClassId, Cocoa.NSSelectorFromString(item(0)), item(1), item(2)) then
-		        raise new macoslibException ("Could not add delegate method(s) to new class " + className)
-		        return nil
-		      end if
-		    next
-		    
-		    return newClassId
-		    
-		  #else
-		    #pragma unused className
-		    #pragma unused superClassName
-		    #pragma unused methodList
-		  #endif
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function NSAppKitVersionNumber() As Double
-		  #if TargetMacOS
-		    static d as Double
-		    if d = 0 then
-		      dim mb as MemoryBlock = CFBundle.NewCFBundleFromID("com.apple.Cocoa").DataPointerNotRetained("NSAppKitVersionNumber")
-		      d = mb.DoubleValue(0)
-		    end if
-		    return d
-		  #endif
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function NSClassFromString(aClassName as CFStringRef) As Ptr
-		  #if TargetCocoa
-		    Declare Function NSClassFromString Lib CocoaLib (aClassName as CFStringRef) As Ptr
-		    Return NSClassFromString(aClassName)
-		  #endif
-		End Function
-	#tag EndMethod
+	#tag ExternalMethod, Flags = &h1
+		Protected Declare Function NSClassFromString Lib CocoaLib (aClassName as CFStringRef) As Ptr
+	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
 		Protected Declare Function NSFullUserName Lib CocoaLib () As CFStringRef
@@ -404,18 +309,8 @@ Protected Module Cocoa
 		  
 		  dim objClassNameTree() as string = ClassNameTreeForObjectPointer( id )
 		  
-		  for i as integer = 0 to objClassNameTree.Ubound
-		    dim objClassName as string = objClassNameTree( i ) // Can't use For Each since order matters
+		  for each objClassName as string in objClassNameTree  //Scan inheritance tree down to NSObject (or root class)
 		    select case objClassName
-		    case "AVAsset"
-		      return new AVAsset( id, hasOwnership )
-		      
-		    case "AVAssetTrack"
-		      return new AVAssetTrack( id, hasOwnership )
-		      
-		    case "AVMetadataItem"
-		      return new AVMetadataItem( id, hasOwnership )
-		      
 		    case "NSApplication"
 		      return  new NSApplication( id, hasOwnership )
 		      
@@ -618,8 +513,11 @@ Protected Module Cocoa
 		  case Variant.TypeBoolean
 		    return new NSNumber( v.BooleanValue )
 		    
-		  case Variant.TypeInteger, Variant.TypeLong
-		    return new NSNumber( v.IntegerValue )
+		  case Variant.TypeInt32
+		    return new NSNumber( v.Int32Value )
+		    
+		  case variant.TypeInt64
+		    return new NSNumber( v.Int64Value )
 		    
 		  case Variant.TypeString
 		    dim s as NSString = v.StringValue
@@ -696,6 +594,21 @@ Protected Module Cocoa
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Sub pTestAssert(b as Boolean, msg as String = "")
+		  #if DebugBuild
+		    if not b then
+		      break
+		      #if TargetDesktop
+		        MsgBox "Test in Cocoa module failed: "+EndOfLine+EndOfLine+msg
+		      #else
+		        Print "Test in Cocoa module failed: "+msg
+		      #endif
+		    end
+		  #endif
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub Release(id as Ptr)
 		  #if TargetMacOS
@@ -758,6 +671,24 @@ Protected Module Cocoa
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function SizeOfInteger() As integer
+		  //# Returns the size of an integer
+		  
+		  #if RBVersion >= 2013
+		    #if Target64Bit
+		      return  8
+		    #else
+		      return  4
+		    #endif
+		    
+		  #else
+		    return  4
+		  #endif
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function StringConstant(symbolName as String) As String
 		  //NSBundle doesn't support loading of data pointers; for this we must use a CFBundle.
@@ -784,6 +715,28 @@ Protected Module Cocoa
 		    
 		  #endif
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Attributes( hidden ) Protected Sub TestSelf()
+		  // This is an incomplete set of tests to make sure nothing got screwed up too much
+		  
+		  #if DebugBuild
+		    dim f, dir as FolderItem
+		    dim mainBundle as NSBundle = NSBundle.MainBundle
+		    
+		    // Test NSBundle.AppStoreReceiptDirectory
+		    //   For this to work, the path to the receipt file
+		    //   must exist, or we'll get nil from the function.
+		    //   Therefore, we'll add that folder here first.
+		    dir = mainBundle.BundleDirectory.Child("Contents").Child("_MASReceipt")
+		    dir.CreateAsFolder()
+		    f = mainBundle.AppStoreReceiptDirectory()
+		    pTestAssert (f <> nil and f.Name = "receipt") ' In case this fails: Did the receipt URL move somewhere else? At least until OSX 10.8 it shouldn't have
+		    
+		  #endif
+		  
+		End Sub
 	#tag EndMethod
 
 
@@ -838,31 +791,6 @@ Protected Module Cocoa
 	#tag Constant, Name = FoundationLib, Type = String, Dynamic = False, Default = \"Foundation.framework", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = kCMTimeFlags_HasBeenRounded, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kCMTimeFlags_ImpliedValueFlagsMask, Type = Double, Dynamic = False, Default = \"&b00011100", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kCMTimeFlags_Indefinite, Type = Double, Dynamic = False, Default = \"16", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kCMTimeFlags_NegativeInfinity, Type = Double, Dynamic = False, Default = \"8", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kCMTimeFlags_PositiveInfinity, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = kCMTimeFlags_Valid, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
-	#tag EndConstant
-
-
-	#tag Structure, Name = CMTime, Flags = &h1
-		value As Int64
-		  timescale As Int32
-		  flags As UInt32
-		epoch As Int64
-	#tag EndStructure
 
 	#tag Structure, Name = NSPoint, Flags = &h1
 		x as Single
@@ -886,12 +814,6 @@ Protected Module Cocoa
 		height as Single
 	#tag EndStructure
 
-
-	#tag Enum, Name = NSCellStateValue, Flags = &h0
-		Mixed = -1
-		  Off = 0
-		On = 1
-	#tag EndEnum
 
 	#tag Enum, Name = NSComparisonResult, Flags = &h0
 		NSOrderedAscending = -1

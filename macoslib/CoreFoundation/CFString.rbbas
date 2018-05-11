@@ -16,7 +16,7 @@ Implements CFPropertyList
 
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if targetMacOS
 		    declare function TypeID lib CarbonLib alias "CFStringGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
@@ -34,11 +34,9 @@ Implements CFPropertyList
 		    if Encoding(s) <> nil then
 		      p = CFStringCreateWithCString(nil, s, Encoding(s).code)
 		    else
-		      // Missing encoding!
-		      break
-		      // Fall back to a safe encoding, e.g. any 8 Bit encoding, but not UTF-8 because that's may not be valid with all byte combinations!
-		      const kCFStringEncodingISOLatin1 = &h0201
-		      p = CFStringCreateWithCString(nil, s, kCFStringEncodingISOLatin1)
+		      const kCFStringEncodingInvalidId = &hffffffff
+		      
+		      p = CFStringCreateWithCString(nil, s, kCFStringEncodingInvalidId)
 		    end if
 		    
 		    self.Constructor(p, hasOwnership)
@@ -73,7 +71,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListFile(file as FolderItem) As CFString
+		Shared Function CreateFromPListFile(file as FolderItem) As CFString
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListFile( file, CoreFoundation.kCFPropertyListImmutable )
@@ -90,7 +88,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListString(plistString as String) As CFString
+		Shared Function CreateFromPListString(plistString as String) As CFString
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListString( plistString, CoreFoundation.kCFPropertyListImmutable )
@@ -216,6 +214,12 @@ Implements CFPropertyList
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function WriteToFile(file as FolderItem, asXML as Boolean = True) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag Note, Name = Note
 		This is an alternative to CFStringRef.
@@ -282,21 +286,21 @@ Implements CFPropertyList
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			InheritedFrom="CFType"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Length"
@@ -307,7 +311,7 @@ Implements CFPropertyList
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="StringValue"
@@ -319,14 +323,14 @@ Implements CFPropertyList
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

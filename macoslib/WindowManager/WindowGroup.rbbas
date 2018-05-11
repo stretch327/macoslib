@@ -11,7 +11,7 @@ Class WindowGroup
 		  end if
 		  
 		  #if TargetMacOS
-		    soft declare function SetWindowGroup lib CarbonLib (inWindow as Ptr, inNewGroup as Ptr) as Integer
+		    soft declare function SetWindowGroup lib CarbonLib (Window as Ptr, inNewGroup as Ptr) as Integer
 		    
 		    dim OSError as Integer = SetWindowGroup(w, me.GroupRef)
 		    
@@ -58,9 +58,9 @@ Class WindowGroup
 		  end if
 		  
 		  #if TargetMacOS
-		    soft declare function IsWindowContainedInGroup lib CarbonLib (inWindow as WindowPtr, inGroup as Ptr) as Boolean
+		    soft declare function IsWindowContainedInGroup lib CarbonLib (Window as Integer, inGroup as Ptr) as Boolean
 		    
-		    return IsWindowContainedInGroup(w, me)
+		    return IsWindowContainedInGroup(w.Handle, me)
 		    
 		  #endif
 		  
@@ -86,7 +86,7 @@ Class WindowGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function DocumentClassWindowGroup() As WindowGroup
+		Shared Function DocumentClassWindowGroup() As WindowGroup
 		  return WindowGroupOfClass(kDocumentWindowClass)
 		End Function
 	#tag EndMethod
@@ -274,7 +274,7 @@ Class WindowGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function WindowGroupOfClass(windowClass as UInt32) As WindowGroup
+		Shared Function WindowGroupOfClass(windowClass as UInt32) As WindowGroup
 		  #if targetMacOS
 		    soft declare function GetWindowGroupOfClass lib CarbonLib (windowClass as UInt32) as Ptr
 		    

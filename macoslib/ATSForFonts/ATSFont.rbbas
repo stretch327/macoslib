@@ -45,7 +45,7 @@ Class ATSFont
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function FindFromName(name as String) As ATSFont
+		Shared Function FindFromName(name as String) As ATSFont
 		  #if targetMacOS
 		    soft declare function ATSFontFindFromName lib CarbonLib (iName as CFStringRef, iOptions as UInt32) as UInt32
 		    
@@ -62,7 +62,7 @@ Class ATSFont
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function FindFromPostScriptName(name as String) As ATSFont
+		Shared Function FindFromPostScriptName(name as String) As ATSFont
 		  #if targetMacOS
 		    soft declare function ATSFontFindFromPostScriptName lib CarbonLib (iName as CFStringRef, iOptions as UInt32) as UInt32
 		    
@@ -97,6 +97,20 @@ Class ATSFont
 		Function Operator_Convert() As UInt32
 		  return me.ATSFontRef
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Shared Sub SelfTest()
+		  #if TargetMacOS
+		    'dim s as String
+		    dim f as ATSFont
+		    f = FindFromName("Lucida Grande")
+		    if f = nil then
+		      // oops?
+		      break
+		    end if
+		  #endif
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -172,21 +186,20 @@ Class ATSFont
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="PostScriptName"
@@ -198,14 +211,14 @@ Class ATSFont
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

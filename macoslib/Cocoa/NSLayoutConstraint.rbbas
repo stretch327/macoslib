@@ -4,8 +4,10 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
+		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSLayoutConstraint")
 		    return ref
+		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -32,18 +34,20 @@ Inherits NSObject
 		    dim arrayRef as Ptr = constraintsWithVisualFormat(ClassRef, aFormat, options, metricsRef, viewsRef)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      
-		      #if RBVersion > 2013.01
-		        #if Target64Bit
-		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		        #endif
+		      #if Target64Bit then
+		        const sizeOfPtr = 8
+		      #else
+		        const sizeOfPtr = 4
 		      #endif
-		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        retArray.append new NSLayoutConstraint(Ptr(m.UInt32Value(i*SizeOfPointer)))
+		        #if target64bit then
+		          retArray.append new NSLayoutConstraint(Ptr(m.UInt64Value(i*sizeOfPtr)))
+		        #else
+		          retArray.append new NSLayoutConstraint(Ptr(m.UInt32Value(i*sizeOfPtr)))
+		        #endif
 		      next
 		    end if
 		    
@@ -395,6 +399,21 @@ Inherits NSObject
 			Name="FirstAttribute"
 			Group="Behavior"
 			Type="NSLayoutAttribute"
+			EditorType="Enum"
+			#tag EnumValues
+				"1 - NSLayoutAttributeLeft"
+				"2 - NSLayoutAttributeRight"
+				"3 - NSLayoutAttributeTop"
+				"4 - NSLayoutAttributeBottom"
+				"5 - NSLayoutAttributeLeading"
+				"6 - NSLayoutAttributeTrailing"
+				"7 - NSLayoutAttributeWidth"
+				"8 - NSLayoutAttributeHeight"
+				"9 - NSLayoutAttributeCenterX"
+				"10 - NSLayoutAttributeCenterY"
+				"11 - NSLayoutAttributeBaseline"
+				"0 - NSLayoutAttributeNotAnAttribute"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -425,16 +444,47 @@ Inherits NSObject
 			Name="Priority"
 			Group="Behavior"
 			Type="NSLayoutPriority"
+			EditorType="Enum"
+			#tag EnumValues
+				"1000 - NSLayoutPriorityRequired"
+				"750 - NSLayoutPriorityDefaultHigh"
+				"510 - NSLayoutPriorityDragThatCanResizeWindow"
+				"500 - NSLayoutPriorityWindowSizeStayPut"
+				"490 - NSLayoutPriorityDragThatCannotResizeWindow"
+				"250 - NSLayoutPriorityDefaultLow"
+				"50 - NSLayoutPriorityFittingSizeCompression"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Relation"
 			Group="Behavior"
 			Type="NSLayoutRelation"
+			EditorType="Enum"
+			#tag EnumValues
+				"-1 - NSLayoutRelationLessThanOrEqual"
+				"0 - NSLayoutRelationEqual"
+				"1 - NSLayoutRelationGreaterThanOrEqual"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="SecondAttribute"
 			Group="Behavior"
 			Type="NSLayoutAttribute"
+			EditorType="Enum"
+			#tag EnumValues
+				"1 - NSLayoutAttributeLeft"
+				"2 - NSLayoutAttributeRight"
+				"3 - NSLayoutAttributeTop"
+				"4 - NSLayoutAttributeBottom"
+				"5 - NSLayoutAttributeLeading"
+				"6 - NSLayoutAttributeTrailing"
+				"7 - NSLayoutAttributeWidth"
+				"8 - NSLayoutAttributeHeight"
+				"9 - NSLayoutAttributeCenterX"
+				"10 - NSLayoutAttributeCenterY"
+				"11 - NSLayoutAttributeBaseline"
+				"0 - NSLayoutAttributeNotAnAttribute"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ShouldBeArchived"

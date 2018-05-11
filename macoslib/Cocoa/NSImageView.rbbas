@@ -150,6 +150,20 @@ Inherits NSControl
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Shared Function FPtr(p as Ptr) As Ptr
+		  //This function is a workaround for the inability to convert a Variant containing a delegate to Ptr:
+		  //dim v as Variant = AddressOf Foo
+		  //dim p as Ptr = v
+		  //results in a TypeMismatchException
+		  //So now I do
+		  //dim v as Variant = FPtr(AddressOf Foo)
+		  //dim p as Ptr = v
+		  
+		  return p
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Function Handle_ConstructContextualMenu(base as MenuItem, x as integer, y as integer) As Boolean
 		  return  RaiseEvent  ConstructContextualMenu( base, x, y )
 		End Function
@@ -185,9 +199,11 @@ Inherits NSControl
 	#tag Method, Flags = &h21
 		Private Shared Function impl_CanBecomeKeyView(id as Ptr, sel as Ptr) As Boolean
 		  #if targetCocoa
+		    'DReport "impl_CanBecomeKeyView called"
 		    
 		    dim theSource as NSImageView = FindObjectByID( id )
 		    if theSource is nil then
+		      'DReportWarning   "Couldn't find source object"
 		      return false
 		    end if
 		    
@@ -211,6 +227,7 @@ Inherits NSControl
 		    
 		    dim theSource as NSImageView = FindObjectByID( id )
 		    if theSource is nil then
+		      'DReportWarning   "Couldn't find source object"
 		      return
 		    end if
 		    
@@ -236,6 +253,7 @@ Inherits NSControl
 		    
 		    dim theSource as NSImageView = FindObjectByID( id )
 		    if theSource is nil then
+		      'DReportWarning   "Couldn't find source object"
 		      return
 		    end if
 		    
@@ -262,6 +280,7 @@ Inherits NSControl
 		    
 		    dim theSource as NSImageView = FindObjectByID( id )
 		    if theSource is nil then
+		      'DReportWarning   "Couldn't find source object"
 		      return
 		    end if
 		    
@@ -291,6 +310,7 @@ Inherits NSControl
 		    
 		    dim theSource as NSImageView = FindObjectByID( id )
 		    if theSource is nil then
+		      'DReportWarning   "Couldn't find source object"
 		      return
 		    end if
 		    
@@ -788,14 +808,25 @@ Inherits NSControl
 			Visible=true
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AcceptTabs"
 			Visible=true
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="Canvas"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Alignment"
+			Group="Behavior"
+			Type="NSTextAlignment"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - Left"
+				"1 - Right"
+				"2 - Center"
+				"3 - Justified"
+				"4 - Natural"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AllowCopyCutPaste"
@@ -806,7 +837,6 @@ Inherits NSControl
 			Name="AllowsExpansionToolTips"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoDeactivate"
@@ -814,13 +844,11 @@ Inherits NSControl
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="autoresizesSubviews"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Backdrop"
@@ -828,7 +856,6 @@ Inherits NSControl
 			Group="Appearance"
 			Type="Picture"
 			EditorType="Picture"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Bold"
@@ -836,13 +863,12 @@ Inherits NSControl
 			Group="Behavior"
 			InitialValue="false"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			InheritedFrom="NSControl"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoubleBuffer"
@@ -850,13 +876,11 @@ Inherits NSControl
 			Group="Behavior"
 			InitialValue="False"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoubleValue"
 			Group="Behavior"
 			Type="Double"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Editable"
@@ -869,7 +893,6 @@ Inherits NSControl
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EraseBackground"
@@ -877,13 +900,11 @@ Inherits NSControl
 			Group="Behavior"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="FloatValue"
 			Group="Behavior"
 			Type="Single"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="FocusRingType"
@@ -901,7 +922,6 @@ Inherits NSControl
 			Group="Position"
 			InitialValue="100"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HelpTag"
@@ -909,7 +929,6 @@ Inherits NSControl
 			Group="Appearance"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Image"
@@ -931,7 +950,7 @@ Inherits NSControl
 			Visible=true
 			Group="ID"
 			Type="Integer"
-			InheritedFrom="Canvas"
+			EditorType="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="initAcceptFocus"
@@ -995,7 +1014,7 @@ Inherits NSControl
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InitialParent"
-			InheritedFrom="Canvas"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="initImage"
@@ -1028,13 +1047,11 @@ Inherits NSControl
 			Name="IntegerValue"
 			Group="Behavior"
 			Type="Integer"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsFlipped"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Italic"
@@ -1042,61 +1059,56 @@ Inherits NSControl
 			Group="Behavior"
 			InitialValue="false"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockBottom"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockLeft"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockRight"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockTop"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="Canvas"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="StringValue"
 			Group="Behavior"
 			Type="String"
-			InheritedFrom="NSControl"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Canvas"
+			Type="String"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabIndex"
@@ -1104,14 +1116,12 @@ Inherits NSControl
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabPanelIndex"
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabStop"
@@ -1119,7 +1129,6 @@ Inherits NSControl
 			Group="Position"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TextFont"
@@ -1128,7 +1137,6 @@ Inherits NSControl
 			InitialValue="System"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TextSize"
@@ -1136,14 +1144,20 @@ Inherits NSControl
 			Group="Behavior"
 			InitialValue="0.0"
 			Type="double"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			Type="Integer"
-			InheritedFrom="Canvas"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Transparent"
+			Visible=true
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Underlined"
@@ -1151,7 +1165,6 @@ Inherits NSControl
 			Group="Behavior"
 			InitialValue="false"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UseFocusRing"
@@ -1159,7 +1172,6 @@ Inherits NSControl
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Visible"
@@ -1167,7 +1179,6 @@ Inherits NSControl
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Width"
@@ -1175,7 +1186,6 @@ Inherits NSControl
 			Group="Position"
 			InitialValue="100"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

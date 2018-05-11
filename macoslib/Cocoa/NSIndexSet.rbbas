@@ -4,8 +4,10 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
+		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSIndexSet")
 		    return ref
+		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -139,7 +141,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function Create() As NSIndexSet
+		 Shared Function Create() As NSIndexSet
 		  
 		  #if targetMacOS
 		    declare function indexSet lib CocoaLib selector "indexSet" (class_id as Ptr) as Ptr
@@ -155,7 +157,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CreateWithIndex(index as UInt32) As NSIndexSet
+		 Shared Function CreateWithIndex(index as UInt32) As NSIndexSet
 		  
 		  #if targetMacOS
 		    declare function indexSetWithIndex lib CocoaLib selector "indexSetWithIndex:" (class_id as Ptr, index as UInt32) as Ptr
@@ -173,7 +175,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function CreateWithRange(range as Cocoa.NSRange) As NSIndexSet
+		 Shared Function CreateWithRange(range as Cocoa.NSRange) As NSIndexSet
 		  
 		  #if targetMacOS
 		    declare function indexSetWithIndexesInRange lib CocoaLib selector "indexSetWithIndexesInRange:" (class_id as Ptr, range as Cocoa.NSRange) as Ptr
@@ -237,10 +239,11 @@ Inherits NSObject
 		    if self.id <> nil then
 		      dim cnt as integer = self.Count
 		      dim indexBuffer as new MemoryBlock(sizeOfInteger * cnt)
+		      dim indexCount as Integer = getIndexes(self, indexBuffer, cnt, nil)
+		      #Pragma Unused indexCount
+		      
 		      dim L() as Integer
 		      dim offset as Integer = 0
-		      
-		      call getIndexes(self, indexBuffer, cnt, nil)
 		      
 		      while offset < indexBuffer.Size
 		        L.Append  indexBuffer.Long( offset )

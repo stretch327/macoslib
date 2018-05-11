@@ -54,8 +54,10 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
+		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSArray")
 		    return ref
+		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -145,9 +147,13 @@ Inherits NSObject
 		  #if targetMacOS
 		    declare function initWithObjects lib CocoaLib selector "initWithObjects:count:" (obj_id as Ptr, objects as Ptr, count as UInt32) as Ptr
 		    
-		    #if RBVersion > 2013.01
-		      #if Target64Bit
-		        #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		    #if Target64Bit then
+		      const sizeOfPtr = 8
+		    #else
+		      #if Target64Bit then
+		        const sizeOfPtr = 8
+		      #else
+		        const sizeOfPtr = 4
 		      #endif
 		    #endif
 		    
@@ -155,9 +161,13 @@ Inherits NSObject
 		    dim objectCount as UInt32 = uboundObject+1
 		    if uboundObject > -1 then
 		      
-		      dim m as new MemoryBlock(SizeOfPointer*(objectCount))
+		      dim m as new MemoryBlock(sizeOfPtr*(objectCount))
 		      for i as integer = 0 to uboundObject
-		        m.UInt32Value(i*SizeOfPointer) = UInt32(objects(i).id)
+		        #if Target64Bit then
+		          m.UInt64Value(i*sizeOfPtr) = UInt64(objects(i).id)
+		        #else
+		          m.UInt32Value(i*sizeOfPtr) = UInt32(objects(i).id)
+		        #endif
 		      next
 		      
 		      super.Constructor(initWithObjects(Allocate("NSArray"), m, objectCount), NSArray.hasOwnership)
@@ -410,19 +420,23 @@ Inherits NSObject
 		  #if TargetMacOS
 		    declare function arrayWithObjects lib CocoaLib selector "arrayWithObjects:count:" (class_id as Ptr, objects as Ptr, count as UInt32) as Ptr
 		    
-		    #if RBVersion > 2013.01
-		      #if Target64Bit
-		        #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		      #endif
+		    #if Target64Bit then
+		      const sizeOfPtr = 8
+		    #else
+		      const sizeOfPtr = 4
 		    #endif
 		    
 		    dim uboundObject as UInt32 = objects.ubound
 		    dim objectCount as UInt32 = uboundObject+1
 		    if uboundObject > -1 then
 		      
-		      dim m as new MemoryBlock(SizeOfPointer*(objectCount))
+		      dim m as new MemoryBlock(sizeOfPtr*(objectCount))
 		      for i as integer = 0 to uboundObject
-		        m.UInt32Value(i*SizeOfPointer) = UInt32(objects(i).id)
+		        #if Target64Bit then
+		          m.UInt64Value(i*sizeOfPtr) = UInt64(objects(i).id)
+		        #else
+		          m.UInt32Value(i*sizeOfPtr) = UInt32(objects(i).id)
+		        #endif
 		      next
 		      
 		      dim arrayRef as Ptr = arrayWithObjects(ClassRef, m, objectCount)
@@ -641,17 +655,20 @@ Inherits NSObject
 		  
 		  dim retArray() as String
 		  
-		  #if RBVersion > 2013.01
-		    #if Target64Bit
-		      #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		    #endif
+		  #if Target64Bit then
+		    const sizeOfPtr = 8
+		  #else
+		    const sizeOfPtr = 4
 		  #endif
-		  
 		  dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, self.Count)
 		  dim m as MemoryBlock = self.ValuesArray(arrayRange)
 		  dim n as UInt32 = arrayRange.length-1
 		  for i as integer = 0 to n
-		    retArray.append new NSString(Ptr(m.UInt32Value(i*SizeOfPointer)))
+		    #if Target64Bit then
+		      retArray.append new NSString(Ptr(m.UInt64Value(i*sizeOfPtr)))
+		    #else
+		      retArray.append new NSString(Ptr(m.UInt32Value(i*sizeOfPtr)))
+		    #endif
 		  next
 		  
 		  return retArray
@@ -746,10 +763,11 @@ Inherits NSObject
 
 	#tag Method, Flags = &h1000
 		Function Values(aRange as Cocoa.NSRange) As NSObject()
-		  #if RBVersion > 2013.01
-		    #if Target64Bit
-		      #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		    #endif
+		  
+		  #if Target64Bit then
+		    const sizeOfPtr = 8
+		  #else
+		    const sizeOfPtr = 4
 		  #endif
 		  
 		  dim rb_array() as NSObject
@@ -758,7 +776,11 @@ Inherits NSObject
 		  
 		  dim n as UInt32 = aRange.length-1
 		  for i as integer = 0 to n
-		    rb_array.append new NSObject(Ptr(m.UInt32Value(i*SizeOfPointer)))
+		    #if Target64Bit then
+		      rb_array.append new NSObject(Ptr(m.UInt64Value(i*sizeOfPtr)))
+		    #else
+		      rb_array.append new NSObject(Ptr(m.UInt32Value(i*sizeOfPtr)))
+		    #endif
 		  next
 		  
 		  return rb_array
@@ -797,13 +819,13 @@ Inherits NSObject
 		  #if targetMacOS
 		    declare sub getObjects lib CocoaLib selector "getObjects:range:" (obj_id as Ptr, aBuffer as Ptr, aRange as Cocoa.NSRange)
 		    
-		    #if RBVersion > 2013.01
-		      #if Target64Bit
-		        #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		      #endif
+		    #if Target64Bit then
+		      const sizeOfPtr = 8
+		    #else
+		      const sizeOfPtr = 4
 		    #endif
 		    
-		    dim m as new MemoryBlock(SizeOfPointer*aRange.length)
+		    dim m as new MemoryBlock(sizeOfPtr*aRange.length)
 		    
 		    getObjects self, m, aRange
 		    
@@ -883,9 +905,9 @@ Inherits NSObject
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  //# Returns the number of objects currently in the array.
-			  
-			  #if TargetMacOS
+			  #if TargetCocoa
+			    //# Returns the number of objects currently in the array.
+			    
 			    #if RBVersion >= 2012.02
 			      #if Target32Bit
 			        declare function m_count lib CocoaLib selector "count" ( obj as Ptr ) as UInt32

@@ -16,7 +16,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function AlternateSelectedControlColor() As NSColor
+		 Shared Function AlternateSelectedControlColor() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_alternateSelectedControlColor)
 		  #endif
@@ -24,7 +24,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function AlternateSelectedControlTextColor() As NSColor
+		 Shared Function AlternateSelectedControlTextColor() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_alternateSelectedControlTextColor)
 		  #endif
@@ -32,7 +32,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Black() As NSColor
+		 Shared Function Black() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_blackColor)
 		  #endif
@@ -86,21 +86,9 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Blue() As NSColor
+		 Shared Function Blue() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_blueColor)
-		  #endif
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function BlueComponent() As Single
-		  //# Returns the NSColor's Blue component.
-		  
-		  #if targetMacOS
-		    declare function blueComponent lib CocoaLib selector "blueComponent" (id as Ptr) as Single
-		    
-		    return blueComponent(self)
 		  #endif
 		End Function
 	#tag EndMethod
@@ -122,7 +110,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Brown() As NSColor
+		 Shared Function Brown() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_brownColor)
 		  #endif
@@ -130,7 +118,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CatalogColor(listName as String, colorName as String) As NSColor
+		 Shared Function CatalogColor(listName as String, colorName as String) As NSColor
 		  //# Creates and returns an NSColor object by finding the color with the specified name in the given catalog.
 		  
 		  #if targetMacOS
@@ -173,14 +161,16 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
+		    
 		    static ref as Ptr = NSClassFromString("NSColor")
 		    return ref
+		    
 		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Clear() As NSColor
+		 Shared Function Clear() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_clearColor)
 		  #endif
@@ -188,7 +178,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ColorFromPasteboard(pasteBoard as NSPasteboard) As NSColor
+		 Shared Function ColorFromPasteboard(pasteBoard as NSPasteboard) As NSColor
 		  //# Returns the NSColor currently on the given pasteboard.
 		  
 		  //@param pasteBoard: The pasteboard from which to return the color.
@@ -250,7 +240,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ColorspaceColor(space as NSColorspace, components() as Single) As NSColor
+		 Shared Function ColorspaceColor(space as NSColorspace, components() as Single) As NSColor
 		  //# Returns an NSColor object created from the specified components of the given color space.
 		  
 		  #if targetMacOS
@@ -307,7 +297,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function colorWithCMYK(cyan as Single, magenta as Single, yellow as Single, black as Single, alpha as Single) As NSColor
+		 Shared Function colorWithCMYK(cyan as Single, magenta as Single, yellow as Single, black as Single, alpha as Single) As NSColor
 		  //# Creates and returns an NSColor object using the given opacity value and CMYK components.
 		  
 		  //@param cyan:     The cyan    component of the color object.
@@ -342,7 +332,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function colorWithHSB(hue as Single, saturation as Single, brightness as Single, alpha as Single) As NSColor
+		 Shared Function colorWithHSB(hue as Single, saturation as Single, brightness as Single, alpha as Single) As NSColor
 		  //# Creates and returns an NSColor object using the given opacity value and HSB color space components.
 		  
 		  #if targetMacOS
@@ -366,7 +356,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ColorWithHSBACalibrated(hue as Single, saturation as Single, brightness as Single, alpha as Single) As NSColor
+		 Shared Function ColorWithHSBACalibrated(hue as Single, saturation as Single, brightness as Single, alpha as Single) As NSColor
 		  //# Creates and returns an NSColor object using the given opacity and HSB color space components.
 		  
 		  #if targetMacOS
@@ -390,7 +380,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ColorWithRGB(red as Single, green as Single, blue as Single, alpha as Single) As NSColor
+		 Shared Function ColorWithRGB(red as Single, green as Single, blue as Single, alpha as Single) As NSColor
 		  //# Creates and returns an NSColor object using the given opacity value and RGB components.
 		  
 		  #if targetMacOS
@@ -414,7 +404,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ColorWithRGBACalibrated(red as Single, green as Single, blue as Single, alpha as Single) As NSColor
+		 Shared Function ColorWithRGBACalibrated(red as Single, green as Single, blue as Single, alpha as Single) As NSColor
 		  
 		  #if targetMacOS
 		    declare function colorWithCalibratedRed lib CocoaLib selector "colorWithCalibratedRed:green:blue:alpha:" _
@@ -437,7 +427,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ColorWithSRGB(red as Single, green as Single, blue as Single, alpha as Single) As NSColor
+		 Shared Function ColorWithSRGB(red as Single, green as Single, blue as Single, alpha as Single) As NSColor
 		  //# Returns a color created from the specified components in the sRGB colorspace.
 		  
 		  #if targetMacOS
@@ -461,7 +451,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ColorWithWA(white as Single, alpha as Single) As NSColor
+		 Shared Function ColorWithWA(white as Single, alpha as Single) As NSColor
 		  //# Creates and returns an NSColor object using the given opacity and grayscale values.
 		  
 		  #if targetMacOS
@@ -483,7 +473,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ColorWithWACalibrated(white as Single, alpha as Single) As NSColor
+		 Shared Function ColorWithWACalibrated(white as Single, alpha as Single) As NSColor
 		  //# Creates and returns an NSColor object using the given opacity and grayscale value.
 		  
 		  #if targetMacOS
@@ -582,7 +572,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlAlternatingRowBackgroundColors() As NSColor()
+		 Shared Function ControlAlternatingRowBackgroundColors() As NSColor()
 		  //# Returns an array containing the system specified background colors for alternating rows in tables and lists.
 		  
 		  #if targetMacOS
@@ -593,18 +583,20 @@ Inherits NSObject
 		    dim arrayRef as Ptr = controlAlternatingRowBackgroundColors(ClassRef)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      
-		      #if RBVersion > 2013.01
-		        #if Target64Bit
-		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
-		        #endif
-		      #endif
-		      
+		          #if Target64Bit then
+		              const sizeOfPtr = 8
+		          #else
+		              const sizeOfPtr = 4
+		          #endif
 		      dim arrayRange as NSRange = NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        retArray.append new NSColor(Ptr(m.UInt32Value(i*SizeOfPointer)))
+		        #if Target64Bit then
+		          retArray.append new NSColor(Ptr(m.UInt64Value(i*sizeOfPtr)))
+		        #else
+		          retArray.append new NSColor(Ptr(m.UInt32Value(i*sizeOfPtr)))
+		        #endif
 		      next
 		    end if
 		    
@@ -614,7 +606,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlBackgroundColor() As NSColor
+		 Shared Function ControlBackgroundColor() As NSColor
 		  //# Returns the system color used for the background of large controls.
 		  
 		  #if targetMacOS
@@ -632,7 +624,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlColor() As NSColor
+		 Shared Function ControlColor() As NSColor
 		  //# Returns the system color used for the flat surfaces of a control.
 		  
 		  #if targetMacOS
@@ -650,7 +642,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlDarkShadowColor() As NSColor
+		 Shared Function ControlDarkShadowColor() As NSColor
 		  //# Returns the system color used for the dark edge of the shadow dropped from controls.
 		  
 		  #if targetMacOS
@@ -668,7 +660,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlHighlightColor() As NSColor
+		 Shared Function ControlHighlightColor() As NSColor
 		  //#
 		  
 		  #if targetMacOS
@@ -686,7 +678,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlLightHighlightColor() As NSColor
+		 Shared Function ControlLightHighlightColor() As NSColor
 		  //# Returns the system color used for light highlights in controls.
 		  
 		  #if targetMacOS
@@ -704,7 +696,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlShadowColor() As NSColor
+		 Shared Function ControlShadowColor() As NSColor
 		  //# Returns the system color used for the shadows dropped from controls.
 		  
 		  #if targetMacOS
@@ -722,7 +714,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlTextColor() As NSColor
+		 Shared Function ControlTextColor() As NSColor
 		  //# Returns the system color used for text on controls that aren’t disabled.
 		  
 		  #if targetMacOS
@@ -740,7 +732,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlTextColorDisabled() As NSColor
+		 Shared Function ControlTextColorDisabled() As NSColor
 		  //# Returns the system color used for text on disabled controls.
 		  
 		  #if targetMacOS
@@ -758,7 +750,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlTint(controlTint as NSControlTint) As NSColor
+		 Shared Function ControlTint(controlTint as NSControlTint) As NSColor
 		  //# Returns the NSColor object specified by the given control tint.
 		  
 		  #if TargetMacOS
@@ -773,28 +765,28 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlTintBlue() As NSColor
+		 Shared Function ControlTintBlue() As NSColor
 		  
 		  return ControlTint(NSControlTint.NSBlueControlTint)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlTintClear() As NSColor
+		 Shared Function ControlTintClear() As NSColor
 		  
 		  return ControlTint(NSControlTint.NSClearControlTint)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlTintDefault() As NSColor
+		 Shared Function ControlTintDefault() As NSColor
 		  
 		  return ControlTint(NSControlTint.NSDefaultControlTint)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ControlTintGraphite() As NSColor
+		 Shared Function ControlTintGraphite() As NSColor
 		  
 		  return ControlTint(NSControlTint.NSGraphiteControlTint)
 		End Function
@@ -889,7 +881,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CurrentControlTint() As NSControlTint
+		 Shared Function CurrentControlTint() As NSControlTint
 		  //# Returns the current system control tint.
 		  
 		  #if targetMacOS
@@ -901,7 +893,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Cyan() As NSColor
+		 Shared Function Cyan() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_cyanColor)
 		  #endif
@@ -921,7 +913,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function DarkGray() As NSColor
+		 Shared Function DarkGray() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_darkGrayColor)
 		  #endif
@@ -943,7 +935,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function GenericGamma22Color(white as Single, alpha as Single) As NSColor
+		 Shared Function GenericGamma22Color(white as Single, alpha as Single) As NSColor
 		  //# Returns an color created with the specified white and alpha values in the GenericGamma22 colorspace.
 		  
 		  #if targetMacOS
@@ -1058,7 +1050,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Gray() As NSColor
+		 Shared Function Gray() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_grayColor)
 		  #endif
@@ -1066,7 +1058,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Green() As NSColor
+		 Shared Function Green() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_greenColor)
 		  #endif
@@ -1086,7 +1078,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function GridColor() As NSColor
+		 Shared Function GridColor() As NSColor
 		  //# Returns the system color used for the optional gridlines in, for example, a table view.
 		  
 		  #if targetMacOS
@@ -1104,7 +1096,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function HeaderColor() As NSColor
+		 Shared Function HeaderColor() As NSColor
 		  //# Returns the system color used as the background color for header cells in table views and outline views.
 		  
 		  #if targetMacOS
@@ -1122,7 +1114,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function HeaderTextColor() As NSColor
+		 Shared Function HeaderTextColor() As NSColor
 		  //# Returns the system color used for text in header cells in table views and outline views.
 		  
 		  #if targetMacOS
@@ -1162,7 +1154,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function HighlightColor() As NSColor
+		 Shared Function HighlightColor() As NSColor
 		  //# Returns the system color that represents the virtual light source on the screen.
 		  
 		  #if targetMacOS
@@ -1192,7 +1184,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function KeyboardFocusIndicatorColor() As NSColor
+		 Shared Function KeyboardFocusIndicatorColor() As NSColor
 		  //# Returns the system color that represents the keyboard focus ring around controls.
 		  
 		  #if targetMacOS
@@ -1210,7 +1202,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function KnobColor() As NSColor
+		 Shared Function KnobColor() As NSColor
 		  //# Returns the system color used for the flat surface of a slider knob that hasn’t been selected.
 		  
 		  #if targetMacOS
@@ -1228,29 +1220,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function LabelColor() As NSColor
-		  //# Returns the system color used for the flat surfaces of a control.
-		  
-		  #if targetMacOS
-		    if IsYosemite then
-		      declare function labelColor lib CocoaLib selector "labelColor" (id as Ptr) as Ptr
-		      
-		      dim colorRef as Ptr = labelColor(ClassRef)
-		      if colorRef <> nil then
-		        return new NSColor(colorRef)
-		      else
-		        return nil
-		      end if
-		      
-		    else
-		      return nil
-		    end if
-		  #endif
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Shared Function LightGray() As NSColor
+		 Shared Function LightGray() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_lightGrayColor)
 		  #endif
@@ -1282,7 +1252,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Magenta() As NSColor
+		 Shared Function Magenta() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_magentaColor)
 		  #endif
@@ -1565,7 +1535,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Orange() As NSColor
+		 Shared Function Orange() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_orangeColor)
 		  #endif
@@ -1591,7 +1561,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function PatternImageColor(image as NSImage) As NSColor
+		 Shared Function PatternImageColor(image as NSImage) As NSColor
 		  //# Creates and returns an NSColor object that uses the specified image pattern.
 		  
 		  #if targetMacOS
@@ -1617,7 +1587,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Purple() As NSColor
+		 Shared Function Purple() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_purpleColor)
 		  #endif
@@ -1625,7 +1595,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Red() As NSColor
+		 Shared Function Red() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_redColor)
 		  #endif
@@ -1657,7 +1627,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ScrollBarColor() As NSColor
+		 Shared Function ScrollBarColor() As NSColor
 		  //# Returns the system color used for scroll “bars”—that is, for the groove in which a scroller’s knob moves
 		  
 		  #if targetMacOS
@@ -1675,29 +1645,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function SecondaryLabelColor() As NSColor
-		  //# Returns the system color used for the flat surfaces of a control.
-		  
-		  #if targetMacOS
-		    if IsYosemite then
-		      declare function secondaryLabelColor lib CocoaLib selector "secondaryLabelColor" (id as Ptr) as Ptr
-		      
-		      dim colorRef as Ptr = secondaryLabelColor(ClassRef)
-		      if colorRef <> nil then
-		        return new NSColor(colorRef)
-		      else
-		        return nil
-		      end if
-		      
-		    else
-		      return nil
-		    end if
-		  #endif
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Shared Function SecondarySelectedControlColor() As NSColor
+		 Shared Function SecondarySelectedControlColor() As NSColor
 		  //# Returns the system color used in non-key views.
 		  
 		  #if targetMacOS
@@ -1715,7 +1663,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function SelectedControlColor() As NSColor
+		 Shared Function SelectedControlColor() As NSColor
 		  //# Returns the system color used for the face of a selected control.
 		  
 		  #if targetMacOS
@@ -1733,7 +1681,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function SelectedControlTextColor() As NSColor
+		 Shared Function SelectedControlTextColor() As NSColor
 		  //# Returns the system color used for text in a selected control—a control being clicked or dragged.
 		  
 		  #if targetMacOS
@@ -1751,7 +1699,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function SelectedKnobColor() As NSColor
+		 Shared Function SelectedKnobColor() As NSColor
 		  //# Returns the system color used for the slider knob when it is selected.
 		  
 		  #if targetMacOS
@@ -1769,7 +1717,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function SelectedMenuItemColor() As NSColor
+		 Shared Function SelectedMenuItemColor() As NSColor
 		  //# Returns the system color used for the face of selected menu items.
 		  
 		  #if targetMacOS
@@ -1787,7 +1735,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function SelectedMenuItemTextColor() As NSColor
+		 Shared Function SelectedMenuItemTextColor() As NSColor
 		  //# Returns the system color used for the text in menu items.
 		  
 		  #if targetMacOS
@@ -1805,7 +1753,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function SelectedTextBackgroundColor() As NSColor
+		 Shared Function SelectedTextBackgroundColor() As NSColor
 		  //# Returns the system color used for the background of selected text.
 		  
 		  #if targetMacOS
@@ -1823,7 +1771,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function SelectedTextColor() As NSColor
+		 Shared Function SelectedTextColor() As NSColor
 		  //# Returns the system color used for selected text.
 		  
 		  #if targetMacOS
@@ -1905,7 +1853,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ShadowColor() As NSColor
+		 Shared Function ShadowColor() As NSColor
 		  //# Returns the system color that represents the virtual shadows cast by raised objects on the screen.
 		  
 		  #if targetMacOS
@@ -1923,7 +1871,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function TextBackgroundColor() As NSColor
+		 Shared Function TextBackgroundColor() As NSColor
 		  //# Returns the system color used for the text background.
 		  
 		  #if targetMacOS
@@ -1941,7 +1889,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function TextColor() As NSColor
+		 Shared Function TextColor() As NSColor
 		  //# Returns the system color used for text.
 		  
 		  #if targetMacOS
@@ -1959,7 +1907,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function underPageBackgroundColor() As NSColor
+		 Shared Function underPageBackgroundColor() As NSColor
 		  //# Returns the color to use when areas revealed behind views.
 		  
 		  #if targetMacOS
@@ -1986,7 +1934,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function White() As NSColor
+		 Shared Function White() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_whiteColor)
 		  #endif
@@ -2006,7 +1954,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function WindowBackgroundColor() As NSColor
+		 Shared Function WindowBackgroundColor() As NSColor
 		  //# Returns a pattern color that will draw the ruled lines for the window background.
 		  
 		  #if targetMacOS
@@ -2024,7 +1972,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function WindowFrameColor() As NSColor
+		 Shared Function WindowFrameColor() As NSColor
 		  //# Returns the system color used for window frames, except for their text.
 		  
 		  #if targetMacOS
@@ -2042,7 +1990,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function WindowFrameTextColor() As NSColor
+		 Shared Function WindowFrameTextColor() As NSColor
 		  //# Returns the system color used for the text in window frames.
 		  
 		  #if targetMacOS
@@ -2079,7 +2027,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Yellow() As NSColor
+		 Shared Function Yellow() As NSColor
 		  #if TargetMacOS
 		    return MakeObjectFromClassMethod(AddressOf m_yellowColor)
 		  #endif

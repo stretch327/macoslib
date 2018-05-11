@@ -26,8 +26,7 @@ Inherits Canvas
 
 	#tag Event
 		Function MouseDown(X As Integer, Y As Integer) As Boolean
-		  #if TargetCarbon
-		    
+		  #If TargetMacOS
 		    declare function HandleControlClick Lib CarbonLib (inControl as Integer, inWhere as Integer, inModifiers as Integer, inAction as Integer) as Int16
 		    
 		    dim click as new MemoryBlock(4)
@@ -36,21 +35,13 @@ Inherits Canvas
 		    dim OSErr as Int16 = HandleControlClick(me.HISearchFieldRef, click.Long(0), 0, 0)
 		    #pragma unused OSErr
 		    return true
-		    
-		  #else
-		    
-		    #pragma unused X
-		    #pragma unused Y
-		    
 		  #endif
-		  
 		End Function
 	#tag EndEvent
 
 	#tag Event
 		Sub Open()
-		  #if TargetCarbon
-		    
+		  #If TargetMacOS
 		    dim v as Variant = me
 		    ObjectMap.Value(v.Hash) = me
 		    
@@ -83,9 +74,7 @@ Inherits Canvas
 		    
 		    
 		    Open
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndEvent
 
@@ -123,20 +112,19 @@ Inherits Canvas
 
 	#tag Method, Flags = &h21
 		Private Function ContentViewRef() As Integer
-		  #if TargetCarbon
-		    
-		    'OSStatus HIViewFindByID (
-		    'HIViewRef inStartView,
-		    'HIViewID inID,
-		    'HIViewRef * outControl
-		    ');
-		    '
-		    'struct ControlID {
-		    'OSType signature;
-		    'SInt32 id;
-		    '};
-		    'typedef struct ControlID ControlID;
-		    'typedef ControlID HIViewID;
+		  'OSStatus HIViewFindByID (
+		  'HIViewRef inStartView,
+		  'HIViewID inID,
+		  'HIViewRef * outControl
+		  ');
+		  '
+		  'struct ControlID {
+		  'OSType signature;
+		  'SInt32 id;
+		  '};
+		  'typedef struct ControlID ControlID;
+		  'typedef ControlID HIViewID;
+		  #If TargetMacOS
 		    
 		    declare Function CFBundleGetBundleWithIdentifier Lib CarbonLib (bundleID as CFStringRef) as Integer
 		    
@@ -157,9 +145,7 @@ Inherits Canvas
 		      theViewRef = 0
 		    End if
 		    Return theViewRef
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
@@ -333,20 +319,17 @@ Inherits Canvas
 
 	#tag Method, Flags = &h0
 		Function HasFocus() As Boolean
-		  #if TargetCarbon
-		    
-		    declare function GetKeyboardFocus lib CarbonLib (inWindow as WindowPtr, ByRef outControl as Integer) as Short
+		  #If TargetCarbon
+		    declare function GetKeyboardFocus lib CarbonLib (inWindow as Ptr, ByRef outControl as Integer) as Short
 		    
 		    dim controlRef as Integer
-		    dim OSErr as Short = GetKeyboardFocus(me.Window, controlRef)
+		    dim OSErr as Int16 = GetKeyboardFocus(me.Window.Handle, controlRef)
 		    if OSErr <> 0 then
 		      return false
 		    end if
 		    
 		    return controlRef = me.HISearchFieldRef
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
@@ -402,8 +385,7 @@ Inherits Canvas
 
 	#tag Method, Flags = &h21
 		Private Sub RegisterCarbonEventHandler()
-		  #if TargetCarbon
-		    
+		  #If TargetMacOS
 		    If me.HISearchFieldRef = 0 then
 		      Return
 		    End if
@@ -459,7 +441,6 @@ Inherits Canvas
 		    
 		    // Keep the compiler from complaining
 		    #pragma unused OSError
-		    
 		  #endif
 		  
 		End Sub
@@ -523,7 +504,7 @@ Inherits Canvas
 	#tag Method, Flags = &h21
 		Private Function RootView() As Integer
 		  #if TargetCarbon
-		    declare Function HIViewGetRoot Lib CarbonLib (inWindow as WindowPtr) as Integer
+		    declare Function HIViewGetRoot Lib CarbonLib (inWindow as Ptr) as Integer
 		    
 		    If Window Is Nil then
 		      Return 0
@@ -541,7 +522,7 @@ Inherits Canvas
 		      return
 		    end if
 		    
-		    declare function SetKeyboardFocus lib CarbonLib (inWindow as WindowPtr, inControl as Integer, inPart as Int16) as Int16
+		    declare function SetKeyboardFocus lib CarbonLib (inWindow as Ptr, inControl as Integer, inPart as Int16) as Int16
 		    
 		    dim err as Int16 = SetKeyboardFocus(self.Window, self.HISearchFieldRef, kControlEditTextPart)
 		    if err <> 0 then
@@ -874,10 +855,9 @@ Inherits Canvas
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  #if TargetCarbon
-			    
-			    declare Function GetControlDataSize Lib CarbonLib (inControl as Integer, inPart as Short, inTagName as OSType, ByRef outMaxSize as Integer) as Short
-			    declare Function GetControlData Lib CarbonLib (inControl as Integer, inPart as Short, inTagName as OSType, inBufferSize as Integer,ByRef inBuffer as CFStringRef, outActualSize as Ptr) as Short
+			  #If TargetMacOS
+			    declare Function GetControlDataSize Lib CarbonLib (inControl as Integer, inPart as Int16, inTagName as OSType, ByRef outMaxSize as Integer) as Int16
+			    declare Function GetControlData Lib CarbonLib (inControl as Integer, inPart as Int16, inTagName as OSType, inBufferSize as Integer,ByRef inBuffer as CFStringRef, outActualSize as Ptr) as Int16
 			    
 			    dim bufferSize as Integer
 			    dim OSError as Integer = GetControlDataSize(me.HISearchFieldRef, kControlEditTextPart, kControlEditTextCFStringTag, bufferSize)
@@ -891,9 +871,7 @@ Inherits Canvas
 			    End if
 			    
 			    Return buffer
-			    
 			  #endif
-			  
 			End Get
 		#tag EndGetter
 		#tag Setter
@@ -1030,13 +1008,11 @@ Inherits Canvas
 			Group="Behavior"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AcceptTabs"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoDeactivate"
@@ -1044,7 +1020,6 @@ Inherits Canvas
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Backdrop"
@@ -1052,7 +1027,6 @@ Inherits Canvas
 			Group="Appearance"
 			Type="Picture"
 			EditorType="Picture"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="CancelButton"
@@ -1073,7 +1047,6 @@ Inherits Canvas
 			Group="Behavior"
 			InitialValue="False"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Enabled"
@@ -1081,14 +1054,13 @@ Inherits Canvas
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EraseBackground"
 			Group="Behavior"
 			InitialValue="False"
 			Type="Boolean"
-			InheritedFrom="Canvas"
+			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Height"
@@ -1096,7 +1068,6 @@ Inherits Canvas
 			Group="Position"
 			InitialValue="100"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HelpTag"
@@ -1104,61 +1075,55 @@ Inherits Canvas
 			Group="Appearance"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			Type="Integer"
-			InheritedFrom="Canvas"
+			EditorType="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InitialParent"
 			Group="Initial State"
-			InheritedFrom="Canvas"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockBottom"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockLeft"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockRight"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockTop"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="Canvas"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="SearchIcon"
@@ -1183,7 +1148,8 @@ Inherits Canvas
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Canvas"
+			Type="String"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabIndex"
@@ -1191,14 +1157,12 @@ Inherits Canvas
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabPanelIndex"
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabStop"
@@ -1206,7 +1170,6 @@ Inherits Canvas
 			Group="Position"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Text"
@@ -1220,13 +1183,19 @@ Inherits Canvas
 			Visible=true
 			Group="Position"
 			Type="Integer"
-			InheritedFrom="Canvas"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Transparent"
+			Visible=true
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UseFocusRing"
 			Group="Appearance"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Visible"
@@ -1234,7 +1203,6 @@ Inherits Canvas
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Width"
@@ -1242,7 +1210,6 @@ Inherits Canvas
 			Group="Position"
 			InitialValue="100"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

@@ -3,15 +3,15 @@ Class CFAttributedString
 Inherits CFType
 	#tag Event
 		Function ClassID() As UInt32
-		  return self.ClassID
+		  return me.ClassID
 		End Function
 	#tag EndEvent
 
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CoreFoundation.framework alias "CFAttributedStringGetTypeID" () as UInt32
+		    declare function TypeID lib CarbonLib alias "CFAttributedStringGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -21,15 +21,14 @@ Inherits CFType
 	#tag Method, Flags = &h1000
 		Sub Constructor(text as String, withAttributes as CFDictionary = nil)
 		  #if targetMacOS
-		    declare function CFAttributedStringCreate lib CoreFoundation.framework (alloc as Ptr, str as CFStringRef, attr as CFTypeRef) as CFTypeRef
+		    declare function CFAttributedStringCreate lib CarbonLib (alloc as Ptr, str as CFStringRef, attr as Ptr) as Ptr
 		    
-		    
-		    dim attrRef as CFTypeRef
+		    dim attr as Ptr
 		    if withAttributes <> nil then
-		      attrRef = withAttributes.Handle
+		      attr = withAttributes.Reference
 		    end if
 		    
-		    self.Constructor (CFAttributedStringCreate(nil, text, attrRef), hasOwnership)
+		    self.Constructor (CFAttributedStringCreate (nil, text, attr), hasOwnership)
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -37,13 +36,9 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Function GetString() As String
 		  #if TargetMacOS
-		    declare function CFAttributedStringGetString lib CoreFoundation.framework (hdl as CFTypeRef) as CFStringRef
+		    declare function CFAttributedStringGetString lib CarbonLib (hdl as Ptr) as CFStringRef
 		    
-		    if self <> nil then
-		      return CFAttributedStringGetString(self)
-		    else
-		      return ""
-		    end if
+		    return CFAttributedStringGetString (self)
 		  #endif
 		End Function
 	#tag EndMethod
@@ -51,13 +46,9 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Function Length() As Integer
 		  #if TargetMacOS
-		    declare function CFAttributedStringGetLength lib CoreFoundation.framework (hdl as CFTypeRef) as Integer
+		    declare function CFAttributedStringGetLength lib CarbonLib (hdl as Ptr) as Integer
 		    
-		    if self <> nil then
-		      return CFAttributedStringGetLength(self)
-		    else
-		      return 0
-		    end if
+		    return CFAttributedStringGetLength (self)
 		  #endif
 		End Function
 	#tag EndMethod
@@ -68,40 +59,40 @@ Inherits CFType
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			InheritedFrom="CFType"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

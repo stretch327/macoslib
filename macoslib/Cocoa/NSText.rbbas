@@ -1049,11 +1049,34 @@ Inherits NSObject
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="Alignment"
+			Group="Behavior"
+			Type="NSTextAlignment"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - NSLeftTextAlignment"
+				"1 - NSRightTextAlignment"
+				"2 - NSCenterTextAlignment"
+				"3 - NSJustifiedTextAlignment"
+				"4 - NSNaturalTextAlignment"
+			#tag EndEnumValues
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="BaseWritingDirection"
+			Group="Behavior"
+			Type="NSWritingDirection"
+			EditorType="Enum"
+			#tag EnumValues
+				"-1 - NSWritingDirectionNatural"
+				"0 - NSWritingDirectionLeftToRight"
+				"1 - NSWritingDirectionRightToLeft"
+			#tag EndEnumValues
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Description"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DrawsBackground"
@@ -1085,20 +1108,20 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="RichText"
@@ -1125,14 +1148,14 @@ Inherits NSObject
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UsesFontPanel"

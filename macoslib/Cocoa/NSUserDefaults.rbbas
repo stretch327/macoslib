@@ -194,13 +194,11 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function StandardUserDefaults() As NSUserDefaults
+		Shared Function StandardUserDefaults() As NSUserDefaults
 		  #if TargetMacOS
 		    declare function standardUserDefaults lib CocoaLib selector "standardUserDefaults" (Cls as Ptr) as Ptr
 		    
-		    static defaults as NSUserDefaults = new NSUserDefaults (standardUserDefaults(Cocoa.NSClassFromString("NSUserDefaults")), not hasOwnership)
-		    
-		    return defaults
+		    return new NSUserDefaults(Cocoa.NSClassFromString( "NSUserDefaults" ), hasOwnership)
 		  #endif
 		End Function
 	#tag EndMethod
@@ -278,40 +276,39 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

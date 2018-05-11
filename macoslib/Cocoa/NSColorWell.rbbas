@@ -169,19 +169,16 @@ Inherits NSControl
 			Visible=true
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AcceptTabs"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AllowsExpansionToolTips"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoDeactivate"
@@ -189,13 +186,11 @@ Inherits NSControl
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="autoresizesSubviews"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Backdrop"
@@ -203,7 +198,6 @@ Inherits NSControl
 			Group="Appearance"
 			Type="Picture"
 			EditorType="Picture"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Bold"
@@ -211,7 +205,6 @@ Inherits NSControl
 			Group="Behavior"
 			InitialValue="false"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Bordered"
@@ -231,19 +224,16 @@ Inherits NSControl
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoubleBuffer"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoubleValue"
 			Group="Behavior"
 			Type="Double"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Enabled"
@@ -251,19 +241,16 @@ Inherits NSControl
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EraseBackground"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="FloatValue"
 			Group="Behavior"
 			Type="Single"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Height"
@@ -271,7 +258,6 @@ Inherits NSControl
 			Group="Position"
 			InitialValue="27"
 			Type="Integer"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HelpTag"
@@ -279,7 +265,6 @@ Inherits NSControl
 			Group="Appearance"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -287,25 +272,21 @@ Inherits NSControl
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InitialParent"
 			Group="Initial State"
 			Type="String"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IntegerValue"
 			Group="Behavior"
 			Type="Integer"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsFlipped"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Italic"
@@ -313,7 +294,6 @@ Inherits NSControl
 			Group="Behavior"
 			InitialValue="false"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -321,76 +301,65 @@ Inherits NSControl
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockBottom"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockLeft"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockRight"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockTop"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="StringValue"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabIndex"
 			Group="Position"
 			Type="Integer"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabPanelIndex"
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabStop"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TextFont"
@@ -399,7 +368,6 @@ Inherits NSControl
 			InitialValue="System"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TextSize"
@@ -407,7 +375,6 @@ Inherits NSControl
 			Group="Behavior"
 			InitialValue="0.0"
 			Type="double"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -415,7 +382,14 @@ Inherits NSControl
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSControl"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Transparent"
+			Visible=true
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Underlined"
@@ -423,13 +397,11 @@ Inherits NSControl
 			Group="Behavior"
 			InitialValue="false"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UseFocusRing"
 			Group="Appearance"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Visible"
@@ -437,7 +409,6 @@ Inherits NSControl
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Width"
@@ -445,7 +416,6 @@ Inherits NSControl
 			Group="Position"
 			InitialValue="48"
 			Type="Integer"
-			InheritedFrom="NSControl"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

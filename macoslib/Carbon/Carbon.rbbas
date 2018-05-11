@@ -7,23 +7,11 @@ Protected Module Carbon
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Attributes( deprecated ) Protected Function GetSystemVersionFromGestalt() As String
-		  // Attention: This is now deprecated because it's returning wrong
-		  // results on OSX 10.10 (Yosemite) and also shows a warning
-		  // in the Console log.
-		  // Use the Is... functions or SystemVersionAsInt instead.
-		  
-		  #if TargetMacOS
-		    dim sys1, sys2, sys3 as Integer
-		    dim OK as Boolean = true
-		    OK = OK AND System.Gestalt("sys1", sys1)
-		    OK = OK AND System.Gestalt("sys2", sys2)
-		    OK = OK AND System.Gestalt("sys3", sys3)
-		    
-		    if OK AND sys1 <> 0 then
-		      return Format(sys1,"#")+"."+Format(sys2,"#")+"."+Format(sys3,"#")
-		    end if
-		  #endif
+		Protected Function GetSystemVersionFromGestalt() As String
+		  dim sh as new shell
+		  sh.Execute("sw_vers | grep ProductVersion | awk '{print $2}'")
+		  dim s as string = sh.Result
+		  return trim(s)
 		End Function
 	#tag EndMethod
 
@@ -97,16 +85,6 @@ Protected Module Carbon
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function IsYosemite() As Boolean
-		  // Tells you if this OS has features of this version
-		  // This means that it returns true for later OS versions as well.
-		  // If you want to test for a particular version, use SystemVersionAsInt
-		  
-		  return SystemVersionAsInt >= 101000
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h1
 		Protected Function Languages() As String()
 		  dim languagelist as CFArray = CFArray(CFPreferences.Value("AppleLanguages"))
@@ -118,6 +96,21 @@ Protected Module Carbon
 		  
 		  return theList
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub pTestAssert(b as Boolean, msg as String = "")
+		  #if DebugBuild
+		    if not b then
+		      break
+		      #if TargetDesktop
+		        MsgBox "Test in Carbon module failed: "+EndOfLine+EndOfLine+msg
+		      #else
+		        Print "Test in Carbon module failed: "+msg
+		      #endif
+		    end
+		  #endif
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -208,29 +201,10 @@ Protected Module Carbon
 		  //
 		  // This function avoids using floating point, so that a version such as 10.4 doesn't become 10.39999 or something alike, making a test for >=10.4 fail
 		  
-		  #if TargetMacOS
-		    static version as Integer
-		    
-		    if version = 0 then
-		      // Since OSX 10.10, we have to prefer NSProcessInfo's version over Gestalt
-		      dim sys1, sys2, sys3 as Integer
-		      dim v as NSProcessInfo.OSVersion
-		      v = NSProcessInfo.ProcessInfo.OperatingSystemVersion
-		      if v.major > 0 then
-		        sys1 = v.major
-		        sys2 = v.minor
-		        sys3 = v.patch
-		      else
-		        // This OS is older (pre 10.9), so we'll fall back to using Gestalt
-		        call System.Gestalt("sys1", sys1)
-		        call System.Gestalt("sys2", sys2)
-		        call System.Gestalt("sys3", sys3)
-		      end if
-		      version = 10000 * sys1 + 100 * sys2 + sys3
-		    end if
-		    
-		    return version
-		  #endif
+		  static version as Integer = Carbon.VersionAsInteger( SystemVersionAsString )
+		  
+		  return version
+		  
 		End Function
 	#tag EndMethod
 
@@ -247,16 +221,37 @@ Protected Module Carbon
 		  //   SystemVersionAsString >= "10.6"
 		  // with the actual OS X version being 10.11: Then the string "10.6" will be
 		  // greater than "10.11", which is the wrong result for your test.
-		  //
-		  // Also, this text may be localized in ways you cannot even parse!
 		  
-		  #if TargetMacOS
-		    // Due to the fact that using Gestalt to get the version is not working in OSX 10.10
-		    // any more, we need to use NSProcessInfo now instead:
-		    static version as String = NSProcessInfo.ProcessInfo.operatingSystemVersionString
-		    return version
-		  #endif
+		  
+		  static version as String = GetSystemVersionFromGestalt
+		  return version
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Attributes( hidden ) Protected Sub TestSelf()
+		  select case GetSystemVersionFromGestalt.Left(4)
+		  case "10.3"
+		    pTestAssert IsPanther
+		    pTestAssert not IsTiger
+		  case "10.4"
+		    pTestAssert IsPanther
+		    pTestAssert IsTiger
+		    pTestAssert not IsLeopard
+		  case "10.5"
+		    pTestAssert IsTiger
+		    pTestAssert IsLeopard
+		    pTestAssert not IsSnowLeopard
+		  case "10.6"
+		    pTestAssert IsLeopard
+		    pTestAssert IsSnowLeopard
+		    pTestAssert not IsLion
+		  else
+		    pTestAssert IsSnowLeopard
+		    pTestAssert IsLion
+		  end select
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -404,33 +399,33 @@ Protected Module Carbon
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Module

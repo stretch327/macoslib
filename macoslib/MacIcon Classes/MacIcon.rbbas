@@ -1,7 +1,7 @@
 #tag Class
 Protected Class MacIcon
 	#tag Method, Flags = &h0
-		 Shared Sub Acquire(iconRef as Ptr)
+		Shared Sub Acquire(iconRef as Ptr)
 		  if iconRef = nil then
 		    return
 		  end if
@@ -15,6 +15,36 @@ Protected Class MacIcon
 		    
 		  #endif
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function asPicture(g as graphics) As Picture
+		  #if targetMacOS
+		    declare function IsIconRefMaskEmpty lib CarbonLib (iconRef as Ptr) as Boolean
+		    declare function PlotIconRefInContext lib CarbonLib (CGContextRef as ptr, byref theRect as CGRect, _
+		    align as Int16, transform as Int16, labelColor as ptr, flags as Integer, iconRef as Ptr) as Integer
+		    
+		    const kPlotIconRefNoImage = 2
+		    const kPlotIconRefNoMask = 4
+		    
+		    dim p as picture = g.BitmapForCaching(me.Size,me.Size,true)
+		    dim rect as CGRect = CGRectMake( 0, 0, p.width, p.height )
+		    
+		    dim context as new CGContextGraphicsPort( p.graphics )
+		    call PlotIconRefInContext( context, rect, kAlignNone, me.pTransform, nil, kPlotIconRefNoMask, me.IconRef )
+		    
+		    // if not IsIconRefMaskEmpty( me.iconRef ) then
+		    // dim maskContext as new CGContextGraphicsPort( p.mask.graphics )
+		    // maskContext.setFillColor( &cFFFFFF )
+		    // maskContext.fillRect( rect )
+		    // 
+		    // call PlotIconRefInContext( maskContext, rect, kAlignNone, me.pTransform, nil, kPlotIconRefNoImage, me.IconRef )
+		    // end if
+		    
+		    me.icon = p
+		    return me.icon
+		  #endif
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -98,7 +128,7 @@ Protected Class MacIcon
 		    soft declare sub CGContextSynchronize lib CarbonLib (context as Integer)
 		    soft declare function QDEndCGContext lib CarbonLib (port as Integer, ByRef context as Integer) as Integer
 		    soft declare function PlotIconRefInContext lib CarbonLib (CGContextRef as Integer, byref theRect as CGRect, _
-		    align as Short, transform as Short, ByRef labelColor as RGBColor, _
+		    align as Int16, transform as Int16, ByRef labelColor as RGBColor, _
 		    flags as Integer, iconRef as Ptr) as Integer
 		    
 		    dim error as Integer
@@ -110,7 +140,7 @@ Protected Class MacIcon
 		      error = QDBeginCGContext (grafPort, context)
 		    end if
 		    
-		    dim rect as CGRect = CGRectMake(left, g.Height - top - self.size, self.size, self.size)
+		    dim rect as CGRect = CGRectMake(left, g.Height*g.scaley - top - self.size, self.size, self.size)
 		    error = PlotIconRefInContext(context, rect, kAlignNone, me.pTransform, labelColor, kIconServicesNormalUsageFlag, me.IconRef)
 		    
 		    if grafPort <> 0 then
@@ -145,9 +175,9 @@ Protected Class MacIcon
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewIconFromExtension(extension as String) As MacIcon
+		Shared Function NewIconFromExtension(extension as String) As MacIcon
 		  #if TargetMacOS
-		    soft declare function GetIconRefFromTypeInfo lib CarbonLib (inCreator as OSType, inType as OSType, inExtension as CFStringRef, inMIMEType as Ptr, inUsageFlags as Integer, ByRef outIconRef as Ptr) as Short
+		    soft declare function GetIconRefFromTypeInfo lib CarbonLib (inCreator as OSType, inType as OSType, inExtension as CFStringRef, inMIMEType as Ptr, inUsageFlags as Integer, ByRef outIconRef as Ptr) as Int16
 		    //requires OS 10.3
 		    
 		    dim theIconRef as Ptr
@@ -162,7 +192,7 @@ Protected Class MacIcon
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewIconFromFolderItem(f as FolderItem, quick as Boolean = false) As MacIcon
+		Shared Function NewIconFromFolderItem(f as FolderItem, quick as Boolean = false) As MacIcon
 		  if not (f is nil) and f.Exists then
 		    if quick then
 		      if f.Directory then
@@ -182,13 +212,13 @@ Protected Class MacIcon
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewIconFromFSRef(fileRef as FSRef) As MacIcon
+		Shared Function NewIconFromFSRef(fileRef as FSRef) As MacIcon
 		  #if targetMacOS
 		    
 		    dim catalogInfo as FSCatalogInfo
 		    dim outFileName as HFSUniStr255
 		    
-		    soft declare function FSGetCatalogInfo lib CarbonLib (ref as Ptr, whichInfo as Integer, ByRef catalogInfo as FSCatalogInfo, ByRef outName as HFSUniStr255, fsSpec as Ptr, parentRef as Ptr) as Short
+		    soft declare function FSGetCatalogInfo lib CarbonLib (ref as Ptr, whichInfo as Integer, ByRef catalogInfo as FSCatalogInfo, ByRef outName as HFSUniStr255, fsSpec as Ptr, parentRef as Ptr) as Int16
 		    
 		    dim OSError as Integer = FSGetCatalogInfo(fileRef, kIconServicesCatalogInfoMask, catalogInfo, outFileName, nil, nil)
 		    if OSError = 0 then
@@ -216,7 +246,7 @@ Protected Class MacIcon
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewIconFromicnsFile(icnsFile as FolderItem) As MacIcon
+		Shared Function NewIconFromicnsFile(icnsFile as FolderItem) As MacIcon
 		  #if targetMacOS
 		    if icnsFile is nil or not icnsFile.Exists then
 		      return NewIconFromOSInfo(kUnknownFileType)
@@ -274,9 +304,9 @@ Protected Class MacIcon
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewIconFromMIMEType(mimeType as String) As MacIcon
+		Shared Function NewIconFromMIMEType(mimeType as String) As MacIcon
 		  #if TargetMacOS
-		    soft declare function GetIconRefFromTypeInfo lib CarbonLib (inCreator as OSType, inType as OSType, inExtension as Ptr, inMIMEType as CFStringRef, inUsageFlags as Integer, ByRef outIconRef as Ptr) as Short
+		    soft declare function GetIconRefFromTypeInfo lib CarbonLib (inCreator as OSType, inType as OSType, inExtension as Ptr, inMIMEType as CFStringRef, inUsageFlags as Integer, ByRef outIconRef as Ptr) as Int16
 		    //requires OS 10.3
 		    
 		    dim theIconRef as Ptr
@@ -291,15 +321,15 @@ Protected Class MacIcon
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewIconFromOSInfo(type as OSType) As MacIcon
+		Shared Function NewIconFromOSInfo(type as OSType) As MacIcon
 		  return NewIconFromOSInfo(MacIcon.kSystemIconsCreator, type)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NewIconFromOSInfo(creator as OSType, type as OSType) As MacIcon
+		Shared Function NewIconFromOSInfo(creator as OSType, type as OSType) As MacIcon
 		  #if TargetMacOS
-		    soft declare function GetIconRef lib CarbonLib (vRefNum as Short, creator as OSType, icnType as OSType, ByRef theIconRef as Ptr) as Short
+		    soft declare function GetIconRef lib CarbonLib (vRefNum as Int16, creator as OSType, icnType as OSType, ByRef theIconRef as Ptr) as Int16
 		    
 		    const kOnSystemDisk = -32768
 		    dim theIconRef as Ptr
@@ -318,7 +348,7 @@ Protected Class MacIcon
 		  #if targetMacOS
 		    declare function IsIconRefMaskEmpty lib CarbonLib (iconRef as Ptr) as Boolean
 		    declare function PlotIconRefInContext lib CarbonLib (CGContextRef as ptr, byref theRect as CGRect, _
-		    align as Short, transform as Short, labelColor as ptr, flags as Integer, iconRef as Ptr) as Integer
+		    align as Int16, transform as Int16, labelColor as ptr, flags as Integer, iconRef as Ptr) as Integer
 		    
 		    const kPlotIconRefNoImage = 2
 		    const kPlotIconRefNoMask = 4
@@ -327,25 +357,19 @@ Protected Class MacIcon
 		      return me.icon
 		    end
 		    
-		    #if RBVersion >= 2011.04
-		      dim p as new Picture( me.size, me.size )
-		    #else
-		      dim p as new Picture( me.size, me.size, 32 )
-		    #endif
+		    dim p as new Picture( me.size, me.size, 32 )
 		    dim rect as CGRect = CGRectMake( 0, 0, p.width, p.height )
 		    
 		    dim context as new CGContextGraphicsPort( p.graphics )
 		    call PlotIconRefInContext( context, rect, kAlignNone, me.pTransform, nil, kPlotIconRefNoMask, me.IconRef )
 		    
-		    #if RBVersion < 2011.04
-		      if not IsIconRefMaskEmpty( me.iconRef ) then
-		        dim maskContext as new CGContextGraphicsPort( p.mask.graphics )
-		        maskContext.setFillColor( &cFFFFFF )
-		        maskContext.fillRect( rect )
-		        
-		        call PlotIconRefInContext( maskContext, rect, kAlignNone, me.pTransform, nil, kPlotIconRefNoImage, me.IconRef )
-		      end if
-		    #endif
+		    // if not IsIconRefMaskEmpty( me.iconRef ) then
+		    // dim maskContext as new CGContextGraphicsPort( p.mask.graphics )
+		    // maskContext.setFillColor( &cFFFFFF )
+		    // maskContext.fillRect( rect )
+		    // 
+		    // call PlotIconRefInContext( maskContext, rect, kAlignNone, me.pTransform, nil, kPlotIconRefNoImage, me.IconRef )
+		    // end if
 		    
 		    me.icon = p
 		    return me.icon
@@ -364,7 +388,7 @@ Protected Class MacIcon
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub Release(theIconRef as Ptr)
+		Shared Sub Release(theIconRef as Ptr)
 		  if theIconRef = nil then
 		    return
 		  end if
@@ -739,33 +763,33 @@ Protected Class MacIcon
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

@@ -14,14 +14,16 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
+		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSNotification")
 		    return ref
+		    
 		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Shared Function Create(aName as String, anObject as NSObject, anUserInfo as NSDictionary = nil) As NSNotification
+		 Shared Function Create(aName as String, anObject as NSObject, anUserInfo as NSDictionary = nil) As NSNotification
 		  //# Returns a new notification object with a specified name and object.
 		  
 		  #if TargetMacOS

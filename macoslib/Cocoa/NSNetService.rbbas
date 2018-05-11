@@ -12,10 +12,14 @@ Inherits NSObject
 		    dim nsd as NSData
 		    dim result() as string
 		    
+		    'DReportTitled  "Adresses:"
+		    
 		    for i as integer=0 to nsa.Count - 1
 		      nsd = new NSData( nsa.Value( i ))
 		      result.Append  sockaddrToString( nsd.Data )
 		    next
+		    
+		    'DReport result
 		    
 		    return   result
 		  #endif
@@ -33,7 +37,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function DataFromTXTRecordDictionary(dict as NSDictionary) As NSData
+		Shared Function DataFromTXTRecordDictionary(dict as NSDictionary) As NSData
 		  
 		  #if TargetMacOS
 		    declare function m_dataFromTXTRecordDictionary lib CocoaLib selector "dataFromTXTRecordDictionary:" ( Cls as Ptr, data as ptr ) as Ptr
@@ -78,6 +82,7 @@ Inherits NSObject
 		      dim dict as Dictionary = NSDict.VariantValue
 		      
 		      obj.HandleDidNotPublish   dict
+		      'DReport CurrentMethodName, Hex( id ), "fired"
 		      
 		    else
 		      Raise new macoslibException( "Target object no longer exists." )
@@ -103,6 +108,7 @@ Inherits NSObject
 		      dim dict as Dictionary = NSDict.VariantValue
 		      
 		      obj.HandleDidNotResolve  dict
+		      'DReport CurrentMethodName, Hex( id ), "fired"
 		      
 		    else
 		      Raise new macoslibException( "Target object no longer exists." )
@@ -125,6 +131,7 @@ Inherits NSObject
 		    dim obj as NSNetService = NSNetService( w.Value )
 		    if obj <> nil then
 		      obj.HandleDidPublish
+		      'DReport CurrentMethodName, Hex( id ), "fired"
 		      
 		    else
 		      //something might be wrong.
@@ -147,6 +154,7 @@ Inherits NSObject
 		    dim obj as NSNetService = NSNetService( w.Value )
 		    if obj <> nil then
 		      obj.HandleDidResolve
+		      'DReport CurrentMethodName, Hex( id ), "fired"
 		      
 		    else
 		      Raise new macoslibException( "Target object no longer exists." )
@@ -169,6 +177,7 @@ Inherits NSObject
 		    dim obj as NSNetService = NSNetService( w.Value )
 		    if obj <> nil then
 		      obj.HandleDidStop
+		      'DReport CurrentMethodName, Hex( id ), "fired"
 		      
 		    else
 		      Raise new macoslibException( "Target object no longer exists." )
@@ -190,7 +199,9 @@ Inherits NSObject
 		    dim w as WeakRef = CocoaDelegateMap.Lookup( id, new WeakRef( nil ))
 		    dim obj as NSNetService = NSNetService( w.Value )
 		    if obj <> nil then
+		      'dim data as NSData = new NSData( dataPtr, false )
 		      obj.HandleDidUpdateTXTRecord( dataPtr )
+		      'DReport CurrentMethodName, Hex( id ), "fired"
 		      
 		    else
 		      //something might be wrong.
@@ -213,6 +224,7 @@ Inherits NSObject
 		    dim obj as NSNetService = NSNetService( w.Value )
 		    if obj <> nil then
 		      obj.HandleWillPublish
+		      'DReport CurrentMethodName, Hex( id ), "fired"
 		      
 		    else
 		      Raise new macoslibException( "Target object no longer exists." )
@@ -247,7 +259,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function DictionaryFromTXTRecordData(data as NSData) As NSDictionary
+		Shared Function DictionaryFromTXTRecordData(data as NSData) As NSDictionary
 		  
 		  #if TargetMacOS
 		    declare function m_dictionaryFromTXTRecordData lib CocoaLib selector "dictionaryFromTXTRecordData:" ( Cls as Ptr, data as ptr ) as Ptr
@@ -283,6 +295,20 @@ Inherits NSObject
 		  dim w as WeakRef = CocoaDelegateMap.Lookup(id, new WeakRef(nil))
 		  return NSSearchField(w.Value)
 		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Shared Function FPtr(p as Ptr) As Ptr
+		  //This function is a workaround for the inability to convert a Variant containing a delegate to Ptr:
+		  //dim v as Variant = AddressOf Foo
+		  //dim p as Ptr = v
+		  //results in a TypeMismatchException
+		  //So now I do
+		  //dim v as Variant = FPtr(AddressOf Foo)
+		  //dim p as Ptr = v
+		  
+		  return p
 		End Function
 	#tag EndMethod
 
@@ -379,7 +405,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function InitForPublishing(name as String, domain as string, type as string, port as integer) As NSNetService
+		Shared Function InitForPublishing(name as String, domain as string, type as string, port as integer) As NSNetService
 		  
 		  #if TargetMacOS
 		    declare function initWithDomain lib CocoaLib selector "initWithDomain:type:name:port:" ( id as Ptr, domain as CFStringRef, type as CFStringRef, name as CFStringRef, port as Integer ) as Ptr
@@ -401,7 +427,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function InitForResolving(name as String, domain as string, type as string) As NSNetService
+		Shared Function InitForResolving(name as String, domain as string, type as string) As NSNetService
 		  
 		  #if TargetMacOS
 		    declare function initWithDomain lib CocoaLib selector "initWithDomain:type:name:" ( id as Ptr, domain as CFStringRef, type as CFStringRef, name as CFStringRef ) as Ptr
@@ -424,24 +450,51 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function MakeDelegateClass(className as String = DelegateClassName, superclassName as String = "NSObject") As Ptr
-		  #if TargetMacOS then
+		  //this is Objective-C 2.0 code (available in Leopard).  For 1.0, we'd need to do it differently.
+		  
+		  #if targetCocoa
+		    declare function objc_allocateClassPair lib CocoaLib (superclass as Ptr, name as CString, extraBytes as Integer) as Ptr
+		    declare sub objc_registerClassPair lib CocoaLib (cls as Ptr)
+		    declare function class_addMethod lib CocoaLib (cls as Ptr, name as Ptr, imp as Ptr, types as CString) as Boolean
+		    
+		    dim newClassId as Ptr = objc_allocateClassPair(Cocoa.NSClassFromString(superclassName), className, 0)
+		    if newClassId = nil then
+		      raise new macoslibException( "Unable to create ObjC subclass " + className + " from " + superclassName ) //perhaps the class already exists.  We could check for this, and raise an exception for other errors.
+		      raise new ObjCException
+		      return nil
+		    end if
+		    
+		    'DReport  CurrentMethodName, "executing"
+		    
+		    objc_registerClassPair newClassId
+		    
 		    dim methodList() as Tuple
+		    methodList.Append  "netService:didNotPublish:" : FPtr( AddressOf  delegate_DidNotPublish ) : "v@:@@"
+		    methodList.Append  "netService:didNotResolve:" : FPtr( AddressOf  delegate_DidNotResolve ) : "v@:@@"
+		    methodList.Append  "netService:didUpdateTXTRecordData:" : FPtr( AddressOf  delegate_DidUpdateTXTRecord ) : "v@:@@"
+		    methodList.Append  "netServiceDidPublish:" : FPtr( AddressOf delegate_DidPublish ) : "v@:@"
+		    methodList.Append  "netServiceDidResolveAddress:" : FPtr ( AddressOf delegate_DidResolve ) : "v@:@"
+		    methodList.Append  "netServiceDidStop:" : FPtr( AddressOf delegate_DidStop ) : "v@:@"
+		    methodList.Append  "netServiceWillPublish:" : FPtr( AddressOf delegate_WillPublish ) : "v@:@"
+		    methodList.Append  "netServiceWillResolve:" : FPtr( AddressOf delegate_WillResolve ) : "v@:@"
 		    
-		    methodList.Append  "netService:didNotPublish:" : CType( AddressOf  delegate_DidNotPublish, Ptr ) : "v@:@@"
-		    methodList.Append  "netService:didNotResolve:" : CType( AddressOf  delegate_DidNotResolve, Ptr ) : "v@:@@"
-		    methodList.Append  "netService:didUpdateTXTRecordData:" : CType( AddressOf  delegate_DidUpdateTXTRecord, Ptr ) : "v@:@@"
-		    methodList.Append  "netServiceDidPublish:" : CType( AddressOf delegate_DidPublish, Ptr ) : "v@:@"
-		    methodList.Append  "netServiceDidResolveAddress:" : CType( AddressOf delegate_DidResolve, Ptr ) : "v@:@"
-		    methodList.Append  "netServiceDidStop:" : CType( AddressOf delegate_DidStop, Ptr ) : "v@:@"
-		    methodList.Append  "netServiceWillPublish:" : CType( AddressOf delegate_WillPublish, Ptr ) : "v@:@"
-		    methodList.Append  "netServiceWillResolve:" : CType( AddressOf delegate_WillResolve, Ptr ) : "v@:@"
+		    dim methodsAdded as Boolean = true
+		    for each item as Tuple in methodList
+		      if NOT class_addMethod(newClassId, Cocoa.NSSelectorFromString(item(0)), item(1), item(2)) then
+		        Raise new ObjCException
+		      end if
+		    next
 		    
-		    return Cocoa.MakeDelegateClass (className, superclassName, methodList)
+		    if methodsAdded then
+		      return newClassId
+		    else
+		      return nil
+		    end if
+		    
 		  #else
 		    #pragma unused className
 		    #pragma unused superClassName
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
@@ -508,6 +561,7 @@ Inherits NSObject
 		    mState = kStateIsResolving
 		    resolveWithTimeout   me.id, timeoutInSeconds
 		    
+		    'DReport  CurrentMethodName, "fired"
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -846,7 +900,6 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -854,7 +907,6 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -862,14 +914,12 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="State"
@@ -881,7 +931,6 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -889,7 +938,6 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

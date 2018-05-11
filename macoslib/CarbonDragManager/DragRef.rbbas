@@ -2,8 +2,7 @@
 Protected Class DragRef
 	#tag Method, Flags = &h0
 		Function AllowableActions() As Integer
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare function GetDragAllowableActions lib CarbonLib (ref as Integer, ByRef act as Integer) as Integer
 		    
 		    dim actions as Integer
@@ -13,9 +12,7 @@ Protected Class DragRef
 		    else
 		      return actions
 		    end
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
@@ -27,23 +24,19 @@ Protected Class DragRef
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare sub DisposeDrag lib CarbonLib (ref as Integer)
 		    
 		    if mRef <> 0 then
 		      DisposeDrag (mRef)
 		    end if
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function DropDestination() As FolderItem
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare function GetDropLocation lib CarbonLib (dragHdl as Integer, outDropLocationAEDesc as Ptr) as Integer
 		    declare function AECoerceDesc lib CarbonLib (aeDesc as Ptr, type as OSType, descr_in as Ptr) as Integer
 		    declare function AEGetDescData lib CarbonLib (aeDesc as Ptr, data as Ptr, maxSize as Integer) as Integer
@@ -63,37 +56,26 @@ Protected Class DragRef
 		        end if
 		      end if
 		    end if
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub SetAllowableActions(actions as Integer, isLocal as Boolean)
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare function SetDragAllowableActions lib CarbonLib (ref as Integer, act as Integer, loc as Boolean) as Integer
 		    
 		    dim res as Integer = SetDragAllowableActions (mRef, actions, isLocal)
 		    if res <> 0 then
 		      break
 		    end
-		    
-		  #else
-		    
-		    #pragma unused actions
-		    #pragma unused isLocal
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub SetCGImage(img as CGImage, ofsx as Integer, ofsy as Integer, flags as Integer)
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare function SetDragImageWithCGImage lib CarbonLib (ref as Integer, imgRef as Ptr, ByRef ofs as CGPoint, fl as Integer) as Integer
 		    
 		    dim pt as CGPoint
@@ -103,62 +85,37 @@ Protected Class DragRef
 		    if res <> 0 then
 		      break
 		    end
-		    
-		  #else
-		    
-		    #pragma unused img
-		    #pragma unused ofsx
-		    #pragma unused ofsy
-		    #pragma unused flags
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub SetDragSendProc(proc as DragSendDataProc, ref as Integer)
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare function SetDragSendProc lib CarbonLib (dragRef as Integer, proc as Ptr, refCon as Integer) as Integer
 		    
 		    dim res as Integer = SetDragSendProc (mRef, proc, ref)
 		    if res <> 0 then
 		      break
 		    end
-		    
-		  #else
-		    
-		    #pragma unused proc
-		    #pragma unused ref
-		    
 		  #endif
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function TrackDrag(eventRec as EventRecord, rgn as Ptr) As Integer
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare function TrackDrag lib CarbonLib (dragRef as Integer, ByRef ev as EventRecord, theRegion as Ptr) as Integer
 		    
 		    return TrackDrag (mRef, eventRec, rgn)
 		    
-		  #else
-		    
-		    #pragma unused eventRec
-		    #pragma unused rgn
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function WasDroppedToTrash() As Boolean
-		  #if TargetMacOS
-		    
+		  #If TargetMacOS
 		    declare function GetStandardDropLocation lib CarbonLib (theDrag as Integer, byref outDropLocation as Integer) as Integer
 		    
 		    ' determine standard location drag item was dropped to
@@ -168,7 +125,6 @@ Protected Class DragRef
 		    return outDropLocation = kDragStandardDropLocationTrash
 		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
@@ -196,7 +152,6 @@ Protected Class DragRef
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -204,21 +159,18 @@ Protected Class DragRef
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -226,7 +178,6 @@ Protected Class DragRef
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

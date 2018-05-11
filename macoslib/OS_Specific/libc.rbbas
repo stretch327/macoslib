@@ -1,35 +1,35 @@
 #tag Module
 Protected Module libc
 	#tag ExternalMethod, Flags = &h1
-		Protected Declare Function basename Lib libc (path as CString) As CString
+		Protected Declare Function basename Lib "/usr/lib/libc.dylib" (path as CString) As CString
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Declare Function dirname Lib libc (path as CString) As CString
+		Protected Declare Function dirname Lib "/usr/lib/libc.dylib" (path as CString) As CString
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Declare Function getpid Lib libc () As Integer
+		Protected Declare Function getpid Lib "/usr/lib/libc.dylib" () As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h0
-		Declare Function gmtime Lib libc (ByRef t as Integer) As Ptr
+		Declare Function gmtime Lib "/usr/lib/libc.dylib" (ByRef t as Integer) As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Soft Declare Function localtime Lib libc (ByRef t as Integer) As Ptr
+		Protected Soft Declare Function localtime Lib "/usr/lib/libc.dylib" (ByRef t as Integer) As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h0
-		Declare Function mktime Lib libc (ByRef timeptr as tm) As Integer
+		Declare Function mktime Lib "/usr/lib/libc.dylib" (ByRef timeptr as tm) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Declare Function strftime Lib libc (s as Ptr, maxsize as Integer, format as CString, ByRef timeptr as tm) As Integer
+		Protected Declare Function strftime Lib "/usr/lib/libc.dylib" (s as Ptr, maxsize as Integer, format as CString, ByRef timeptr as tm) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h0
-		Declare Function strptime Lib libc (buf as CString, format as CString, ByRef tm_value as tm) As Ptr
+		Declare Function strptime Lib "/usr/lib/libc.dylib" (buf as CString, format as CString, ByRef tm_value as tm) As Ptr
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h0
@@ -49,6 +49,7 @@ Protected Module libc
 		#Tag Instance, Platform = Mac OS, Language = Default, Definition  = \"/usr/lib/libc.dylib"
 		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"libc.so"
 		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"Msvcrt.dll"
+		#Tag Instance, Platform = Mac Cocoa, Language = Default, Definition  = \"/usr/lib/libc.dylib"
 	#tag EndConstant
 
 
@@ -73,33 +74,33 @@ Protected Module libc
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Module

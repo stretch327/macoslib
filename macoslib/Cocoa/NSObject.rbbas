@@ -2,9 +2,9 @@
 Class NSObject
 Implements objHasVariantValue
 	#tag Method, Flags = &h0
-		 Shared Function Allocate(class_id as Ptr) As Ptr
+		Shared Function Allocate(class_id as Ptr) As Ptr
 		  
-		  #if TargetMacOS
+		  #if TargetCocoa
 		    declare function alloc lib CocoaLib selector "alloc" (class_id as Ptr) as Ptr
 		    
 		    return alloc(class_id)
@@ -15,9 +15,10 @@ Implements objHasVariantValue
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Allocate(NSClassName as String) As Ptr
-		  
-		  return NSObject.Allocate( Cocoa.NSClassFromString(NSClassName))
+		Shared Function Allocate(NSClassName as String) As Ptr
+		  #if TargetCocoa
+		    return NSObject.Allocate( Cocoa.NSClassFromString(NSClassName))
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -52,7 +53,7 @@ Implements objHasVariantValue
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(obj_id as Ptr, hasOwnership as Boolean = False)
+		Sub Constructor(obj_id as Ptr, hasOwnership as Boolean = false)
 		  
 		  'if checkForClass<>"" then
 		  'if NOT Cocoa.InheritsFromClass( obj_id, checkForClass ) then
@@ -87,7 +88,7 @@ Implements objHasVariantValue
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Initialize(obj_id as Ptr) As Ptr
+		Shared Function Initialize(obj_id as Ptr) As Ptr
 		  #if TargetMacOS
 		    declare function init lib CocoaLib selector "init" (id as Ptr) as Ptr
 		    
@@ -126,19 +127,6 @@ Implements objHasVariantValue
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub PerformSelectorOnMainThread(selectorName as string, withObject as NSObject, waitUntilDone as Boolean)
-		  #if TargetMacOS
-		    declare sub performSelectorOnMainThread_ lib CocoaLib selector "performSelectorOnMainThread:withObject:waitUntilDone:" (id as Ptr, aSelector as Ptr, withObj as Ptr, wait as Boolean)
-		    
-		    dim SEL as Ptr = Cocoa.NSSelectorFromString( selectorName )
-		    
-		    PerformSelectorOnMainThread_   self, SEL, withObject, waitUntilDone
-		    
-		  #endif
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Release()
 		  #if TargetMacOS
 		    declare sub release lib CocoaLib selector "release" (id as Ptr)
@@ -150,19 +138,13 @@ Implements objHasVariantValue
 
 	#tag Method, Flags = &h0
 		Function RespondsToSelector(selectorName As CFStringRef) As Boolean
-		  #if TargetMacOS
-		    
+		  #if TargetCocoa
 		    declare function instanceRespondsToSelector lib CocoaLib selector "respondsToSelector:" ( obj_id as Ptr, aSelector as Ptr ) as Boolean
 		    
 		    dim selectorPtr as Ptr = Cocoa.NSSelectorFromString( selectorName )
 		    return instanceRespondsToSelector( m_id, selectorPtr )
 		    
-		  #else
-		    
-		    #pragma unused selectorName
-		    
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
@@ -178,18 +160,6 @@ Implements objHasVariantValue
 		    else
 		      return nil
 		    end if
-		  #endif
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Superclass() As Ptr
-		  //# Returns the superclass object (not the instance)
-		  
-		  #if TargetMacOS
-		    declare function superclass_ lib CocoaLib selector "superclass" (id as Ptr) as Ptr
-		    
-		    return superclass_( self )
 		  #endif
 		End Function
 	#tag EndMethod
@@ -250,33 +220,33 @@ Implements objHasVariantValue
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

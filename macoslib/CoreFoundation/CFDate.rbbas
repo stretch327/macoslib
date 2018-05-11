@@ -26,7 +26,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if targetMacOS
 		    declare function TypeID lib CarbonLib alias "CFDateGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
@@ -50,10 +50,6 @@ Implements CFPropertyList
 		    d = new Date
 		  end if
 		  
-		  // convert d.TotalSeconds to absolute time
-		  d = new Date(d)
-		  d.GMTOffset = 0.0
-		  
 		  me.Constructor d.TotalSeconds - AbsoluteTimeIntervalSince1904
 		End Sub
 	#tag EndMethod
@@ -71,7 +67,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListFile(file as FolderItem) As CFDate
+		Shared Function CreateFromPListFile(file as FolderItem) As CFDate
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListFile( file, CoreFoundation.kCFPropertyListImmutable )
@@ -88,7 +84,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListString(plistString as String) As CFDate
+		Shared Function CreateFromPListString(plistString as String) As CFDate
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListString( plistString, CoreFoundation.kCFPropertyListImmutable )
@@ -105,7 +101,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CurrentAbsoluteTime() As Double
+		Shared Function CurrentAbsoluteTime() As Double
 		  // Current date & time - including fractional seconds (versus the Date class which only
 		  //   returns full seconds)
 		  //
@@ -165,17 +161,7 @@ Implements CFPropertyList
 		  else
 		    
 		    dim d as new Date
-		    
-		    // save d.GMTOffset
-		    dim gmt As Double = d.GMTOffset
-		    
-		    // d.TotalSeconds depends on d.GMTOffset, convert to absolute time before assignment
-		    d.GMTOffset = 0.0
 		    d.TotalSeconds = me.AbsoluteTime + AbsoluteTimeIntervalSince1904
-		    
-		    // restore original d.GMTOffset
-		    d.GMTOffset = gmt
-		    
 		    return d
 		    
 		  end if
@@ -213,6 +199,12 @@ Implements CFPropertyList
 		    #pragma unused d
 		    
 		  #endif
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function WriteToFile(file as FolderItem, asXML as Boolean = True) As Boolean
 		  
 		End Function
 	#tag EndMethod
@@ -257,40 +249,40 @@ Implements CFPropertyList
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			InheritedFrom="CFType"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

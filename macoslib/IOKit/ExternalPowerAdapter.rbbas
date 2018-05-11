@@ -9,12 +9,10 @@ Class ExternalPowerAdapter
 	#tag Method, Flags = &h21
 		Private Shared Function CopyExternalPowerAdapterDetails() As CFDictionary
 		  #if targetMacOS
-		    dim start as Double = Microseconds
 		    soft declare function IOPSCopyExternalPowerAdapterDetails lib IOKit () as Ptr
 		    
 		    dim p as Ptr = IOPSCopyExternalPowerAdapterDetails()
-		    dim stop as Double = Microseconds
-		    System.DebugLog "IOPSCopyExternalPowerAdapterDetails took " + Format(stop - start, "#") + " microseconds."
+		    // System.DebugLog "IOPSCopyExternalPowerAdapterDetails took " + Format(stop - start, "#") + " microseconds."
 		    if p <> nil then
 		      const hasOwnership = true
 		      return new CFDictionary(p, hasOwnership)
@@ -45,21 +43,16 @@ Class ExternalPowerAdapter
 
 	#tag Method, Flags = &h21
 		Private Shared Sub Initialize()
-		  #if TargetMacOS
+		  if RunLoopSource is nil then
+		    'PowerAdapterDetails = CopyExternalPowerAdapterDetails
 		    
-		    if RunLoopSource is nil then
-		      'PowerAdapterDetails = CopyExternalPowerAdapterDetails
-		      
-		      'soft declare function IOPSNotificationCreateRunLoopSource lib IOKit (callback as Ptr, context as Ptr) as Ptr
-		      'dim p as Ptr = IOPSNotificationCreateRunLoopSource(AddressOf IOPowerSourceCallback, nil)
-		      'if p <> nil then
-		      'const hasOwnership = true
-		      'RunLoopSource = new CFRunLoopSource(p, hasOwnership)
-		      'end if
-		    end if
-		    
-		  #endif
-		  
+		    'soft declare function IOPSNotificationCreateRunLoopSource lib IOKit (callback as Ptr, context as Ptr) as Ptr
+		    'dim p as Ptr = IOPSNotificationCreateRunLoopSource(AddressOf IOPowerSourceCallback, nil)
+		    'if p <> nil then
+		    'const hasOwnership = true
+		    'RunLoopSource = new CFRunLoopSource(p, hasOwnership)
+		    'end if
+		  end if
 		End Sub
 	#tag EndMethod
 
@@ -193,20 +186,20 @@ Class ExternalPowerAdapter
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Revision"
@@ -222,14 +215,14 @@ Class ExternalPowerAdapter
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Watts"

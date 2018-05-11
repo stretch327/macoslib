@@ -797,40 +797,26 @@ Class NavigationDialog
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  #if TargetMacOS
+			  if me.DialogRef = nil then
+			    return me.pSaveFileName
+			  else
+			    soft declare function NavDialogGetSaveFileName lib CarbonLib (inPutFileDialog as Ptr) as Ptr
 			    
-			    if me.DialogRef = nil then
-			      return me.pSaveFileName
-			    else
-			      soft declare function NavDialogGetSaveFileName lib CarbonLib (inPutFileDialog as Ptr) as Ptr
-			      
-			      return RetainedStringValue(NavDialogGetSaveFileName(self.DialogRef))
-			    end if
-			    
-			  #endif
-			  
+			    return RetainedStringValue(NavDialogGetSaveFileName(self.DialogRef))
+			  end if
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  #if TargetMacOS
+			  me.pSaveFileName = value
+			  if me.DialogRef <> nil then
+			    soft declare function NavDialogSetSaveFileName lib CarbonLib (inPutFileDialog as Ptr, inFileName as CFStringRef) as Integer
 			    
-			    me.pSaveFileName = value
-			    if me.DialogRef <> nil then
-			      soft declare function NavDialogSetSaveFileName lib CarbonLib (inPutFileDialog as Ptr, inFileName as CFStringRef) as Integer
-			      
-			      dim OSError as Integer = NavDialogSetSaveFileName(me.DialogRef, value)
-			      
-			      // Keep the compiler from complaining
-			      #pragma unused OSError
-			    end if
+			    dim OSError as Integer = NavDialogSetSaveFileName(me.DialogRef, value)
 			    
-			  #else
-			    
-			    #pragma unused value
-			    
-			  #endif
-			  
+			    // Keep the compiler from complaining
+			    #pragma unused OSError
+			  end if
 			End Set
 		#tag EndSetter
 		SaveFileName As String
@@ -980,14 +966,14 @@ Class NavigationDialog
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Message"
@@ -999,7 +985,7 @@ Class NavigationDialog
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="NoTypePopup"
@@ -1041,7 +1027,7 @@ Class NavigationDialog
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="SupportPackages"
@@ -1060,7 +1046,7 @@ Class NavigationDialog
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UseCustomFrame"

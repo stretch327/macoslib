@@ -19,7 +19,7 @@ Inherits CFStream
 
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if TargetMacOS
 		    declare function TypeID lib CarbonLib alias "CFReadStreamGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
@@ -117,7 +117,7 @@ Inherits CFStream
 		    declare function CFReadStreamRead lib CarbonLib (stream as Ptr, buffer as Ptr, bufLen as Integer) as Integer
 		    
 		    dim mb as MemoryBlock
-		    'mb = NewMemoryBlock (maxBytes)
+		    'mb = new memoryblock (maxBytes)
 		    mb = New MemoryBlock (maxBytes)
 		    dim n as Integer = CFReadStreamRead (me.Reference, mb, mb.Size)
 		    if n >= 0 then
@@ -147,40 +147,39 @@ Inherits CFStream
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

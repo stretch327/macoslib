@@ -208,7 +208,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if targetMacOS
 		    declare function TypeID lib CarbonLib alias "CGContextGetTypeID" () as UInt32
 		    
@@ -391,14 +391,9 @@ Inherits CFType
 		    return
 		  end if
 		  
-		  #if TargetMacOS
-		    
-		    soft declare sub CGContextDrawImage lib CarbonLib (context as Ptr, rect as CGRect, image as Ptr)
-		    
-		    CGContextDrawImage me, rect, image
-		    
-		  #endif
+		  soft declare sub CGContextDrawImage lib CarbonLib (context as Ptr, rect as CGRect, image as Ptr)
 		  
+		  CGContextDrawImage me, rect, image
 		End Sub
 	#tag EndMethod
 
@@ -793,27 +788,17 @@ Inherits CFType
 		    return
 		  end if
 		  
-		  #if TargetMacOS
-		    
-		    soft declare sub CGContextSetFont lib CarbonLib (context as Ptr, font as Ptr)
-		    
-		    CGContextSetFont me, font
-		    
-		  #endif
+		  soft declare sub CGContextSetFont lib CarbonLib (context as Ptr, font as Ptr)
 		  
+		  CGContextSetFont me, font
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub SetFontSize(size as Double)
-		  #if TargetMacOS
-		    
-		    soft declare sub CGContextSetFontSize lib CarbonLib (context as Ptr, size as Single)
-		    
-		    CGContextSetFontSize me, size
-		    
-		  #endif
+		  soft declare sub CGContextSetFontSize lib CarbonLib (context as Ptr, size as Single)
 		  
+		  CGContextSetFontSize me, size
 		End Sub
 	#tag EndMethod
 
@@ -1126,26 +1111,16 @@ Inherits CFType
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  #if TargetMacOS
-			    
-			    soft declare function CGContextGetInterpolationQuality lib CarbonLib (context as Ptr) as CGInterpolationQuality
-			    
-			    return CGContextGetInterpolationQuality(me)
-			    
-			  #endif
+			  soft declare function CGContextGetInterpolationQuality lib CarbonLib (context as Ptr) as CGInterpolationQuality
 			  
+			  return CGContextGetInterpolationQuality(me)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  #if TargetMacOS
-			    
-			    soft declare sub CGContextSetInterpolationQuality lib CarbonLib (context as Ptr, quality as CGInterpolationQuality)
-			    
-			    CGContextSetInterpolationQuality me, value
-			    
-			  #endif
+			  soft declare sub CGContextSetInterpolationQuality lib CarbonLib (context as Ptr, quality as CGInterpolationQuality)
 			  
+			  CGContextSetInterpolationQuality me, value
 			End Set
 		#tag EndSetter
 		InterpolationQuality As CGInterpolationQuality
@@ -1158,40 +1133,51 @@ Inherits CFType
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			InheritedFrom="Object"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="InterpolationQuality"
+			Group="Behavior"
+			Type="CGInterpolationQuality"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - Default"
+				"1 - None"
+				"2 - Low"
+				"3 - High"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Object"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			InheritedFrom="Object"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
