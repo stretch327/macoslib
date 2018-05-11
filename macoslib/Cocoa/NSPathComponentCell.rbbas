@@ -8,7 +8,7 @@ Class NSPathComponentCell
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(obj as NSPathComponentCell) As Integer
-		  if obj.id = nil then
+		  if obj = nil or obj.id = nil then
 		    return 1
 		  else
 		    return Integer(me.id) - Integer(obj.id)
@@ -89,33 +89,33 @@ Class NSPathComponentCell
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="URL"

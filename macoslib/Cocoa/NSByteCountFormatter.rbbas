@@ -290,13 +290,6 @@ Inherits NSFormatter
 			Name="CountStyle"
 			Group="Behavior"
 			Type="CountStyle"
-			EditorType="Enum"
-			#tag EnumValues
-				"0 - File"
-				"1 - Memory"
-				"2 - Decimal"
-				"3 - Binary"
-			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Description"

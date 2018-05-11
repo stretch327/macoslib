@@ -16,9 +16,9 @@ Implements CFPropertyList
 
 
 	#tag Method, Flags = &h0
-		Shared Function ClassID() As UInt32
+		 Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CoreFoundation.framework alias "CFDataGetTypeID" () as UInt32
+		    declare function TypeID lib CarbonLib alias "CFDataGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -30,7 +30,7 @@ Implements CFPropertyList
 		  // This one also takes Strings. No need for an extra constructor taking Strings therefore
 		  
 		  #if targetMacOS
-		    soft declare function CFDataCreate lib CoreFoundation.framework (allocator as Ptr, bytes as Ptr, length as Integer) as Ptr
+		    soft declare function CFDataCreate lib CarbonLib (allocator as Ptr, bytes as Ptr, length as Integer) as Ptr
 		    
 		    if not (theData is nil) then
 		      if theData.Size < 0 then
@@ -45,7 +45,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromPListFile(file as FolderItem) As CFData
+		 Shared Function CreateFromPListFile(file as FolderItem) As CFData
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListFile( file, CoreFoundation.kCFPropertyListImmutable )
@@ -62,7 +62,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromPListString(plistString as String) As CFData
+		 Shared Function CreateFromPListString(plistString as String) As CFData
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListString( plistString, CoreFoundation.kCFPropertyListImmutable )
@@ -78,18 +78,12 @@ Implements CFPropertyList
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function WriteToFile(file as FolderItem, asXML as Boolean = True) As Boolean
-		  
-		End Function
-	#tag EndMethod
-
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    soft declare sub CFDataGetBytes lib CoreFoundation.framework (theData as Ptr, range as CFRange, buffer as Ptr)
+			    soft declare sub CFDataGetBytes lib CarbonLib (theData as Ptr, range as CFRange, buffer as Ptr)
 			    
 			    if not ( self = nil ) then
 			      dim dataLength as Integer = me.Length
@@ -112,7 +106,7 @@ Implements CFPropertyList
 		#tag Getter
 			Get
 			  #if TargetMacOS
-			    soft declare function CFDataGetLength lib CoreFoundation.framework (theData as Ptr) as Integer
+			    soft declare function CFDataGetLength lib CarbonLib (theData as Ptr) as Integer
 			    
 			    return  CFDataGetLength( me.Reference )
 			  #endif
@@ -127,21 +121,21 @@ Implements CFPropertyList
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Length"
@@ -152,20 +146,20 @@ Implements CFPropertyList
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

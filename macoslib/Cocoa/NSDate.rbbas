@@ -27,10 +27,8 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSDate")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod

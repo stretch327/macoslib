@@ -31,10 +31,10 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ClassID() As UInt32
+		 Shared Function ClassID() As UInt32
 		  #if targetMacOS
 		    
-		    declare function TypeID lib CoreFoundation.framework alias "CFNotificationCenterGetTypeID" () as UInt32
+		    declare function TypeID lib CarbonLib alias "CFNotificationCenterGetTypeID" () as UInt32
 		    
 		    static id as UInt32 = TypeID
 		    return id
@@ -45,9 +45,9 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function LocalCenter() As CFNotificationCenter
+		 Shared Function LocalCenter() As CFNotificationCenter
 		  #if targetMacOS
-		    soft declare function CFNotificationCenterGetLocalCenter lib CoreFoundation.framework () as Ptr
+		    soft declare function CFNotificationCenterGetLocalCenter lib CarbonLib () as Ptr
 		    try
 		      dim theCenter as new CFNotificationCenter(CFNotificationCenterGetLocalCenter, false)
 		      return theCenter
@@ -65,40 +65,40 @@ Inherits CFType
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

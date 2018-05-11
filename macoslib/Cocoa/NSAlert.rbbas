@@ -15,10 +15,8 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSAlert")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -52,6 +50,9 @@ Inherits NSObject
 		    
 		    Super.Constructor( alertWithError( Cocoa.NSClassFromString("NSAlert"), errorRef ), not hasOwnership )
 		    SetDelegate
+		    
+		  #else
+		    #pragma unused error
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -97,6 +98,15 @@ Inherits NSObject
 		    
 		    Super.Constructor( alertWithMessage( Cocoa.NSClassFromString("NSAlert"), messageTitleRef, defaultButtonTitleRef, alternateButtonTitleRef, otherButtonTitleRef, informativeTextRef ), not hasOwnership )
 		    SetDelegate
+		    
+		  #else
+		    
+		    #pragma unused messageTitle
+		    #pragma unused informativeText
+		    #pragma unused defaultButtonTitle
+		    #pragma unused alternateButtonTitle
+		    #pragma unused otherButtonTitle
+		    
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -151,20 +161,6 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function FPtr(p as Ptr) As Ptr
-		  //This function is a workaround for the inability to convert a Variant containing a delegate to Ptr:
-		  //dim v as Variant = AddressOf Foo
-		  //dim p as Ptr = v
-		  //results in a TypeMismatchException
-		  //So now I do
-		  //dim v as Variant = FPtr(AddressOf Foo)
-		  //dim p as Ptr = v
-		  
-		  return p
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Function GetDelegate() As Ptr
 		  
 		  #if TargetMacOS then
@@ -190,45 +186,13 @@ Inherits NSObject
 
 	#tag Method, Flags = &h21
 		Private Shared Function MakeDelegateClass(className as String = DelegateClassName, superclassName as String = "NSObject") As Ptr
-		  //this is Objective-C 2.0 code (available in Leopard).  For 1.0, we'd need to do it differently.
-		  
 		  #if TargetMacOS then
-		    declare function objc_allocateClassPair lib CocoaLib (superclass as Ptr, name as CString, extraBytes as Integer) as Ptr
-		    declare sub objc_registerClassPair lib CocoaLib (cls as Ptr)
-		    declare function class_addMethod lib CocoaLib (cls as Ptr, name as Ptr, imp as Ptr, types as CString) as Boolean
-		    
-		    dim newClassId as Ptr = objc_allocateClassPair(Cocoa.NSClassFromString(superclassName), className, 0)
-		    if newClassId = nil then
-		      raise new macoslibException( "Unable to create ObjC subclass " + className + " from " + superclassName ) //perhaps the class already exists.  We could check for this, and raise an exception for other errors.
-		      raise new ObjCException
-		      return nil
-		    end if
-		    
-		    'DReport  CurrentMethodName, "executing"
-		    
-		    objc_registerClassPair newClassId
-		    
 		    dim methodList() as Tuple
-		    methodList.Append "alertShowHelp:" : FPtr( AddressOf delegate_alertShowHelp ) : "B@:@"
-		    methodList.Append "alertDidEnd:returnCode:contextInfo:" : FPtr( AddressOf delegate_alertDidEnd ) : "v@:@i@"
 		    
+		    methodList.Append "alertShowHelp:" : CType( AddressOf delegate_alertShowHelp, Ptr ) : "B@:@"
+		    methodList.Append "alertDidEnd:returnCode:contextInfo:" : CType( AddressOf delegate_alertDidEnd, Ptr ) : "v@:@i@"
 		    
-		    dim methodsAdded as Boolean = true
-		    for each item as Tuple in methodList
-		      if NOT class_addMethod(newClassId, Cocoa.NSSelectorFromString(item(0)), item(1), item(2)) then
-		        Raise new ObjCException
-		      end if
-		    next
-		    
-		    if methodsAdded then
-		      return newClassId
-		    else
-		      dim e as new ObjCException
-		      e.Message = CurrentMethodName + ". Couldn't create delegate"
-		      raise  e
-		      return nil
-		    end if
-		    
+		    return Cocoa.MakeDelegateClass (className, superclassName, methodList)
 		  #else
 		    #pragma unused className
 		    #pragma unused superClassName
@@ -262,14 +226,20 @@ Inherits NSObject
 		Sub RunSheet(w as Window, contextInfo as ptr = Nil)
 		  
 		  #if TargetCocoa then
-		    declare sub runSheet lib CocoaLib selector "beginSheetModalForWindow:modalDelegate:didEndSelector:contextInfo:" (obj_id as Ptr, Window as Integer, modalDelegate as Ptr, alertDidEndSelector as Ptr, contextInfo as Ptr)
+		    declare sub runSheet lib CocoaLib selector "beginSheetModalForWindow:modalDelegate:didEndSelector:contextInfo:" (obj_id as Ptr, windowRef as WindowPtr, modalDelegate as Ptr, alertDidEndSelector as Ptr, contextInfo as Ptr)
 		    
-		    dim windowRef as Integer
+		    dim windowRef as WindowPtr
 		    if w <> nil then
-		      windowRef = w.Handle
+		      windowRef = w
 		    end if
 		    
 		    runSheet self, windowRef, self.GetDelegate, Cocoa.NSSelectorFromString( "alertDidEnd:returnCode:contextInfo:" ), contextInfo
+		    
+		  #else
+		    
+		    #pragma unused w
+		    #pragma unused contextInfo
+		    
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -352,6 +322,9 @@ Inherits NSObject
 			    declare sub setAlertStyle lib cocoalib selector "setAlertStyle:" (obj_id as Ptr, value as Style)
 			    
 			    setAlertStyle self, value
+			    
+			  #else
+			    #pragma unused value
 			  #endif
 			End Set
 		#tag EndSetter
@@ -494,6 +467,9 @@ Inherits NSObject
 			    declare sub setShowsHelp lib CocoaLib selector "setShowsHelp:" (obj_id as Ptr, value as Boolean)
 			    
 			    setShowsHelp self, value
+			    
+			  #else
+			    #pragma unused value
 			  #endif
 			End Set
 		#tag EndSetter

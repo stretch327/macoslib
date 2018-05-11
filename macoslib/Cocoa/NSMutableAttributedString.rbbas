@@ -8,14 +8,9 @@ Inherits NSAttributedString
 		  #if TargetMacOS
 		    declare sub addAttribute lib CocoaLib selector "addAttribute:value:range:" (id as Ptr, name as CFStringRef, value as Ptr, aRange as NSRange)
 		    
-		    'dim mgr as NSFontManager = NSFontManager.SharedManager
 		    dim nsf as NSFont
 		    dim range, realrange as NSRange
 		    dim realvalue as NSObject
-		    
-		    'if NOT value isa NSObject then
-		    'raise  new MacOSError( -50, "Invalid value. Must be a subclass of NSObject." )
-		    'end if
 		    
 		    if forRange.length=0 then
 		      realrange = Cocoa.NSMakeRange( 0, me.Length )
@@ -417,6 +412,7 @@ Inherits NSAttributedString
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -424,6 +420,7 @@ Inherits NSAttributedString
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsEditing"
@@ -436,29 +433,28 @@ Inherits NSAttributedString
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Length"
-			Group="Behavior"
-			Type="UInt32"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="StringValue"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSAttributedString"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -466,6 +462,7 @@ Inherits NSAttributedString
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

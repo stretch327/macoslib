@@ -68,12 +68,15 @@ Inherits NSResponder
 
 	#tag Method, Flags = &h0
 		Shared Function App() As NSApplication
-		  #if TargetCocoa
+		  #if TargetMacOS
+		    
 		    declare function sharedApplication_ lib CocoaLib selector "sharedApplication" (class_id as Ptr) as Ptr
 		    
 		    static c as new NSApplication(sharedApplication_(Cocoa.NSClassFromString(NSClassName)))
 		    return c
+		    
 		  #endif
+		  
 		End Function
 	#tag EndMethod
 
@@ -944,11 +947,8 @@ Inherits NSResponder
 		  #if targetCocoa
 		    declare function windows lib CocoaLib selector "windows" (obj_id as Ptr) as Ptr
 		    
-		    dim p as Ptr = windows(self)
 		    return new CFArray(windows(self), not CFArray.hasOwnership)
 		    
-		    // Keep the compiler from complaining
-		    #pragma unused p
 		  #endif
 		End Function
 	#tag EndMethod

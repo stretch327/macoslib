@@ -24,6 +24,9 @@ Inherits NSResponder
 		    declare function initWithWindow lib CocoaLib selector "initWithWindow:" (obj_id as Ptr, aWindow as Ptr) as Ptr
 		    
 		    Super.Constructor( initWithWindow( Initialize(Allocate(Cocoa.NSClassFromString("NSWindowController"))), w ), not self.hasOwnership )
+		    
+		  #else
+		    #pragma unused w
 		  #endif
 		  
 		End Sub
@@ -244,13 +247,14 @@ Inherits NSResponder
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsWindowLoaded"
@@ -262,13 +266,13 @@ Inherits NSResponder
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ShouldCascadeWindows"
@@ -284,14 +288,14 @@ Inherits NSResponder
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

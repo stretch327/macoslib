@@ -4,10 +4,8 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSData")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -78,7 +76,7 @@ Inherits NSObject
 
 	#tag Method, Flags = &h1000
 		Sub Constructor(dataString as String)
-		  // Redundant, but clearer with autocomplete
+		  // Redundent, but clearer with autocomplete
 		  
 		  #if targetMacOS
 		    self.Constructor( dataString, dataString.LenB )

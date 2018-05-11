@@ -59,16 +59,12 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ClassID() As UInt32
+		 Shared Function ClassID() As UInt32
 		  #if targetMacOS
 		    
 		    soft declare function MDItemGetTypeID lib CarbonLib () as Integer
 		    
-		    #if target64bit then
-		      static id as UInt64 = UInt64(MDItemGetTypeID)
-		    #else
-		      static id as UInt32 = UInt32(MDItemGetTypeID)
-		    #endif
+		    static id as UInt32 = UInt32(MDItemGetTypeID)
 		    return id
 		  #endif
 		  
@@ -77,7 +73,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromFile(file as FolderItem) As MDItem
+		 Shared Function CreateFromFile(file as FolderItem) As MDItem
 		  //# Creates a MDItem for a given file
 		  
 		  #if TargetMacOS
@@ -97,39 +93,40 @@ Inherits CFType
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

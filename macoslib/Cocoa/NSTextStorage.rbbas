@@ -126,6 +126,7 @@ Inherits NSMutableAttributedString
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="FixesAttributesLazily"
@@ -138,11 +139,13 @@ Inherits NSMutableAttributedString
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsEditing"
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="NSMutableAttributedString"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -150,24 +153,28 @@ Inherits NSMutableAttributedString
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="StringValue"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSAttributedString"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -175,6 +182,7 @@ Inherits NSMutableAttributedString
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

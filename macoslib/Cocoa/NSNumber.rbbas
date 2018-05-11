@@ -412,7 +412,7 @@ Inherits NSValue
 
 	#tag Method, Flags = &h21
 		Private Function GetObjcType() As String
-		  #if TargetCocoa
+		  #if TargetMacOS
 		    
 		    declare function m_objCType lib CocoaLib selector "objCType" (id as Ptr) as Ptr
 		    
@@ -421,7 +421,9 @@ Inherits NSValue
 		    mb = m_objCType( me.id )
 		    
 		    return   mb.CString( 0 )
+		    
 		  #endif
+		  
 		End Function
 	#tag EndMethod
 

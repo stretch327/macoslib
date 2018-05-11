@@ -69,7 +69,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function DefaultManager() As NSFileManager
+		 Shared Function DefaultManager() As NSFileManager
 		  //# Returns the DefaultManager.
 		  
 		  #if TargetMacOS
@@ -108,6 +108,7 @@ Inherits NSObject
 
 	#tag Method, Flags = &h0
 		Function EnumeratorAtURL(url as NSURL, attrKeys as NSArray, options as integer) As NSDirectoryEnumerator
+		  #pragma unused attrKeys
 		  
 		  #if TargetMacOS
 		    declare function enumeratorAtURL lib FoundationLib selector "enumeratorAtURL:includingPropertiesForKeys:options:errorHandler:" (id as Ptr, url as Ptr, ppties as Ptr, opt as Integer, errBlock as Ptr) as Ptr
@@ -122,6 +123,9 @@ Inherits NSObject
 		      return nil
 		    end if
 		    
+		  #else
+		    #pragma unused url
+		    #pragma unused options
 		  #endif
 		End Function
 	#tag EndMethod
@@ -227,39 +231,40 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

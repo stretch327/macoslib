@@ -20,7 +20,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ClassID() As UInt32
+		 Shared Function ClassID() As UInt32
 		  #if targetMacOS
 		    declare function TypeID lib CarbonLib alias "CFStringTokenizerGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
@@ -38,7 +38,7 @@ Inherits CFType
 		  #if targetMacOS
 		    // Only available in 10.5 and later!
 		    soft declare function CFStringTokenizerCreate lib CarbonLib (alloc as Ptr, input as CFStringRef, range as CFRange, options as UInt32, locale as Ptr) as Ptr
-		    declare function CFStringGetLength Lib CarbonLib ( input As CFStringRef )As Int32
+		    Declare Function CFStringGetLength Lib "CoreFoundation" ( obj_id As CFStringRef ) As Int32
 		    
 		    inputLength = CFStringGetLength(input)
 		    
@@ -164,40 +164,40 @@ Inherits CFType
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

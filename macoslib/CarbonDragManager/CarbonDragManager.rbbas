@@ -6,7 +6,8 @@ Protected Module CarbonDragManager
 
 	#tag Method, Flags = &h0
 		Function NewDragRefWithPasteboard(pb as CarbonPasteboard) As DragRef
-		  #If TargetMacOS
+		  #if TargetMacOS
+		    
 		    declare function NewDragWithPasteboard lib CarbonLib (pbRef as Integer, ByRef dragRef as Integer) as Integer
 		    
 		    dim r as Integer
@@ -15,7 +16,13 @@ Protected Module CarbonDragManager
 		        return new DragRef (r)
 		      end
 		    end
+		    
+		  #else
+		    
+		    #pragma unused pb
+		    
 		  #endif
+		  
 		End Function
 	#tag EndMethod
 
@@ -61,16 +68,16 @@ Protected Module CarbonDragManager
 	#tag EndStructure
 
 	#tag Structure, Name = EventRecord, Flags = &h1
-		what as Int16
+		what as Short
 		  message as Integer
 		  when as Integer
 		  where as Point
-		modifiers as Int16
+		modifiers as Short
 	#tag EndStructure
 
 	#tag Structure, Name = Point, Flags = &h1
-		v as Int16
-		h as Int16
+		v as Short
+		h as Short
 	#tag EndStructure
 
 
@@ -81,6 +88,7 @@ Protected Module CarbonDragManager
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -88,18 +96,21 @@ Protected Module CarbonDragManager
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -107,6 +118,7 @@ Protected Module CarbonDragManager
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Module

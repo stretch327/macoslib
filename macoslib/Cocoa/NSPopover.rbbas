@@ -164,20 +164,6 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function FPtr(p as Ptr) As Ptr
-		  //This function is a workaround for the inability to convert a Variant containing a delegate to Ptr:
-		  //dim v as Variant = AddressOf Foo
-		  //dim p as Ptr = v
-		  //results in a TypeMismatchException
-		  //So now I do
-		  //dim v as Variant = FPtr(AddressOf Foo)
-		  //dim p as Ptr = v
-		  
-		  return p
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Function GetDelegate() As Ptr
 		  
 		  #if TargetMacOS then
@@ -231,56 +217,22 @@ Inherits NSResponder
 
 	#tag Method, Flags = &h21
 		Private Shared Function MakeDelegateClass(className as String = DelegateClassName, superclassName as String = "NSObject") As Ptr
-		  //this is Objective-C 2.0 code (available in Leopard).  For 1.0, we'd need to do it differently.
-		  
 		  #if TargetMacOS then
-		    declare function objc_allocateClassPair lib CocoaLib (superclass as Ptr, name as CString, extraBytes as Integer) as Ptr
-		    declare sub objc_registerClassPair lib CocoaLib (cls as Ptr)
-		    declare function class_addMethod lib CocoaLib (cls as Ptr, name as Ptr, imp as Ptr, types as CString) as Boolean
-		    
-		    dim newClassId as Ptr = objc_allocateClassPair(Cocoa.NSClassFromString(superclassName), className, 0)
-		    if newClassId = nil then
-		      raise new macoslibException( "Unable to create ObjC subclass " + className + " from " + superclassName ) //perhaps the class already exists.  We could check for this, and raise an exception for other errors.
-		      raise new ObjCException
-		      return nil
-		    end if
-		    
-		    'DReport  CurrentMethodName, "executing"
-		    
-		    objc_registerClassPair newClassId
-		    
 		    dim methodList() as Tuple
-		    methodList.Append "detachableWindowForPopover:" : FPtr( AddressOf delegate_detachableWindowForPopover ) : "@@:@"
 		    
-		    methodList.Append "popoverShouldClose:" : FPtr( AddressOf delegate_popoverShouldClose ) : "B@:@"
+		    methodList.Append "detachableWindowForPopover:" : CType( AddressOf delegate_detachableWindowForPopover, Ptr ) : "@@:@"
+		    methodList.Append "popoverShouldClose:" : CType( AddressOf delegate_popoverShouldClose, Ptr ) : "B@:@"
+		    methodList.Append "popoverWillShow:"  : CType( AddressOf delegate_popoverWillShow, Ptr )  : "v@:@"
+		    methodList.Append "popoverWillClose:" : CType( AddressOf delegate_popoverWillClose, Ptr ) : "v@:@"
+		    methodList.Append "popoverDidShow:"  : CType( AddressOf delegate_popoverDidShow, Ptr )  : "v@:@"
+		    methodList.Append "popoverDidClose:" : CType( AddressOf delegate_popoverDidClose, Ptr ) : "v@:@"
 		    
-		    methodList.Append "popoverWillShow:"  : FPtr( AddressOf delegate_popoverWillShow )  : "v@:@"
-		    methodList.Append "popoverWillClose:" : FPtr( AddressOf delegate_popoverWillClose ) : "v@:@"
-		    
-		    methodList.Append "popoverDidShow:"  : FPtr( AddressOf delegate_popoverDidShow )  : "v@:@"
-		    methodList.Append "popoverDidClose:" : FPtr( AddressOf delegate_popoverDidClose ) : "v@:@"
-		    
-		    
-		    dim methodsAdded as Boolean = true
-		    for each item as Tuple in methodList
-		      if NOT class_addMethod(newClassId, Cocoa.NSSelectorFromString(item(0)), item(1), item(2)) then
-		        Raise new ObjCException
-		      end if
-		    next
-		    
-		    if methodsAdded then
-		      return newClassId
-		    else
-		      dim e as new ObjCException
-		      e.Message = CurrentMethodName + ". Couldn't create delegate"
-		      raise  e
-		      return nil
-		    end if
-		    
+		    return Cocoa.MakeDelegateClass (className, superclassName, methodList)
 		  #else
 		    #pragma unused className
 		    #pragma unused superClassName
 		  #endif
+		  
 		End Function
 	#tag EndMethod
 
@@ -508,18 +460,6 @@ Inherits NSResponder
 			  #endif
 			End Get
 		#tag EndGetter
-		#tag Setter
-			Set
-			  
-			  #if TargetMacOS then
-			    declare sub setShown lib CocoaLib selector "setShown:" (obj_id as Ptr, value as Boolean)
-			    
-			    setShown self, value
-			  #else
-			    #pragma Unused value
-			  #endif
-			End Set
-		#tag EndSetter
 		Shown As Boolean
 	#tag EndComputedProperty
 
@@ -560,6 +500,7 @@ Inherits NSResponder
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -567,19 +508,20 @@ Inherits NSResponder
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Shown"
@@ -590,14 +532,14 @@ Inherits NSResponder
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

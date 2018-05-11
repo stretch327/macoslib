@@ -73,10 +73,10 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CapHeight() As CGFloat
+		Function CapHeight() As Single
 		  
 		  #if TargetMacOS
-		    declare function capHeight lib CocoaLib selector "capHeight" (obj_id as Ptr) as CGFloat
+		    declare function capHeight lib CocoaLib selector "capHeight" (obj_id as Ptr) as Single
 		    
 		    return capHeight(self)
 		    
@@ -88,10 +88,8 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSFont")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod

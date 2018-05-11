@@ -49,7 +49,7 @@ Class CFPreferences
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Keys() As String()
+		 Shared Function Keys() As String()
 		  dim theList() as String
 		  
 		  #if targetMacOS
@@ -61,7 +61,7 @@ Class CFPreferences
 		      return theList
 		    end if
 		    
-		    soft declare function CFPreferencesCopyKeyList lib CoreFoundation.framework (applicationID as Ptr, userName as Ptr, hostName as Ptr) as Ptr
+		    soft declare function CFPreferencesCopyKeyList lib CarbonLib (applicationID as Ptr, userName as Ptr, hostName as Ptr) as Ptr
 		    
 		    dim p as Ptr = CFPreferencesCopyKeyList(appID, user, host)
 		    dim keyArray as new CFArray(p, CFType.hasOwnership) // CFArray can deal with p=nil, so there's no need to check for it here
@@ -76,7 +76,7 @@ Class CFPreferences
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function KeysForApp(appID As String) As String()
+		 Shared Function KeysForApp(appID As String) As String()
 		  dim theList() as String
 		  
 		  #if targetMacOS
@@ -87,7 +87,7 @@ Class CFPreferences
 		      return theList
 		    end if
 		    
-		    declare function CFPreferencesCopyKeyList lib CoreFoundation.framework (applicationID as CFStringRef, userName as Ptr, hostName as Ptr) as Ptr
+		    declare function CFPreferencesCopyKeyList lib CarbonLib (applicationID as CFStringRef, userName as Ptr, hostName as Ptr) as Ptr
 		    
 		    dim p as Ptr = CFPreferencesCopyKeyList(appID, user, host)
 		    dim keyArray as new CFArray(p, true) // CFArray can deal with p=nil, so there's no need to check for it here
@@ -103,9 +103,9 @@ Class CFPreferences
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Sync() As Boolean
+		 Shared Function Sync() As Boolean
 		  #if targetMacOS
-		    soft declare function CFPreferencesAppSynchronize lib CoreFoundation.framework (applicationID as Ptr) as Boolean
+		    soft declare function CFPreferencesAppSynchronize lib CarbonLib (applicationID as Ptr) as Boolean
 		    
 		    dim appID as Ptr = CurrentApplication
 		    if appID <> nil then
@@ -120,9 +120,9 @@ Class CFPreferences
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function SyncForApp(appID As String) As Boolean
+		 Shared Function SyncForApp(appID As String) As Boolean
 		  #if targetMacOS
-		    soft declare function CFPreferencesAppSynchronize lib CoreFoundation.framework (applicationID as CFStringRef) as Boolean
+		    soft declare function CFPreferencesAppSynchronize lib CarbonLib (applicationID as CFStringRef) as Boolean
 		    
 		    dim syncSucceeded as Boolean = CFPreferencesAppSynchronize(appID)
 		    return syncSucceeded
@@ -131,11 +131,11 @@ Class CFPreferences
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Value(key as String) As CFPropertyList
+		 Shared Function Value(key as String) As CFPropertyList
 		  // Note: this function may actually return nil - that's if the key does not exist in the prefs
 		  
 		  #if targetMacOS
-		    declare function CFPreferencesCopyAppValue lib CoreFoundation.framework (key as CFStringRef, applicationID as Ptr) as Ptr
+		    declare function CFPreferencesCopyAppValue lib CarbonLib (key as CFStringRef, applicationID as Ptr) as Ptr
 		    
 		    dim appID as Ptr = CurrentApplication
 		    if appID <> nil then
@@ -155,7 +155,7 @@ Class CFPreferences
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Sub Value(key as String, assigns theValue as CFPropertyList)
+		 Shared Sub Value(key as String, assigns theValue as CFPropertyList)
 		  #if targetMacOS
 		    dim ref as Ptr
 		    if theValue is nil then
@@ -164,7 +164,7 @@ Class CFPreferences
 		    else
 		      ref = theValue.Reference
 		    end if
-		    declare sub CFPreferencesSetAppValue lib CoreFoundation.framework (key as CFStringRef, value as Ptr, applicationID as Ptr)
+		    declare sub CFPreferencesSetAppValue lib CarbonLib (key as CFStringRef, value as Ptr, applicationID as Ptr)
 		    dim appID as Ptr = CurrentApplication
 		    if appID <> nil then
 		      CFPreferencesSetAppValue key, ref, appID
@@ -175,7 +175,7 @@ Class CFPreferences
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Value(key as String, default as CFPropertyList) As CFPropertyList
+		 Shared Function Value(key as String, default as CFPropertyList) As CFPropertyList
 		  //Overloads Function Value(key as String) as CFPropertyList to add a parameter for a default value.
 		  dim v as CFPropertyList = Value(key)
 		  if v <> nil then
@@ -187,12 +187,12 @@ Class CFPreferences
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ValueForApp(key as String, appID as String) As CFPropertyList
+		 Shared Function ValueForApp(key as String, appID as String) As CFPropertyList
 		  // Like Value(), but with access to other app's preferences by specifying their ID
 		  // Note: this function may actually return nil - that's if the key does not exist in the prefs
 		  
 		  #if targetMacOS
-		    declare function CFPreferencesCopyAppValue lib CoreFoundation.framework (key as CFStringRef, applicationID as CFStringRef) as Ptr
+		    declare function CFPreferencesCopyAppValue lib CarbonLib (key as CFStringRef, applicationID as CFStringRef) as Ptr
 		    
 		    dim p as Ptr = CFPreferencesCopyAppValue(key, appID)
 		    if p <> nil then
@@ -209,7 +209,7 @@ Class CFPreferences
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Sub ValueForApp(key as String, appID as String, assigns theValue as CFPropertyList)
+		 Shared Sub ValueForApp(key as String, appID as String, assigns theValue as CFPropertyList)
 		  // Like Value(), but with access to other app's preferences by specifying their ID
 		  
 		  #if targetMacOS
@@ -220,14 +220,14 @@ Class CFPreferences
 		    else
 		      ref = theValue.Reference
 		    end if
-		    declare sub CFPreferencesSetAppValue lib CoreFoundation.framework (key as CFStringRef, value as Ptr, applicationID as CFStringRef)
+		    declare sub CFPreferencesSetAppValue lib CarbonLib (key as CFStringRef, value as Ptr, applicationID as CFStringRef)
 		    CFPreferencesSetAppValue key, ref, appID
 		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function VariantValue(key as String, default as Variant) As Variant
+		 Shared Function VariantValue(key as String, default as Variant) As Variant
 		  // "smart" version that returns a fitting type as a variant or returns the default if no such key exists in the prefs
 		  
 		  dim v as CFType = CFType(Value(key))
@@ -260,33 +260,33 @@ Class CFPreferences
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

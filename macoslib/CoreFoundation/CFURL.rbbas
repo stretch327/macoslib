@@ -19,7 +19,7 @@ Inherits CFType
 		  #if TargetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFURLCopyAbsoluteURL lib CoreFoundation.framework (relativeURL as Ptr) as Ptr
+		    declare function CFURLCopyAbsoluteURL lib CarbonLib (relativeURL as Ptr) as Ptr
 		    
 		    if me <> nil then
 		      return new CFURL(CFURLCopyAbsoluteURL(me), true)
@@ -37,7 +37,7 @@ Inherits CFType
 		  #if targetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFURLCreateCopyAppendingPathComponent lib CoreFoundation.framework (allocator as Ptr, url as Ptr, pathComponent as CFStringRef, isDirectory as Boolean) as Ptr
+		    declare function CFURLCreateCopyAppendingPathComponent lib CarbonLib (allocator as Ptr, url as Ptr, pathComponent as CFStringRef, isDirectory as Boolean) as Ptr
 		    
 		    return new CFURL(CFURLCreateCopyAppendingPathComponent(nil, self, pathComponent, isDirectory), CFType.hasOwnership)
 		    
@@ -54,9 +54,9 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ClassID() As UInt32
+		 Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CoreFoundation.framework alias "CFURLGetTypeID" () as UInt32
+		    declare function TypeID lib CarbonLib alias "CFURLGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -68,7 +68,7 @@ Inherits CFType
 		  #if targetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFURLCreateWithString lib CoreFoundation.framework (allocator as Ptr, URLString as CFStringRef, baseURL as Ptr) as Ptr
+		    declare function CFURLCreateWithString lib CarbonLib (allocator as Ptr, URLString as CFStringRef, baseURL as Ptr) as Ptr
 		    
 		    if baseURL is nil then
 		      super.Constructor CFURLCreateWithString(nil, relativeURL, nil), true
@@ -106,7 +106,7 @@ Inherits CFType
 		        static functionNeedsCheck as boolean = true
 		        static functionIsAvailable as boolean
 		        if functionNeedsCheck then
-		          functionIsAvailable = System.IsFunctionAvailable( "CFURLCreateBookmarkDataFromFile", CoreFoundation.framework ) // This function was introduced in OS X 10.6.
+		          functionIsAvailable = System.IsFunctionAvailable( "CFURLCreateBookmarkDataFromFile", CarbonLib ) // This function was introduced in OS X 10.6.
 		          functionNeedsCheck = false
 		        end if
 		        
@@ -150,7 +150,7 @@ Inherits CFType
 		  #if targetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFURLCopyHostName lib CoreFoundation.framework (anURL as Ptr) as Ptr
+		    declare function CFURLCopyHostName lib CarbonLib (anURL as Ptr) as Ptr
 		    
 		    return CFURLCopyHostName(url)
 		    
@@ -165,7 +165,7 @@ Inherits CFType
 		  #if targetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    soft declare function CFURLCopyNetLocation lib CoreFoundation.framework (anURL as Ptr) as Ptr
+		    soft declare function CFURLCopyNetLocation lib CarbonLib (anURL as Ptr) as Ptr
 		    
 		    return CFURLCopyNetLocation(url)
 		    
@@ -178,7 +178,7 @@ Inherits CFType
 	#tag Method, Flags = &h21
 		Private Shared Function CopyPassword(url as CFURL) As Ptr
 		  #if targetMacOS
-		    soft declare function CFURLCopyPassword lib CoreFoundation.framework (anURL as Ptr) as Ptr
+		    soft declare function CFURLCopyPassword lib CarbonLib (anURL as Ptr) as Ptr
 		    
 		    return CFURLCopyPassword(url)
 		  #endif
@@ -190,7 +190,7 @@ Inherits CFType
 		  #if targetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFURLCopyQueryString lib CoreFoundation.framework (anURL as Ptr) as Ptr
+		    declare function CFURLCopyQueryString lib CarbonLib (anURL as Ptr) as Ptr
 		    
 		    return CFURLCopyQueryString(url)
 		    
@@ -205,7 +205,7 @@ Inherits CFType
 		  #if targetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFURLCopyScheme lib CoreFoundation.framework (anURL as Ptr) as Ptr
+		    declare function CFURLCopyScheme lib CarbonLib (anURL as Ptr) as Ptr
 		    
 		    return CFURLCopyScheme(url)
 		    
@@ -224,7 +224,7 @@ Inherits CFType
 		  #if targetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFURLCopyUserName lib CoreFoundation.framework (anURL as Ptr) as Ptr
+		    declare function CFURLCopyUserName lib CarbonLib (anURL as Ptr) as Ptr
 		    
 		    return CFURLCopyUserName(url)
 		    
@@ -235,7 +235,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateBookmarkData(f As FolderItem, options As UInt32 = 0, resourcePropertiesToInclude() As String = nil, relativeTo As FolderItem = nil) As CFData
+		 Shared Function CreateBookmarkData(f As FolderItem, options As UInt32 = 0, resourcePropertiesToInclude() As String = nil, relativeTo As FolderItem = nil) As CFData
 		  // Added by Kem Tekinay.
 		  
 		  dim r as CFData
@@ -247,7 +247,7 @@ Inherits CFType
 		    const kCFAllocatorDefault = nil
 		    
 		    // Introduced in MacOS X 10.6
-		    Soft Declare Function CFURLCreateBookmarkData Lib CoreFoundation.framework ( _
+		    Soft Declare Function CFURLCreateBookmarkData Lib CarbonLib ( _
 		    allocator As Ptr, _
 		    url As Ptr, _
 		    options As UInt32, _
@@ -293,7 +293,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateBookmarkDataFromFile(alias As FolderItem) As CFData
+		 Shared Function CreateBookmarkDataFromFile(alias As FolderItem) As CFData
 		  dim r as CFData
 		  
 		  if alias is nil then return r
@@ -303,7 +303,7 @@ Inherits CFType
 		    const kCFAllocatorDefault = nil
 		    
 		    // Introduced in MacOS X 10.6
-		    Soft Declare Function CFURLCreateBookmarkDataFromFile Lib CoreFoundation.framework ( _
+		    Soft Declare Function CFURLCreateBookmarkDataFromFile Lib CarbonLib ( _
 		    allocator As Ptr, _
 		    fileURL As Ptr, _
 		    ByRef errorRef As Ptr _
@@ -330,7 +330,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateByResolvingBookmarkData(bookmark As CFData, ByRef isStale As Boolean, options As UInt32 = 0, resourcePropertiesToInclude() As String = nil, relativeTo As FolderItem = nil) As CFURL
+		 Shared Function CreateByResolvingBookmarkData(bookmark As CFData, ByRef isStale As Boolean, options As UInt32 = 0, resourcePropertiesToInclude() As String = nil, relativeTo As FolderItem = nil) As CFURL
 		  dim r as CFURL
 		  
 		  #if TargetMacOS
@@ -338,7 +338,7 @@ Inherits CFType
 		    const kCFAllocatorDefault = nil
 		    
 		    // Introduced in MacOS X 10.6
-		    Soft Declare Function CFURLCreateByResolvingBookmarkData Lib CoreFoundation.framework ( _
+		    Soft Declare Function CFURLCreateByResolvingBookmarkData Lib CarbonLib ( _
 		    allocator As Ptr, _
 		    bookmark As Ptr, _
 		    options As UInt32, _
@@ -385,7 +385,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateByResolvingBookmarkData(bookmark As CFData, options As UInt32 = 0, resourcePropertiesToInclude() As String = nil, relativeTo As FolderItem = nil) As CFURL
+		 Shared Function CreateByResolvingBookmarkData(bookmark As CFData, options As UInt32 = 0, resourcePropertiesToInclude() As String = nil, relativeTo As FolderItem = nil) As CFURL
 		  dim r as CFURL
 		  
 		  #if TargetMacOS
@@ -419,11 +419,11 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromFSRef(fsRef as MemoryBlock) As CFURL
+		 Shared Function CreateFromFSRef(fsRef as MemoryBlock) As CFURL
 		  #if targetMacOS
 		    
 		    // Introduced in MacOS X 10.0
-		    declare function CFURLCreateFromFSRef lib CoreFoundation.framework (allocator as Ptr, fsRef as Ptr) as Ptr
+		    declare function CFURLCreateFromFSRef lib CarbonLib (allocator as Ptr, fsRef as Ptr) as Ptr
 		    
 		    const kCFAllocatorDefault = nil
 		    
@@ -434,13 +434,13 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromHFSPath(path as String, isDirectory as Boolean) As CFURL
+		 Shared Function CreateFromHFSPath(path as String, isDirectory as Boolean) As CFURL
 		  return CreateFromFilesystemPath(path, CFURL.HFSPathStyle, isDirectory)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromPOSIXPath(path as String, isDirectory as Boolean) As CFURL
+		 Shared Function CreateFromPOSIXPath(path as String, isDirectory as Boolean) As CFURL
 		  return CreateFromFilesystemPath(path, CFURL.POSIXPathStyle, isDirectory)
 		End Function
 	#tag EndMethod
@@ -456,7 +456,7 @@ Inherits CFType
 		  #if TargetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    Declare Function CFURLCanBeDecomposed lib CoreFoundation.framework (anURL as Ptr) as Boolean
+		    Declare Function CFURLCanBeDecomposed lib CarbonLib (anURL as Ptr) as Boolean
 		    
 		    if me <> nil then
 		      return CFURLCanBeDecomposed(me)
@@ -487,7 +487,7 @@ Inherits CFType
 		      do
 		        
 		        // Introduced in MacOS X 10.0
-		        declare function CFURLGetFileSystemRepresentation lib CoreFoundation.framework (url as Ptr, resolveAgainstBase as Boolean, buffer as Ptr, maxBufLen as Integer) as Boolean
+		        declare function CFURLGetFileSystemRepresentation lib CarbonLib (url as Ptr, resolveAgainstBase as Boolean, buffer as Ptr, maxBufLen as Integer) as Boolean
 		        
 		        if CFURLGetFileSystemRepresentation(me.Reference, resolveAgainstBase, buffer, buffer.Size) then
 		          exit
@@ -509,7 +509,7 @@ Inherits CFType
 		  #if TargetMacOS
 		    
 		    // Introduced in MacOS X 10.0
-		    declare function CFURLGetPortNumber lib CoreFoundation.framework (anURL as Ptr) as Integer
+		    declare function CFURLGetPortNumber lib CarbonLib (anURL as Ptr) as Integer
 		    if me <> nil then
 		      return CFURLGetPortNumber(me)
 		    else
@@ -538,9 +538,9 @@ Inherits CFType
 		    if self.IsAlias then
 		      
 		      // Introduced in MacOS X 10.6.
-		      Soft Declare Function CFURLCreateBookmarkDataFromFile lib CoreFoundation.framework ( _
+		      Soft Declare Function CFURLCreateBookmarkDataFromFile lib CarbonLib ( _
 		      allocator as Ptr, fileURL as Ptr, ByRef errorRef as Ptr) as Ptr
-		      Soft Declare Function CFURLCreateByResolvingBookmarkData lib CoreFoundation.framework ( _
+		      Soft Declare Function CFURLCreateByResolvingBookmarkData lib CarbonLib ( _
 		      allocator as Ptr, bookmark as Ptr, options as UInt32, relativeToURL as Ptr, _
 		      resourcePropertiesToInclude as Ptr, ByRef isStale as Boolean, ByRef errorRef as Ptr) as Ptr
 		      
@@ -670,7 +670,7 @@ Inherits CFType
 			  #if TargetMacOS
 			    
 			    // Introduced in MacOS X 10.0.
-			    declare function CFURLGetBaseURL lib CoreFoundation.framework (anURL as Ptr) as Ptr
+			    declare function CFURLGetBaseURL lib CarbonLib (anURL as Ptr) as Ptr
 			    
 			    if not ( self = nil ) then
 			      dim theBaseURL as new CFURL(CFURLGetBaseURL(me.Reference), false)
@@ -1166,7 +1166,7 @@ Inherits CFType
 			  #if TargetMacOS
 			    
 			    // Introduced in MacOS X 10.0.
-			    declare function CFURLGetString lib CoreFoundation.framework (anURL as Ptr) as Ptr
+			    declare function CFURLGetString lib CarbonLib (anURL as Ptr) as Ptr
 			    // Caution: If this would return a CFStringRef, we'd have to Retain its value!
 			    // Instead, "new CFString()" takes care of that below
 			    
@@ -1295,7 +1295,7 @@ Inherits CFType
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Exists"
@@ -1307,20 +1307,20 @@ Inherits CFType
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="RelativeURL"
@@ -1338,14 +1338,14 @@ Inherits CFType
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

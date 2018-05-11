@@ -1,9 +1,30 @@
 #tag Class
 Class NSEvent
 Inherits NSObject
+	#tag Method, Flags = &h21
+		Private Shared Function ClassRef() As Ptr
+		  #if TargetCocoa
+		    static ref as Ptr = Cocoa.NSClassFromString("NSEvent")
+		    return ref
+		  #endif
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Shared Function DoubleClickInterval() As Double
+		  //# Returns the system-wide double-click time interval in seconds
+		  // To convert it to Ticks, multiply the value by 60.
+		  
+		  #if TargetMacOS
+		    declare function doubleClickInterval lib CocoaLib selector "doubleClickInterval" (Cls as Ptr) as double
+		    
+		    return doubleClickInterval(ClassRef)
+		  #endif
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function LocationInWindow() As NSPoint
-		  
 		  #if TargetMacOS
 		    declare function locationInWindow lib CocoaLib selector "locationInWindow" (id as Ptr) as NSPoint
 		    
@@ -52,11 +73,10 @@ Inherits NSObject
 
 	#tag Method, Flags = &h0
 		Shared Function MouseLocation() As NSPoint
-		  
 		  #if TargetMacOS
 		    declare function mouseLocation lib CocoaLib selector "mouseLocation" (id as Ptr) as NSPoint
 		    
-		    return  mouseLocation( Cocoa.NSClassFromString( "NSEvent" ))
+		    return mouseLocation(ClassRef)
 		  #endif
 		End Function
 	#tag EndMethod
@@ -311,40 +331,6 @@ Inherits NSObject
 			Name="Type"
 			Group="Behavior"
 			Type="EventType"
-			EditorType="Enum"
-			#tag EnumValues
-				"1 - LeftMouseDown"
-				"2 - LeftMouseUp"
-				"3 - RightMouseDown"
-				"4 - RightMouseUp"
-				"5 - MouseMoved"
-				"6 - LeftMouseDragged"
-				"7 - RightMouseDragged"
-				"8 - MouseEntered"
-				"9 - MouseExited"
-				"10 - KeyDown"
-				"11 - KeyUp"
-				"12 - FlagsChanged"
-				"13 - AppKitDefined"
-				"14 - SystemDefined"
-				"15 - ApplicationDefined"
-				"16 - Periodic"
-				"17 - CursorUpdate"
-				"22 - ScrollWheel"
-				"23 - TabletPoint"
-				"24 - TabletProximity"
-				"25 - OtherMouseDown"
-				"26 - OtherMouseUp"
-				"27 - OtherMouseDragged"
-				"29 - EventTypeGesture"
-				"30 - EventTypeMagnify"
-				"31 - EventTypeSwipe"
-				"18 - EventTypeRotate"
-				"19 - EventTypeBeginGesture"
-				"20 - EventTypeEndGesture"
-				"32 - EventTypeSmartMagnify"
-				"33 - EventTypeQuickLook"
-			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="WindowNumber"

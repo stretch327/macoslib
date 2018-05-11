@@ -82,6 +82,36 @@ Inherits NSObject
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  #if TargetCocoa
+			    if (RespondsToSelector("contentImage")) then
+			      Declare Function contentImage Lib "Cocoa" Selector "contentImage" (instanceRef As Ptr) As Ptr
+			      Return NEW NSImage(contentImage(me))
+			    end if
+			  #endif
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  #if TargetCocoa
+			    if (RespondsToSelector("setContentImage:")) then
+			      Declare Sub setContentImage Lib "Cocoa" Selector "setContentImage:" (instanceRef As Ptr, aNSImage As Ptr)
+			      
+			      if (value <> Nil) then
+			        setContentImage me, value
+			      end if
+			    end if
+			    
+			  #else
+			    #pragma Unused value
+			  #endif
+			End Set
+		#tag EndSetter
+		ContentImage As NSImage
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  
 			  #if TargetMacOS then
 			    declare function getDeliveryDate lib CocoaLib selector "deliveryDate" (obj_id as Ptr) as Ptr

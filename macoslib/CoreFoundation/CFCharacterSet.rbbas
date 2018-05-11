@@ -9,9 +9,9 @@ Inherits CFType
 
 
 	#tag Method, Flags = &h0
-		Shared Function ClassID() As UInt32
+		 Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    soft declare function TypeID lib CoreFoundation.framework alias "CFCharacterSetGetTypeID" () as UInt32
+		    soft declare function TypeID lib CarbonLib alias "CFCharacterSetGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -21,7 +21,7 @@ Inherits CFType
 	#tag Method, Flags = &h1000
 		Sub Constructor(theSetIdentifier as PredefinedSet)
 		  #if TargetMacOS
-		    declare function CFCharacterSetGetPredefined lib CoreFoundation.framework (theSetIdentifier as Integer) as Ptr
+		    declare function CFCharacterSetGetPredefined lib CarbonLib (theSetIdentifier as Integer) as Ptr
 		    
 		    super.Constructor (CFCharacterSetGetPredefined (Integer(theSetIdentifier)), false)
 		  #endif
@@ -35,7 +35,7 @@ Inherits CFType
 		      return false
 		    end if
 		    
-		    soft declare function CFCharacterSetIsCharacterMember lib CoreFoundation.framework (theSet as Ptr, theChar as Int16) as Boolean
+		    soft declare function CFCharacterSetIsCharacterMember lib CarbonLib (theSet as Ptr, theChar as Int16) as Boolean
 		    
 		    return CFCharacterSetIsCharacterMember(me.Reference, Asc(ConvertEncoding(char, Encodings.UTF16)))
 		  #endif
@@ -69,39 +69,40 @@ Inherits CFType
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

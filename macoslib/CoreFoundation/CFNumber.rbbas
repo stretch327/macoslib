@@ -16,9 +16,9 @@ Implements CFPropertyList
 
 
 	#tag Method, Flags = &h0
-		Shared Function ClassID() As UInt32
+		 Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CoreFoundation.framework alias "CFNumberGetTypeID" () as UInt32
+		    declare function TypeID lib CarbonLib alias "CFNumberGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -30,7 +30,7 @@ Implements CFPropertyList
 		  #if targetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFNumberCreate lib CoreFoundation.framework (allocator as Ptr, theType as Integer, valuePtr as Ptr) as Ptr
+		    declare function CFNumberCreate lib CarbonLib (allocator as Ptr, theType as Integer, valuePtr as Ptr) as Ptr
 		    
 		    dim mb as new MemoryBlock(8)
 		    dim numType as Integer
@@ -42,10 +42,10 @@ Implements CFPropertyList
 		    case value.TypeSingle
 		      numType = kCFNumberFloat32Type
 		      mb.SingleValue(0) = value
-		    case value.TypeInt32
+		    case value.TypeInteger
 		      numType = kCFNumberSInt32Type
 		      mb.Int32Value(0) = value
-		    case value.TypeInt64
+		    case value.TypeLong
 		      numType = kCFNumberSInt64Type
 		      mb.Int64Value(0) = value
 		    else
@@ -61,7 +61,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromPListFile(file as FolderItem) As CFNumber
+		 Shared Function CreateFromPListFile(file as FolderItem) As CFNumber
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListFile( file, CoreFoundation.kCFPropertyListImmutable )
@@ -78,7 +78,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromPListString(plistString as String) As CFNumber
+		 Shared Function CreateFromPListString(plistString as String) As CFNumber
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListString( plistString, CoreFoundation.kCFPropertyListImmutable )
@@ -95,7 +95,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function NaN() As CFNumber
+		 Shared Function NaN() As CFNumber
 		  const kCFNumberNaN = "kCFNumberNaN"
 		  static v as CFNumber = SpecialValue(kCFNumberNaN)
 		  return v
@@ -103,7 +103,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function NegativeInfinity() As CFNumber
+		 Shared Function NegativeInfinity() As CFNumber
 		  const kCFNumberNegativeInfinity = "kCFNumberNegativeInfinity"
 		  static v as CFNumber = SpecialValue(kCFNumberNegativeInfinity)
 		  return v
@@ -121,7 +121,7 @@ Implements CFPropertyList
 		      
 		    else
 		      // Introduced in MacOS X 10.0.
-		      Declare Function CFNumberCompare Lib CoreFoundation.framework ( n1 As Ptr, n2 As Ptr, context As Ptr ) As Int32
+		      Declare Function CFNumberCompare Lib CarbonLib ( n1 As Ptr, n2 As Ptr, context As Ptr ) As Int32
 		      
 		      return CFNumberCompare( me.Reference, value.Reference, nil )
 		    end if
@@ -153,7 +153,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function PositiveInfinity() As CFNumber
+		 Shared Function PositiveInfinity() As CFNumber
 		  const kCFNumberPositiveInfinity = "kCFNumberPositiveInfinity"
 		  static v as CFNumber = SpecialValue(kCFNumberPositiveInfinity)
 		  return v
@@ -175,18 +175,12 @@ Implements CFPropertyList
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function WriteToFile(file as FolderItem, asXML as Boolean = True) As Boolean
-		  
-		End Function
-	#tag EndMethod
-
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
 			  #if TargetMacOS
-			    soft declare function CFNumberGetValue lib CoreFoundation.framework (number as Ptr, theType as Integer, ByRef valuePtr as Double) as Boolean
+			    soft declare function CFNumberGetValue lib CarbonLib (number as Ptr, theType as Integer, ByRef valuePtr as Double) as Boolean
 			    
 			    if not ( self = nil ) then
 			      dim theValue as Double
@@ -206,7 +200,7 @@ Implements CFPropertyList
 		#tag Getter
 			Get
 			  #if TargetMacOS
-			    soft declare function CFNumberGetValue lib CoreFoundation.framework (number as Ptr, theType as Integer, ByRef valuePtr as Int64) as Boolean
+			    soft declare function CFNumberGetValue lib CarbonLib (number as Ptr, theType as Integer, ByRef valuePtr as Int64) as Boolean
 			    
 			    if not ( self = nil ) then
 			      dim theValue as Int64
@@ -228,7 +222,7 @@ Implements CFPropertyList
 			  #if TargetMacOS
 			    
 			    // Introduced in MacOS X 10.0.
-			    declare function CFNumberGetValue lib CoreFoundation.framework (number as Ptr, theType as Integer, ByRef valuePtr as Integer) as Boolean
+			    declare function CFNumberGetValue lib CarbonLib (number as Ptr, theType as Integer, ByRef valuePtr as Integer) as Boolean
 			    
 			    if not ( self = nil ) then
 			      dim theValue as Integer
@@ -250,7 +244,7 @@ Implements CFPropertyList
 			  #if TargetMacOS
 			    
 			    // Introduced in MacOS X 10.0.
-			    declare function CFNumberIsFloatType lib CoreFoundation.framework (number as Ptr) as Boolean
+			    declare function CFNumberIsFloatType lib CarbonLib (number as Ptr) as Boolean
 			    
 			    if not ( self = nil ) then
 			      return CFNumberIsFloatType(me.Reference)
@@ -268,7 +262,7 @@ Implements CFPropertyList
 			  #if TargetMacOS
 			    
 			    // Introduced in MacOS X 10.0.
-			    declare function CFNumberGetType lib CoreFoundation.framework (number as Ptr) as Integer
+			    declare function CFNumberGetType lib CarbonLib (number as Ptr) as Integer
 			    
 			    if not ( self = nil ) then
 			      return CFNumberGetType(me.Reference)
@@ -285,8 +279,8 @@ Implements CFPropertyList
 			  // returns a Variant containing either of these types: Single, Double, Integer, Int64
 			  
 			  #if targetMacOS
-			    soft declare function CFNumberGetValue lib CoreFoundation.framework (number as Ptr, theType as Integer, valuePtr as Ptr) as Boolean
-			    soft declare function CFNumberGetType lib CoreFoundation.framework (number as Ptr) as Integer
+			    soft declare function CFNumberGetValue lib CarbonLib (number as Ptr, theType as Integer, valuePtr as Ptr) as Boolean
+			    soft declare function CFNumberGetType lib CarbonLib (number as Ptr) as Integer
 			    
 			    if not ( self = nil ) then
 			      dim numType as Integer = CFNumberGetType(me.Reference)
@@ -357,7 +351,7 @@ Implements CFPropertyList
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoubleValue"
@@ -370,12 +364,7 @@ Implements CFPropertyList
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Int64Value"
-			Group="Behavior"
-			Type="Int64"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IntegerValue"
@@ -394,26 +383,26 @@ Implements CFPropertyList
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Type"

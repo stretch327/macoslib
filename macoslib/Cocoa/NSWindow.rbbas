@@ -176,20 +176,18 @@ Inherits NSResponder
 		    dim arrayRef as Ptr = childWindows(self)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		          #if Target64Bit then
-		              const sizeOfPtr = 8
-		          #else
-		              const sizeOfPtr = 4
-		          #endif
+		      
+		      #if RBVersion > 2013.01
+		        #if Target64Bit
+		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		        #endif
+		      #endif
+		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        #if target64bit then
-		          retArray.append new NSWindow(Ptr(m.UInt64Value(i*sizeOfPtr)))
-		        #else
-		          retArray.append new NSWindow(Ptr(m.UInt32Value(i*sizeOfPtr)))
-		        #endif
+		        retArray.append new NSWindow(Ptr(m.UInt32Value(i*SizeOfPointer)))
 		      next
 		    end if
 		    
@@ -203,10 +201,8 @@ Inherits NSResponder
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSWindow")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -398,7 +394,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ContentRect(windowFrame as Cocoa.NSRect, styleMask as UInt32) As Cocoa.NSRect
+		Shared Function ContentRect(windowFrame as Cocoa.NSRect, styleMask as UInt32) As Cocoa.NSRect
 		  
 		  #if TargetCocoa
 		    declare function contentRectForFrameRect lib CocoaLib selector "contentRectForFrameRect:styleMask:" _
@@ -488,7 +484,6 @@ Inherits NSResponder
 		  #else
 		    #pragma unused aRect
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
@@ -506,12 +501,11 @@ Inherits NSResponder
 		  #else
 		    #pragma unused aRect
 		  #endif
-		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function DefaultDepthLimit() As Integer
+		Shared Function DefaultDepthLimit() As Integer
 		  
 		  #if TargetCocoa
 		    declare function defaultDepthLimit lib CocoaLib selector "defaultDepthLimit" (class_id as Ptr) as Integer
@@ -693,20 +687,18 @@ Inherits NSResponder
 		    dim arrayRef as Ptr = drawers(self)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		          #if Target64Bit then
-		              const sizeOfPtr = 8
-		          #else
-		              const sizeOfPtr = 4
-		          #endif
+		      
+		      #if RBVersion > 2013.01
+		        #if Target64Bit
+		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		        #endif
+		      #endif
+		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        #if target64bit then
-		          retArray.append new NSDrawer(Ptr(m.UInt64Value(i*sizeOfPtr)))
-		        #else
-		          retArray.append new NSDrawer(Ptr(m.UInt32Value(i*sizeOfPtr)))
-		        #endif
+		        retArray.append new NSDrawer(Ptr(m.UInt32Value(i*SizeOfPointer)))
 		      next
 		    end if
 		    
@@ -894,7 +886,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function FrameRect(windowContentRect as Cocoa.NSRect, styleMask as UInt32) As Cocoa.NSRect
+		Shared Function FrameRect(windowContentRect as Cocoa.NSRect, styleMask as UInt32) As Cocoa.NSRect
 		  
 		  #if TargetCocoa
 		    declare function frameRectForContentRect lib CocoaLib selector "frameRectForContentRect:styleMask:" _
@@ -1010,13 +1002,13 @@ Inherits NSResponder
 		  
 		  //@discussion Only works on floating (palette) windows. (frame = 3 & 7)
 		  
-		  Dim tmpStyleMask as UInt32 = NSHUDWindowMask or NSTitledWindowMask or NSUtilityWindowMask
+		  Dim tmpStyleMask as UInt32 = Integer( NSWindow.NSWindowMask.HUD ) or Integer( NSWindow.NSWindowMask.Titled ) or Integer( NSWindow.NSWindowMask.Utility )
 		  dim w as window = self
-		  if w.Resizeable then tmpStyleMask = tmpStyleMask or NSResizableWindowMask
+		  if w.Resizeable then tmpStyleMask = tmpStyleMask or Integer( NSWindow.NSWindowMask.Resizable )
 		  #if RBVersion > 2013.02
-		    if w.CloseButton   then tmpStyleMask = tmpStyleMask or NSClosableWindowMask
+		    if w.CloseButton   then tmpStyleMask = tmpStyleMask or Integer( NSWindow.NSWindowMask.Closable )
 		  #else
-		    if w.CloseBox   then tmpStyleMask = tmpStyleMask or NSClosableWindowMask
+		    if w.CloseBox   then tmpStyleMask = tmpStyleMask or Integer( NSWindow.NSWindowMask.Closable )
 		  #endif
 		  
 		  StyleMask = tmpStyleMask
@@ -1063,7 +1055,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function MinFrameWidth(windowTitle as String, styleMask as UInt32) As Single
+		Shared Function MinFrameWidth(windowTitle as String, styleMask as UInt32) As Single
 		  
 		  #if TargetCocoa
 		    declare function minFrameWidthWithTitle lib CocoaLib selector "minFrameWidthWithTitle:styleMask:" _
@@ -1093,7 +1085,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceBitsPerSample() As String
+		Shared Function NSDeviceBitsPerSample() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceBitsPerSample")
 		  return name
@@ -1102,7 +1094,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceColorSpaceName() As String
+		Shared Function NSDeviceColorSpaceName() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceColorSpaceName")
 		  return name
@@ -1111,7 +1103,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceIsPrinter() As String
+		Shared Function NSDeviceIsPrinter() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceIsPrinter")
 		  return name
@@ -1120,7 +1112,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceIsScreen() As String
+		Shared Function NSDeviceIsScreen() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceIsScreen")
 		  return name
@@ -1129,7 +1121,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceResolution() As String
+		Shared Function NSDeviceResolution() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceResolution")
 		  return name
@@ -1138,7 +1130,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDeviceSize() As String
+		Shared Function NSDeviceSize() As String
 		  
 		  static name as String = Cocoa.StringConstant ("NSDeviceSize")
 		  return name
@@ -1337,7 +1329,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub RemoveFrame(frameName as String)
+		Shared Sub RemoveFrame(frameName as String)
 		  
 		  #if TargetCocoa
 		    declare sub removeFrameUsingName lib CocoaLib selector "removeFrameUsingName:" (class_id as Ptr, frameName as CFStringRef)
@@ -1555,7 +1547,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function StandardWindowButton(windowButtonKind as NSWindowButton, styleMask as UInt32) As Ptr
+		Shared Function StandardWindowButton(windowButtonKind as NSWindowButton, styleMask as UInt32) As Ptr
 		  
 		  #if TargetCocoa
 		    declare function standardWindowButton lib CocoaLib selector "standardWindowButton:forStyleMask:" _
@@ -1612,7 +1604,8 @@ Inherits NSResponder
 		  
 		  #if TargetCocoa
 		    // Create the NSColor to use for the window's background with an alpha value.
-		    dim nsc as NSColor = NSColor.ColorWithRGB( 0.92, 0.92, 0.92, Value ) // Aproximately the same as window background color
+		    dim bgc as NSColor = self.BackgroundColor // Use the same color as the window background color
+		    dim nsc as NSColor = bgc.ColorWithAlpha( Value )
 		    
 		    // Set the features on the window
 		    self.AlphaValue = 1.0
@@ -1701,7 +1694,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function WindowNumberAtPoint(point as NSPoint, startingBelowWinNumber as Integer) As Integer
+		Shared Function WindowNumberAtPoint(point as NSPoint, startingBelowWinNumber as Integer) As Integer
 		  
 		  #if TargetCocoa
 		    declare function windowNumberAtPoint lib CocoaLib selector "windowNumberAtPoint:belowWindowWithWindowNumber:" _
@@ -1718,7 +1711,7 @@ Inherits NSResponder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function WindowNumbers(options as UInt32) As Integer()
+		Shared Function WindowNumbers(options as UInt32) As Integer()
 		  
 		  #if TargetCocoa
 		    declare function windowNumbersWithOptions lib CocoaLib selector "windowNumbersWithOptions:" (class_id as Ptr, options as UInt32) as Ptr
@@ -1728,20 +1721,18 @@ Inherits NSResponder
 		    dim arrayRef as Ptr = windowNumbersWithOptions(ClassRef, options)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		          #if Target64Bit then
-		              const sizeOfPtr = 8
-		          #else
-		              const sizeOfPtr = 4
-		          #endif
+		      
+		      #if RBVersion > 2013.01
+		        #if Target64Bit
+		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		        #endif
+		      #endif
+		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        #if target64bit then
-		          dim temp as new NSNumber(Ptr(m.Int64Value(i*sizeOfPtr)))
-		        #else
-		          dim temp as new NSNumber(Ptr(m.Int32Value(i*sizeOfPtr)))
-		        #endif
+		        dim temp as new NSNumber(Ptr(m.Int32Value(i*SizeOfPointer)))
 		        retArray.append temp.IntegerValue
 		      next
 		    end if
@@ -1896,10 +1887,15 @@ Inherits NSResponder
 			Get
 			  
 			  #if TargetCocoa
-			    declare function animationBehavior lib CocoaLib selector "animationBehavior" (obj_id as Ptr) as NSWindowAnimationBehavior
+			    //animationBehavior was added in MacOS 10.7.
 			    
-			    return animationBehavior(self)
-			    
+			    static msgAccepted as Boolean = self.respondsToSelector("animationBehavior")
+			    if msgAccepted then
+			      declare function animationBehavior lib CocoaLib selector "animationBehavior" (obj_id as Ptr) as NSWindowAnimationBehavior
+			      return animationBehavior(self)
+			    else
+			      return NSWindowAnimationBehavior.NSWindowAnimationBehaviorDefault
+			    end if
 			  #endif
 			  
 			End Get
@@ -1908,9 +1904,15 @@ Inherits NSResponder
 			Set
 			  
 			  #if TargetCocoa
-			    declare sub setAnimationBehavior lib CocoaLib selector "setAnimationBehavior:" (obj_id as Ptr, behavior as NSWindowAnimationBehavior)
+			    //setAnimationBehavior: was added in Mac OS 10.7.
 			    
-			    setAnimationBehavior self, value
+			    static msgAccepted as Boolean = self.respondsToSelector("setAnimationBehavior:")
+			    if msgAccepted then
+			      declare sub setAnimationBehavior lib CocoaLib selector "setAnimationBehavior:" (obj_id as Ptr, behavior as NSWindowAnimationBehavior)
+			      setAnimationBehavior(self, value)
+			    else
+			      //no-op
+			    end if
 			    
 			  #else
 			    #pragma unused value
@@ -2901,6 +2903,41 @@ Inherits NSResponder
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
+		#tag Note
+			Blurry Translucent toolbars
+		#tag EndNote
+		#tag Getter
+			Get
+			  #if TargetCocoa then
+			    if IsYosemite then
+			      return ( StyleMask and Integer( NSWindow.NSWindowMask.FullSizeContentView ) ) <> 0
+			    end if
+			  #endif
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  #if TargetCocoa then
+			    if IsYosemite then
+			      dim WindowStyleMask as UInt32
+			      
+			      if value then
+			        WindowStyleMask = StyleMask or Integer( NSWindow.NSWindowMask.FullSizeContentView )
+			      else
+			        WindowStyleMask = StyleMask and NOT Integer( NSWindow.NSWindowMask.FullSizeContentView )
+			      end if
+			      
+			      StyleMask = WindowStyleMask
+			    else
+			      #pragma Unused value
+			    end if
+			  #endif
+			End Set
+		#tag EndSetter
+		FullSizeContentView As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
 			  
@@ -3199,7 +3236,7 @@ Inherits NSResponder
 			Get
 			  #if TargetCocoa then
 			    if IsLion then // the styleMask selector is available since 10.0, but the NSFullScreenWindowMask bit is first introduced in 10.7
-			      return ( self.StyleMask and NSFullScreenWindowMask ) = NSFullScreenWindowMask
+			      return ( self.StyleMask and Integer( NSWindow.NSWindowMask.FullScreen ) ) = Integer( NSWindow.NSWindowMask.FullScreen )
 			    End If
 			  #endif
 			End Get
@@ -4246,6 +4283,40 @@ Inherits NSResponder
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  
+			  #if TargetCocoa
+			    if IsYosemite then
+			      declare function titlebarAppearsTransparent lib CocoaLib selector "titlebarAppearsTransparent" (obj_id as Ptr) as Boolean
+			      
+			      return titlebarAppearsTransparent(self)
+			    else
+			      return false
+			    end if
+			  #endif
+			  
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  
+			  #if TargetCocoa
+			    if IsYosemite then
+			      declare sub setTitlebarAppearsTransparent lib CocoaLib selector "setTitlebarAppearsTransparent:" (obj_id as Ptr, value as Boolean)
+			      
+			      setTitlebarAppearsTransparent self, value
+			    end if
+			  #else
+			    #pragma unused value
+			  #endif
+			  
+			End Set
+		#tag EndSetter
+		TitlebarAppearsTransparent As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
 		#tag Note
 			
 			The window floats in Spaces and is hidden by Exposé. This is the default behavior if windowLevel is not equal to NSNormalWindowLevel.
@@ -4430,6 +4501,40 @@ Inherits NSResponder
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  
+			  #if TargetCocoa
+			    if IsYosemite then
+			      declare function titleVisibility lib CocoaLib selector "titleVisibility" (obj_id as Ptr) as NSWindowTitleVisibility
+			      
+			      return titleVisibility(self)
+			    else
+			      return NSWindowTitleVisibility.Visible
+			    end if
+			  #endif
+			  
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  
+			  #if TargetCocoa
+			    if IsYosemite then
+			      declare sub setTitleVisibility lib CocoaLib selector "setTitleVisibility:" (obj_id as Ptr, titleVisibility as NSWindowTitleVisibility)
+			      
+			      setTitleVisibility self, value
+			    end if
+			  #else
+			    #pragma unused value
+			  #endif
+			  
+			End Set
+		#tag EndSetter
+		WindowTitleVisibility As NSWindowTitleVisibility
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
 		#tag Note
 			Get & Set the window’s toolbar.
 		#tag EndNote
@@ -4493,33 +4598,6 @@ Inherits NSResponder
 		WorksWhenModal As Boolean
 	#tag EndComputedProperty
 
-
-	#tag Constant, Name = NSBorderlessWindowMask, Type = Double, Dynamic = False, Default = \"0", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = NSClosableWindowMask, Type = Double, Dynamic = False, Default = \"2", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = NSFullScreenWindowMask, Type = Double, Dynamic = False, Default = \"16384", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = NSHUDWindowMask, Type = Double, Dynamic = False, Default = \"8192", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = NSMiniaturizableWindowMask, Type = Double, Dynamic = False, Default = \"4", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = NSResizableWindowMask, Type = Double, Dynamic = False, Default = \"8", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = NSTexturedBackgroundWindowMask, Type = Double, Dynamic = False, Default = \"256", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = NSTitledWindowMask, Type = Double, Dynamic = False, Default = \"1", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = NSUtilityWindowMask, Type = Double, Dynamic = False, Default = \"16", Scope = Public
-	#tag EndConstant
 
 	#tag Constant, Name = NSWindowNumberListAllApplications, Type = Double, Dynamic = False, Default = \"1", Scope = Public
 	#tag EndConstant
@@ -4589,6 +4667,19 @@ Inherits NSResponder
 		NSScreenSaverWindowLevel = 13
 	#tag EndEnum
 
+	#tag Enum, Name = NSWindowMask, Type = Integer, Flags = &h0
+		Borderless = 0
+		  Titled = 1
+		  Closable = 2
+		  Miniaturizable = 4
+		  Resizable = 8
+		  Utility = 16
+		  TexturedBackground = 256
+		  HUD = 8192
+		  FullScreen = 16384
+		FullSizeContentView = 32768
+	#tag EndEnum
+
 	#tag Enum, Name = NSWindowOrderingMode, Type = Integer, Flags = &h0
 		NSWindowAbove = 1
 		  NSWindowBelow = -1
@@ -4599,6 +4690,12 @@ Inherits NSResponder
 		NSWindowSharingNone
 		  NSWindowSharingReadOnly
 		NSWindowSharingReadWrite
+	#tag EndEnum
+
+	#tag Enum, Name = NSWindowTitleVisibility, Type = Integer, Flags = &h0
+		Visible
+		  Hidden
+		HiddenWhenActive
 	#tag EndEnum
 
 
@@ -4758,6 +4855,11 @@ Inherits NSResponder
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="FullscreenAllowedAuxiliary"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FullSizeContentView"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty
@@ -4982,6 +5084,11 @@ Inherits NSResponder
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="StyleMask"
+			Group="Behavior"
+			Type="UInt32"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
@@ -4992,6 +5099,11 @@ Inherits NSResponder
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TitlebarAppearsTransparent"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -5031,6 +5143,17 @@ Inherits NSResponder
 			Name="WindowNumber"
 			Group="Behavior"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="WindowTitleVisibility"
+			Group="Behavior"
+			Type="NSWindowTitleVisibility"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - Visible"
+				"1 - Hidden"
+				"2 - HiddenWhenActive"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="WorksWhenModal"

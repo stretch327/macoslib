@@ -141,9 +141,10 @@ Implements NSToolbarItemInterface
 		  #pragma unused sel
 		  #pragma unused sender
 		  
-		  #pragma stackOverflowChecking false
-		  
-		  #If TargetMacOS
+		  #if TargetCocoa
+		    
+		    #pragma stackOverflowChecking false
+		    
 		    if CocoaClassMap.HasKey(id) then// get the target
 		      dim w as WeakRef = CocoaClassMap.Lookup(id, new WeakRef(nil))
 		      dim obj as NSToolbarDropMenuItem = NSToolbarDropMenuItem(w.Value) // get the sender instance
@@ -162,7 +163,13 @@ Implements NSToolbarItemInterface
 		    else
 		      //something might be wrong.
 		    end if
-		  #EndIf
+		    
+		  #else
+		    
+		    #pragma unused id
+		    
+		  #endif
+		  
 		End Sub
 	#tag EndMethod
 
@@ -672,80 +679,74 @@ Implements NSToolbarItemInterface
 			Name="Autovalidates"
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="NSToolbarItem"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Description"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ItemIdentifier"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSToolbarItem"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="PaletteLabel"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSToolbarItem"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Tag"
 			Group="Behavior"
 			Type="Integer"
+			InheritedFrom="NSToolbarItem"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ToolTip"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSToolbarItem"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="VisibilityPriority"
-			Group="Behavior"
-			Type="NSToolbarItemVisibilityPriority"
-			EditorType="Enum"
-			#tag EnumValues
-				"0 - NSToolbarItemVisibilityPriorityStandard"
-				"-1000 - NSToolbarItemVisibilityPriorityLow"
-				"1000 - NSToolbarItemVisibilityPriorityHigh"
-				"2000 - NSToolbarItemVisibilityPriorityUser"
-			#tag EndEnumValues
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

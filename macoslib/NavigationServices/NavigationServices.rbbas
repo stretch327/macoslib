@@ -44,9 +44,14 @@ Protected Module NavigationServices
 		Protected Function Version() As UInt32
 		  //returns a BCD coded version string
 		  
-		  soft declare function NavLibraryVersion lib "Carbon.framework" () as UInt32
+		  #if TargetMacOS
+		    
+		    soft declare function NavLibraryVersion lib "Carbon.framework" () as UInt32
+		    
+		    return NavLibraryVersion
+		    
+		  #endif
 		  
-		  return NavLibraryVersion
 		End Function
 	#tag EndMethod
 
@@ -154,33 +159,33 @@ Protected Module NavigationServices
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Module

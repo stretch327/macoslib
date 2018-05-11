@@ -4,11 +4,16 @@ Inherits CFArray
 	#tag Method, Flags = &h0
 		Sub Append(theItem as CFType)
 		  #if TargetMacOS
+		    declare Sub CFArrayAppendValue lib CarbonLib (theArray as CFTypeRef, theValue as CFTypeRef)
 		    
-		    declare Sub CFArrayAppendValue lib CoreFoundation.framework (theArray as Ptr, theValue as Ptr)
+		    if self = nil then
+		      return
+		    end if
+		    if theItem = nil then
+		      return
+		    end if
 		    
-		    CFArrayAppendValue me.Reference, theItem.Reference
-		    
+		    CFArrayAppendValue(self, theItem)
 		  #else
 		    
 		    #pragma unused theItem
@@ -23,9 +28,9 @@ Inherits CFArray
 		  
 		  #if TargetMacOS
 		    
-		    declare function CFArrayCreateMutable lib CoreFoundation.framework (allocator as Ptr, capacity as Integer, callbacks as Ptr) as Ptr
+		    declare function CFArrayCreateMutable lib CarbonLib (allocator as Ptr, capacity as Integer, callbacks as Ptr) as CFTypeRef
 		    
-		    super.Constructor CFArrayCreateMutable (nil, capacity, me.DefaultCallbacks), true
+		    self.Constructor(CFArrayCreateMutable(nil, capacity, DefaultCallbacks), hasOwnership)
 		    
 		  #else
 		    
@@ -36,36 +41,34 @@ Inherits CFArray
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromPListFile(file as FolderItem) As CFMutableArray
+		 Shared Function CreateFromPListFile(file as FolderItem) As CFMutableArray
 		  #if TargetMacOS
-		    
-		    dim plist as CFPropertyList = CFType.CreateFromPListFile( file, CoreFoundation.kCFPropertyListMutableContainersAndLeaves )
-		    dim r as CFMutableArray = CFMutableArray( plist )
-		    return r
-		    
+		    return MakeFromPList(CFType.CreateFromPListFile(file, CoreFoundation.kCFPropertyListMutableContainersAndLeaves))
 		  #else
-		    
 		    #pragma unused file
-		    
 		  #endif
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromPListString(plistString as String) As CFMutableArray
+		 Shared Function CreateFromPListString(plistString as String) As CFMutableArray
 		  #if TargetMacOS
-		    
-		    dim plist as CFPropertyList = CFType.CreateFromPListString( plistString, CoreFoundation.kCFPropertyListMutableContainersAndLeaves )
-		    dim r as CFMutableArray = CFMutableArray( plist )
-		    return r
-		    
+		    return MakeFromPList(CFType.CreateFromPListString(plistString, CoreFoundation.kCFPropertyListMutableContainersAndLeaves))
 		  #else
-		    
 		    #pragma unused plistString
-		    
 		  #endif
 		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Shared Function MakeFromPList(plist as CFPropertyList) As CFArray
+		  if plist isA CFMutableArray then
+		    return CFMutableArray(plist)
+		  else
+		    return nil
+		  end if
 		End Function
 	#tag EndMethod
 
@@ -75,10 +78,10 @@ Inherits CFArray
 		  
 		  #if TargetMacOS
 		    
-		    me.Constructor
+		    self.Constructor
 		    
 		    for i as integer = 0 to arr.Ubound
-		      me.Append( CFTypeFromVariant( arr( i ) ) )
+		      self.Append( CFTypeFromVariant( arr( i ) ) )
 		    next
 		    
 		  #else
@@ -93,14 +96,20 @@ Inherits CFArray
 	#tag Method, Flags = &h0
 		Sub Value(index as Integer, Assigns theValue as CFType)
 		  #if TargetMacOS
+		    declare Sub CFArraySetValueAtIndex lib CarbonLib (theArray as CFTypeRef, idx as Integer, theVal as Ptr)
 		    
-		    declare Sub CFArraySetValueAtIndex lib CoreFoundation.framework (theArray as Ptr, idx as Integer, theVal as Ptr)
-		    
-		    if index < 0 or index >= me.Count() then
+		    if index < 0 or index >= self.Count() then
 		      raise new OutOfBoundsException
 		    end if
 		    
-		    CFArraySetValueAtIndex me.Reference, index, theValue.Reference
+		    if self = nil then
+		      return
+		    end if
+		    if theValue = nil then
+		      return
+		    end if
+		    
+		    CFArraySetValueAtIndex(self, index, theValue)
 		    
 		  #else
 		    
@@ -118,45 +127,46 @@ Inherits CFArray
 			Group="Behavior"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="CFArray"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

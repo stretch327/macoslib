@@ -21,27 +21,32 @@ Inherits NSSlider
 			Name="AcceptFocus"
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AcceptTabs"
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AllowsExpansionToolTips"
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AllowsTickMarkValuesOnly"
 			Visible=true
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="NSSlider"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AltIncrementValue"
 			Group="Behavior"
 			Type="Double"
+			InheritedFrom="NSSlider"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoDeactivate"
@@ -49,11 +54,13 @@ Inherits NSSlider
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="autoresizesSubviews"
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Backdrop"
@@ -61,6 +68,7 @@ Inherits NSSlider
 			Group="Appearance"
 			Type="Picture"
 			EditorType="Picture"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Bold"
@@ -68,22 +76,25 @@ Inherits NSSlider
 			Group="Behavior"
 			InitialValue="false"
 			Type="Boolean"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoubleBuffer"
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoubleValue"
 			Group="Behavior"
 			Type="Double"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Enabled"
@@ -91,16 +102,19 @@ Inherits NSSlider
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EraseBackground"
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="FloatValue"
 			Group="Behavior"
 			Type="Single"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Height"
@@ -108,6 +122,7 @@ Inherits NSSlider
 			Group="Position"
 			InitialValue="32"
 			Type="Integer"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HelpTag"
@@ -115,6 +130,7 @@ Inherits NSSlider
 			Group="Appearance"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -122,21 +138,24 @@ Inherits NSSlider
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InitialParent"
 			Group="Initial State"
-			Type="String"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IntegerValue"
 			Group="Behavior"
 			Type="Integer"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsFlipped"
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Italic"
@@ -144,37 +163,42 @@ Inherits NSSlider
 			Group="Behavior"
 			InitialValue="false"
 			Type="Boolean"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockBottom"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockLeft"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockRight"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockTop"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="MaxValue"
@@ -182,6 +206,7 @@ Inherits NSSlider
 			Group="Initial State"
 			InitialValue="100"
 			Type="Double"
+			InheritedFrom="NSSlider"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="MinValue"
@@ -189,12 +214,13 @@ Inherits NSSlider
 			Group="Initial State"
 			InitialValue="0"
 			Type="Double"
+			InheritedFrom="NSSlider"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="NumberOfTickMarks"
@@ -202,6 +228,7 @@ Inherits NSSlider
 			Group="Behavior"
 			InitialValue="5"
 			Type="Integer"
+			InheritedFrom="NSSlider"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Size"
@@ -210,6 +237,7 @@ Inherits NSSlider
 			InitialValue="0"
 			Type="Integer"
 			EditorType="Enum"
+			InheritedFrom="NSSlider"
 			#tag EnumValues
 				"0 - Regular"
 				"1 - Small"
@@ -220,29 +248,32 @@ Inherits NSSlider
 			Name="StringValue"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabIndex"
 			Group="Position"
 			Type="Integer"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabPanelIndex"
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabStop"
 			Group="Position"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TextFont"
@@ -251,6 +282,7 @@ Inherits NSSlider
 			InitialValue="System"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TextSize"
@@ -258,6 +290,7 @@ Inherits NSSlider
 			Group="Behavior"
 			InitialValue="0.0"
 			Type="double"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TickPosition"
@@ -266,6 +299,7 @@ Inherits NSSlider
 			InitialValue="0"
 			Type="Integer"
 			EditorType="Enum"
+			InheritedFrom="NSSlider"
 			#tag EnumValues
 				"1 - Top Left"
 				"0 - Bottom Right"
@@ -276,15 +310,7 @@ Inherits NSSlider
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Transparent"
-			Visible=true
-			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
-			EditorType="Boolean"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Type"
@@ -292,6 +318,7 @@ Inherits NSSlider
 			InitialValue="1"
 			Type="Integer"
 			EditorType="Enum"
+			InheritedFrom="NSSlider"
 			#tag EnumValues
 				"0 - Linear"
 				"1 - Circular"
@@ -303,11 +330,13 @@ Inherits NSSlider
 			Group="Behavior"
 			InitialValue="false"
 			Type="Boolean"
+			InheritedFrom="NSControl"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UseFocusRing"
 			Group="Appearance"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Value"
@@ -315,6 +344,7 @@ Inherits NSSlider
 			Group="Initial State"
 			InitialValue="0"
 			Type="Double"
+			InheritedFrom="NSSlider"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Visible"
@@ -322,6 +352,7 @@ Inherits NSSlider
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Width"
@@ -329,6 +360,7 @@ Inherits NSSlider
 			Group="Position"
 			InitialValue="32"
 			Type="Integer"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

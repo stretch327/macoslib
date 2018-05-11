@@ -9,7 +9,7 @@ Inherits CFType
 
 
 	#tag Method, Flags = &h0
-		Shared Function ClassID() As UInt32
+		 Shared Function ClassID() As UInt32
 		  #if targetMacOS
 		    declare function TypeID lib SystemConfiguration.framework alias "SCNetworkInterfaceGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
@@ -19,7 +19,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function List() As SCNetworkInterface()
+		 Shared Function List() As SCNetworkInterface()
 		  #if targetMacOS
 		    declare function SCNetworkInterfaceCopyAll lib SystemConfiguration.framework () as Ptr
 		    dim cfList as new CFArray(SCNetworkInterfaceCopyAll, hasOwnership)
@@ -36,6 +36,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Sub MediaOptions()
 		  #if TargetMacOS
+		    
 		    soft declare Function SCNetworkInterfaceCopyMediaOptions lib SystemConfiguration.framework (intf as Ptr, Byref current as Ptr, byref active as Ptr, byref available as Ptr, filter as Boolean) as boolean
 		    
 		    dim current, active, available as Ptr
@@ -47,17 +48,14 @@ Inherits CFType
 		    if current<>nil then
 		      dim currentDict as NSDictionary = new NSDictionary( current, false )
 		      #pragma unused currentDict
-		      'DReport  "Current:", currentDict
 		    end if
 		    if active<>nil then
 		      dim activeDict as NSDictionary = new NSDictionary( active, false )
 		      #pragma unused activeDict
-		      'DReport  "Active:", activeDict
 		    end if
 		    if available<>nil then
 		      dim availableArray as NSArray = new NSArray( available, false )
 		      #pragma unused availableArray
-		      'DReport  "Available:", availableArray
 		    end if
 		    
 		    
@@ -68,7 +66,9 @@ Inherits CFType
 		    'CFArrayRef *available,
 		    'Boolean filter
 		    ');
-		  #Endif
+		    
+		  #endif
+		  
 		End Sub
 	#tag EndMethod
 
@@ -154,6 +154,7 @@ Inherits CFType
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DisplayName"
@@ -172,33 +173,33 @@ Inherits CFType
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Type"

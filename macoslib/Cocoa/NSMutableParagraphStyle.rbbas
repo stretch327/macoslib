@@ -29,6 +29,7 @@ Inherits NSParagraphStyle
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSParagraphStyle"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -36,6 +37,7 @@ Inherits NSParagraphStyle
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+			InheritedFrom="NSParagraphStyle"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -43,12 +45,14 @@ Inherits NSParagraphStyle
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="NSParagraphStyle"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="NSParagraphStyle"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="NoLongerMutable"
@@ -60,6 +64,7 @@ Inherits NSParagraphStyle
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="NSParagraphStyle"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -67,6 +72,7 @@ Inherits NSParagraphStyle
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="NSParagraphStyle"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

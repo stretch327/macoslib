@@ -49,42 +49,42 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function kPropertyAppendToFile() As CFStringRef
+		 Shared Function kPropertyAppendToFile() As CFStringRef
 		  static s as CFStringRef = CFConstant("kCFStreamPropertyAppendToFile")
 		  return s
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function kPropertyDataWritten() As CFStringRef
+		 Shared Function kPropertyDataWritten() As CFStringRef
 		  static s as CFStringRef = CFConstant("kCFStreamPropertyDataWritten")
 		  return s
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function kPropertyFileCurrentOffset() As CFStringRef
+		 Shared Function kPropertyFileCurrentOffset() As CFStringRef
 		  static s as CFStringRef = CFConstant("kCFStreamPropertyFileCurrentOffset")
 		  return s
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function kPropertySocketNativeHandle() As CFStringRef
+		 Shared Function kPropertySocketNativeHandle() As CFStringRef
 		  static s as CFStringRef = CFConstant("kCFStreamPropertySocketNativeHandle")
 		  return s
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function kPropertySocketRemoteHostName() As CFStringRef
+		 Shared Function kPropertySocketRemoteHostName() As CFStringRef
 		  static s as CFStringRef = CFConstant("kCFStreamPropertySocketRemoteHostName")
 		  return s
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function kPropertySocketRemotePortNumber() As CFStringRef
+		 Shared Function kPropertySocketRemotePortNumber() As CFStringRef
 		  static s as CFStringRef = CFConstant("kCFStreamPropertySocketRemotePortNumber")
 		  return s
 		End Function
@@ -97,7 +97,7 @@ Inherits CFType
 		  // ... and it crashes under 10.5.6, hence it's currently unusable
 		  
 		  '#if TargetMacOS
-		  'soft declare sub CFStreamCreateBoundPair lib CoreFoundation.framework (allocator as Ptr, ByRef read as Ptr, ByRef write as Ptr, bufSize as Integer)
+		  'soft declare sub CFStreamCreateBoundPair lib CarbonLib (allocator as Ptr, ByRef read as Ptr, ByRef write as Ptr, bufSize as Integer)
 		  'try
 		  'dim rd, wr as Ptr
 		  'CFStreamCreateBoundPair (nil, rd, wr, transferBufferSize)
@@ -118,9 +118,9 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Sub NewBoundPairFromHostAddress(address as String, port as Integer, ByRef reader as CFReadStream, ByRef writer as CFWriteStream)
+		 Shared Sub NewBoundPairFromHostAddress(address as String, port as Integer, ByRef reader as CFReadStream, ByRef writer as CFWriteStream)
 		  #if TargetMacOS
-		    declare sub CFStreamCreatePairWithSocketToHost lib CoreFoundation.framework (allocator as Ptr, host as CFStringRef, port as Integer, ByRef read as Ptr, ByRef write as Ptr)
+		    declare sub CFStreamCreatePairWithSocketToHost lib CarbonLib (allocator as Ptr, host as CFStringRef, port as Integer, ByRef read as Ptr, ByRef write as Ptr)
 		    
 		    dim rd, wr as Ptr
 		    CFStreamCreatePairWithSocketToHost (nil, address.ConvertEncoding(Encodings.UTF8), port, rd, wr)
@@ -132,9 +132,9 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Sub NewBoundPairFromNativeSocket(socketHandle as CFSocketNativeHandle, ByRef reader as CFReadStream, ByRef writer as CFWriteStream)
+		 Shared Sub NewBoundPairFromNativeSocket(socketHandle as CFSocketNativeHandle, ByRef reader as CFReadStream, ByRef writer as CFWriteStream)
 		  #if TargetMacOS
-		    declare sub CFStreamCreatePairWithSocket lib CoreFoundation.framework (allocator as Ptr, sock as CFSocketNativeHandle, ByRef read as Ptr, ByRef write as Ptr)
+		    declare sub CFStreamCreatePairWithSocket lib CarbonLib (allocator as Ptr, sock as CFSocketNativeHandle, ByRef read as Ptr, ByRef write as Ptr)
 		    
 		    dim rd, wr as Ptr
 		    CFStreamCreatePairWithSocket (nil, socketHandle, rd, wr)
@@ -146,9 +146,9 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Sub NewBoundPairFromSocket(signature as CFSocketSignature, ByRef reader as CFReadStream, ByRef writer as CFWriteStream)
+		 Shared Sub NewBoundPairFromSocket(signature as CFSocketSignature, ByRef reader as CFReadStream, ByRef writer as CFWriteStream)
 		  #if TargetMacOS
-		    declare sub CFStreamCreatePairWithPeerSocketSignature lib CoreFoundation.framework (allocator as Ptr, signature as Ptr, ByRef read as Ptr, ByRef write as Ptr)
+		    declare sub CFStreamCreatePairWithPeerSocketSignature lib CarbonLib (allocator as Ptr, signature as Ptr, ByRef read as Ptr, ByRef write as Ptr)
 		    
 		    dim rd, wr as Ptr
 		    CFStreamCreatePairWithPeerSocketSignature (nil, signature.Reference, rd, wr)
@@ -223,39 +223,40 @@ Inherits CFType
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

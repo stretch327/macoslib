@@ -7,6 +7,7 @@ Inherits NSResponder
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSResponder"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -14,6 +15,7 @@ Inherits NSResponder
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+			InheritedFrom="NSResponder"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -21,18 +23,21 @@ Inherits NSResponder
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="NSResponder"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="NSResponder"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="NSResponder"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -40,6 +45,7 @@ Inherits NSResponder
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="NSResponder"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

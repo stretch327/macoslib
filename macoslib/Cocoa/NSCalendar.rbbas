@@ -2,7 +2,7 @@
 Class NSCalendar
 Inherits NSObject
 	#tag Method, Flags = &h1000
-		 Shared Function AutoupdatingCurrentCalendar() As NSCalendar
+		Shared Function AutoupdatingCurrentCalendar() As NSCalendar
 		  //# Returns the current logical calendar for the current user.
 		  
 		  #if TargetMacOS
@@ -20,10 +20,8 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSCalendar")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -105,7 +103,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CurrentCalendar() As NSCalendar
+		Shared Function CurrentCalendar() As NSCalendar
 		  //# Returns the logical calendar for the current user.
 		  
 		  //@ The returned calendar is formed from the settings for the current user’s chosen system locale _
@@ -492,6 +490,11 @@ Inherits NSObject
 			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="FirstWeekday"
+			Group="Behavior"
+			Type="UInt32"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Identifier"
 			Group="Behavior"
 			Type="String"
@@ -510,6 +513,11 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="MinimumDaysInFirstWeek"
+			Group="Behavior"
+			Type="UInt32"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"

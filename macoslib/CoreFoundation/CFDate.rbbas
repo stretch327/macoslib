@@ -18,7 +18,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Function AbsoluteTime() As Double
 		  #if TargetMacOS
-		    declare function CFDateGetAbsoluteTime lib CoreFoundation.framework (theDate as Ptr) as Double
+		    declare function CFDateGetAbsoluteTime lib CarbonLib (theDate as Ptr) as Double
 		    
 		    return CFDateGetAbsoluteTime(me.Reference)
 		  #endif
@@ -26,9 +26,9 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ClassID() As UInt32
+		 Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CoreFoundation.framework alias "CFDateGetTypeID" () as UInt32
+		    declare function TypeID lib CarbonLib alias "CFDateGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -50,6 +50,10 @@ Implements CFPropertyList
 		    d = new Date
 		  end if
 		  
+		  // convert d.TotalSeconds to absolute time
+		  d = new Date(d)
+		  d.GMTOffset = 0.0
+		  
 		  me.Constructor d.TotalSeconds - AbsoluteTimeIntervalSince1904
 		End Sub
 	#tag EndMethod
@@ -59,7 +63,7 @@ Implements CFPropertyList
 		  #if TargetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFDateCreate lib CoreFoundation.framework (allocator as Ptr, at as Double) as Ptr
+		    declare function CFDateCreate lib CarbonLib (allocator as Ptr, at as Double) as Ptr
 		    
 		    super.Constructor CFDateCreate(nil, absTime), true
 		  #endif
@@ -67,7 +71,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromPListFile(file as FolderItem) As CFDate
+		 Shared Function CreateFromPListFile(file as FolderItem) As CFDate
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListFile( file, CoreFoundation.kCFPropertyListImmutable )
@@ -84,7 +88,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromPListString(plistString as String) As CFDate
+		 Shared Function CreateFromPListString(plistString as String) As CFDate
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListString( plistString, CoreFoundation.kCFPropertyListImmutable )
@@ -101,7 +105,7 @@ Implements CFPropertyList
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CurrentAbsoluteTime() As Double
+		 Shared Function CurrentAbsoluteTime() As Double
 		  // Current date & time - including fractional seconds (versus the Date class which only
 		  //   returns full seconds)
 		  //
@@ -117,7 +121,7 @@ Implements CFPropertyList
 		  #if TargetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFAbsoluteTimeGetCurrent lib CoreFoundation.framework () as Double
+		    declare function CFAbsoluteTimeGetCurrent lib CarbonLib () as Double
 		    
 		    return CFAbsoluteTimeGetCurrent()
 		  #endif
@@ -135,7 +139,7 @@ Implements CFPropertyList
 		      
 		    else
 		      // Introduced in MacOS X 10.0.
-		      Declare Function CFDateCompare Lib CoreFoundation.framework ( theDate As Ptr, otherDate As Ptr, context As Ptr ) As Int32
+		      Declare Function CFDateCompare Lib CarbonLib ( theDate As Ptr, otherDate As Ptr, context As Ptr ) As Int32
 		      
 		      return CFDateCompare( me.Reference, d.Reference, nil )
 		      
@@ -161,7 +165,17 @@ Implements CFPropertyList
 		  else
 		    
 		    dim d as new Date
+		    
+		    // save d.GMTOffset
+		    dim gmt As Double = d.GMTOffset
+		    
+		    // d.TotalSeconds depends on d.GMTOffset, convert to absolute time before assignment
+		    d.GMTOffset = 0.0
 		    d.TotalSeconds = me.AbsoluteTime + AbsoluteTimeIntervalSince1904
+		    
+		    // restore original d.GMTOffset
+		    d.GMTOffset = gmt
+		    
 		    return d
 		    
 		  end if
@@ -190,7 +204,7 @@ Implements CFPropertyList
 		  #if TargetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    Declare Function CFDateGetTimeIntervalSinceDate Lib CoreFoundation.framework ( theDate As Ptr, otherDate As Ptr ) As Double
+		    Declare Function CFDateGetTimeIntervalSinceDate Lib CarbonLib ( theDate As Ptr, otherDate As Ptr ) As Double
 		    
 		    return CFDateGetTimeIntervalSinceDate ( me.Reference, d.Reference )
 		    
@@ -199,12 +213,6 @@ Implements CFPropertyList
 		    #pragma unused d
 		    
 		  #endif
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function WriteToFile(file as FolderItem, asXML as Boolean = True) As Boolean
 		  
 		End Function
 	#tag EndMethod
@@ -249,40 +257,40 @@ Implements CFPropertyList
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

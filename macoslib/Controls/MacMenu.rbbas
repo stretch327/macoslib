@@ -359,23 +359,34 @@ Protected Class MacMenu
 
 	#tag Method, Flags = &h21
 		Private Sub SetTextStyle(index as Integer, styleFlag as Integer, value as Boolean)
-		  if self.Ref = nil then
-		    return
-		  end if
+		  #if TargetCarbon
+		    
+		    if self.Ref = nil then
+		      return
+		    end if
+		    
+		    dim style as UInt8 = self.TextStyle(index)
+		    
+		    soft declare sub SetItemStyle Lib CarbonLib (theMenu as Ptr, item as Short, chStyle as Short)
+		    
+		    if value then
+		      SetItemStyle self.Ref, index, style or styleFlag
+		    else
+		      SetItemStyle self.Ref, index, style and (styleFlag xor &hffffffff)
+		    end if
+		    
+		    
+		exception fnf as FunctionNotFoundException
+		  //swallow
 		  
-		  dim style as UInt8 = self.TextStyle(index)
+		  #else
+		    
+		    #pragma unused index
+		    #pragma unused styleFlag
+		    #pragma unused value
+		    
+		  #endif
 		  
-		  soft declare sub SetItemStyle Lib CarbonLib (theMenu as Ptr, item as Int16, chStyle as Int16)
-		  
-		  if value then
-		    SetItemStyle self.Ref, index, style or styleFlag
-		  else
-		    SetItemStyle self.Ref, index, style and (styleFlag xor &hffffffff)
-		  end if
-		  
-		  
-		  exception fnf as FunctionNotFoundException
-		    //swallow
 		End Sub
 	#tag EndMethod
 
@@ -591,19 +602,28 @@ Protected Class MacMenu
 
 	#tag Method, Flags = &h21
 		Private Function TextStyle(index as Integer) As Uint8
-		  if self.Ref = nil then
-		    return 0
-		  end if
+		  #if TargetCarbon
+		    
+		    if self.Ref = nil then
+		      return 0
+		    end if
+		    
+		    soft declare sub GetItemStyle Lib CarbonLib (theMenu as Ptr, item as Short, ByRef chStyle as UInt8)
+		    
+		    dim style as UInt8
+		    GetItemStyle self.Ref, index, style
+		    
+		    return style
+		    
+		exception fnf as FunctionNotFoundException
+		  //swallow
 		  
-		  soft declare sub GetItemStyle Lib CarbonLib (theMenu as Ptr, item as Int16, ByRef chStyle as UInt8)
+		  #else
+		    
+		    #pragma unused index
+		    
+		  #endif
 		  
-		  dim style as UInt8
-		  GetItemStyle self.Ref, index, style
-		  
-		  return style
-		  
-		  exception fnf as FunctionNotFoundException
-		    //swallow
 		End Function
 	#tag EndMethod
 
@@ -675,33 +695,33 @@ Protected Class MacMenu
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

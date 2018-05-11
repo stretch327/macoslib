@@ -45,30 +45,37 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromMenuItem(mi as MenuItem) As NSMenuItem
-		  
-		  dim nsm as NSMenuItem
-		  
-		  declare function separatorItem lib CocoaLib selector "separatorItem" ( Cls as Ptr ) as Ptr
-		  
-		  if mi=nil then
-		    return  nil
-		  end if
-		  
-		  if mi.Text = "-" then //A separator
-		    nsm = NSMenuItem.CreateSeparatorItem
-		    nsm.fromRBMenuItem = mi
-		  else
-		    nsm = new NSMenuItem( mi )
-		  end if
-		  
-		  return  nsm
+		 Shared Function CreateFromMenuItem(mi as MenuItem) As NSMenuItem
+		  #if TargetMacOS
+		    
+		    dim nsm as NSMenuItem
+		    
+		    declare function separatorItem lib CocoaLib selector "separatorItem" ( Cls as Ptr ) as Ptr
+		    
+		    if mi=nil then
+		      return  nil
+		    end if
+		    
+		    if mi.Text = "-" then //A separator
+		      nsm = NSMenuItem.CreateSeparatorItem
+		      nsm.fromRBMenuItem = mi
+		    else
+		      nsm = new NSMenuItem( mi )
+		    end if
+		    
+		    return  nsm
+		    
+		  #else
+		    
+		    #pragma unused mi
+		    
+		  #endif
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateSeparatorItem() As NSMenuItem
+		 Shared Function CreateSeparatorItem() As NSMenuItem
 		  #if TargetMacOS
 		    declare function separatorItem lib CocoaLib selector "separatorItem" ( Cls as Ptr ) as Ptr
 		    
@@ -816,6 +823,7 @@ Inherits NSObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Enabled"
@@ -848,6 +856,7 @@ Inherits NSObject
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="KeyEquivalent"
@@ -866,12 +875,14 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Separator"
@@ -879,21 +890,11 @@ Inherits NSObject
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="State"
-			Group="Behavior"
-			Type="NSCellStateValue"
-			EditorType="Enum"
-			#tag EnumValues
-				"-1 - NSMixedState"
-				"0 - NSOffState"
-				"1 - NSOnState"
-			#tag EndEnumValues
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			Type="String"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Tag"
@@ -918,6 +919,7 @@ Inherits NSObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="NSObject"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

@@ -2,7 +2,7 @@
 Class NSLocale
 Inherits NSObject
 	#tag Method, Flags = &h1000
-		 Shared Function AutoupdatingCurrentLocale() As NSLocale
+		Shared Function AutoupdatingCurrentLocale() As NSLocale
 		  
 		  #if TargetMacOS
 		    declare function autoupdatingCurrentLocale lib CocoaLib selector "autoupdatingCurrentLocale" (class_id as Ptr) as Ptr
@@ -20,7 +20,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function AvailableLocaleIdentifiers() As String()
+		Shared Function AvailableLocaleIdentifiers() As String()
 		  
 		  #if TargetMacOS
 		    declare function availableLocaleIdentifiers lib CocoaLib selector "availableLocaleIdentifiers" (class_id as Ptr) as Ptr
@@ -40,7 +40,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CanonicalLocaleIdentifier(aString as String) As String
+		Shared Function CanonicalLocaleIdentifier(aString as String) As String
 		  
 		  #if TargetMacOS
 		    declare function canonicalLocaleIdentifierFromString lib CocoaLib selector "canonicalLocaleIdentifierFromString:" (class_id as Ptr, aString as CFStringRef) as CFStringRef
@@ -55,7 +55,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CharacterDirection(isoLangCode as String) As NSLocaleLanguageDirection
+		Shared Function CharacterDirection(isoLangCode as String) As NSLocaleLanguageDirection
 		  
 		  #if TargetMacOS
 		    declare function characterDirectionForLanguage lib CocoaLib selector "characterDirectionForLanguage:" _
@@ -73,16 +73,14 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSLocale")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CommonISOCurrencyCodes() As String()
+		Shared Function CommonISOCurrencyCodes() As String()
 		  
 		  #if TargetMacOS
 		    declare function commonISOCurrencyCodes lib CocoaLib selector "commonISOCurrencyCodes" (class_id as Ptr) as Ptr
@@ -102,7 +100,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Components(localeID as String) As NSDictionary
+		Shared Function Components(localeID as String) As NSDictionary
 		  
 		  #if TargetMacOS
 		    declare function componentsFromLocaleIdentifier lib CocoaLib selector "componentsFromLocaleIdentifier:" (class_id as Ptr, aString as CFStringRef) as Ptr
@@ -125,7 +123,7 @@ Inherits NSObject
 		  #if targetMacOS
 		    declare function initWithLocaleIdentifier lib CocoaLib selector "initWithLocaleIdentifier:" (obj_id as Ptr, identifier as CFStringRef) as Ptr
 		    
-		    super.Constructor(initWithLocaleIdentifier(Allocate("NSLocale"), identifier), NSString.hasOwnership)
+		    super.Constructor(initWithLocaleIdentifier(Allocate("NSLocale"), identifier), NSObject.hasOwnership)
 		    
 		  #else
 		    #pragma unused identifier
@@ -135,7 +133,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CurrentLocale() As NSLocale
+		Shared Function CurrentLocale() As NSLocale
 		  
 		  #if TargetMacOS
 		    declare function currentLocale lib CocoaLib selector "currentLocale" (class_id as Ptr) as Ptr
@@ -169,7 +167,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function ISOCountryCodes() As String()
+		Shared Function ISOCountryCodes() As String()
 		  
 		  #if TargetMacOS
 		    declare function ISOCountryCodes lib CocoaLib selector "ISOCountryCodes" (class_id as Ptr) as Ptr
@@ -189,7 +187,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function ISOCurrencyCodes() As String()
+		Shared Function ISOCurrencyCodes() As String()
 		  
 		  #if TargetMacOS
 		    declare function ISOCurrencyCodes lib CocoaLib selector "ISOCurrencyCodes" (class_id as Ptr) as Ptr
@@ -209,7 +207,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function ISOLanguageCodes() As String()
+		Shared Function ISOLanguageCodes() As String()
 		  
 		  #if TargetMacOS
 		    declare function ISOLanguageCodes lib CocoaLib selector "ISOLanguageCodes" (class_id as Ptr) as Ptr
@@ -229,7 +227,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function LineDirection(isoLangCode as String) As NSLocaleLanguageDirection
+		Shared Function LineDirection(isoLangCode as String) As NSLocaleLanguageDirection
 		  
 		  #if TargetMacOS
 		    declare function lineDirectionForLanguage lib CocoaLib selector "lineDirectionForLanguage:" _
@@ -245,7 +243,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function LocaleID(components as NSDictionary) As String
+		Shared Function LocaleID(components as NSDictionary) As String
 		  
 		  #if TargetMacOS
 		    declare function localeIdentifierFromComponents lib CocoaLib selector "localeIdentifierFromComponents:" (class_id as Ptr, components as Ptr) as CFStringRef
@@ -278,7 +276,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function LocaleIDFromWindowsLocaleCode(lcid as UInt32) As String
+		Shared Function LocaleIDFromWindowsLocaleCode(lcid as UInt32) As String
 		  
 		  #if TargetMacOS
 		    declare function localeIdentifierFromWindowsLocaleCode lib CocoaLib selector "localeIdentifierFromWindowsLocaleCode:" (class_id as Ptr, lcid as UInt32) as CFStringRef
@@ -308,7 +306,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSBuddhistCalendar() As String
+		Shared Function NSBuddhistCalendar() As String
 		  
 		  return Cocoa.StringConstant("NSBuddhistCalendar")
 		  
@@ -316,7 +314,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSChineseCalendar() As String
+		Shared Function NSChineseCalendar() As String
 		  
 		  return Cocoa.StringConstant("NSChineseCalendar")
 		  
@@ -324,7 +322,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSGregorianCalendar() As String
+		Shared Function NSGregorianCalendar() As String
 		  
 		  return Cocoa.StringConstant("NSGregorianCalendar")
 		  
@@ -332,7 +330,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSHebrewCalendar() As String
+		Shared Function NSHebrewCalendar() As String
 		  
 		  return Cocoa.StringConstant("NSHebrewCalendar")
 		  
@@ -340,7 +338,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSIndianCalendar() As String
+		Shared Function NSIndianCalendar() As String
 		  
 		  return Cocoa.StringConstant("NSIndianCalendar")
 		  
@@ -348,7 +346,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSIslamicCalendar() As String
+		Shared Function NSIslamicCalendar() As String
 		  
 		  return Cocoa.StringConstant("NSIslamicCalendar")
 		  
@@ -356,7 +354,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSIslamicCivilCalendar() As String
+		Shared Function NSIslamicCivilCalendar() As String
 		  
 		  return Cocoa.StringConstant("NSIslamicCivilCalendar")
 		  
@@ -364,7 +362,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSISO8601Calendar() As String
+		Shared Function NSISO8601Calendar() As String
 		  
 		  return Cocoa.StringConstant("NSISO8601Calendar")
 		  
@@ -372,7 +370,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSJapaneseCalendar() As String
+		Shared Function NSJapaneseCalendar() As String
 		  
 		  return Cocoa.StringConstant("NSJapaneseCalendar")
 		  
@@ -380,7 +378,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleAlternateQuotationBeginDelimiterKey() As String
+		Shared Function NSLocaleAlternateQuotationBeginDelimiterKey() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleAlternateQuotationBeginDelimiterKey")
 		  
@@ -388,7 +386,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleAlternateQuotationEndDelimiterKey() As String
+		Shared Function NSLocaleAlternateQuotationEndDelimiterKey() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleAlternateQuotationEndDelimiterKey")
 		  
@@ -396,7 +394,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleCalendar() As String
+		Shared Function NSLocaleCalendar() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleCalendar")
 		  
@@ -404,7 +402,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleCollationIdentifier() As String
+		Shared Function NSLocaleCollationIdentifier() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleCollationIdentifier")
 		  
@@ -412,7 +410,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleCollatorIdentifier() As String
+		Shared Function NSLocaleCollatorIdentifier() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleCollatorIdentifier")
 		  
@@ -420,7 +418,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleCountryCode() As String
+		Shared Function NSLocaleCountryCode() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleCountryCode")
 		  
@@ -428,7 +426,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleCurrencyCode() As String
+		Shared Function NSLocaleCurrencyCode() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleCurrencyCode")
 		  
@@ -436,7 +434,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleCurrencySymbol() As String
+		Shared Function NSLocaleCurrencySymbol() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleCurrencySymbol")
 		  
@@ -444,7 +442,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleDecimalSeparator() As String
+		Shared Function NSLocaleDecimalSeparator() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleDecimalSeparator")
 		  
@@ -452,7 +450,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleExemplarCharacterSet() As String
+		Shared Function NSLocaleExemplarCharacterSet() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleExemplarCharacterSet")
 		  
@@ -460,7 +458,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleGroupingSeparator() As String
+		Shared Function NSLocaleGroupingSeparator() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleGroupingSeparator")
 		  
@@ -468,7 +466,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleIdentifier() As String
+		Shared Function NSLocaleIdentifier() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleIdentifier")
 		  
@@ -476,7 +474,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleLanguageCode() As String
+		Shared Function NSLocaleLanguageCode() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleLanguageCode")
 		  
@@ -484,7 +482,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleMeasurementSystem() As String
+		Shared Function NSLocaleMeasurementSystem() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleMeasurementSystem")
 		  
@@ -492,7 +490,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleQuotationBeginDelimiterKey() As String
+		Shared Function NSLocaleQuotationBeginDelimiterKey() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleQuotationBeginDelimiterKey")
 		  
@@ -500,7 +498,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleQuotationEndDelimiterKey() As String
+		Shared Function NSLocaleQuotationEndDelimiterKey() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleQuotationEndDelimiterKey")
 		  
@@ -508,7 +506,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleScriptCode() As String
+		Shared Function NSLocaleScriptCode() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleScriptCode")
 		  
@@ -516,7 +514,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleUsesMetricSystem() As String
+		Shared Function NSLocaleUsesMetricSystem() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleUsesMetricSystem")
 		  
@@ -524,7 +522,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSLocaleVariantCode() As String
+		Shared Function NSLocaleVariantCode() As String
 		  
 		  return Cocoa.StringConstant("NSLocaleVariantCode")
 		  
@@ -532,7 +530,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSPersianCalendar() As String
+		Shared Function NSPersianCalendar() As String
 		  
 		  return Cocoa.StringConstant("NSPersianCalendar")
 		  
@@ -540,7 +538,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSRepublicOfChinaCalendar() As String
+		Shared Function NSRepublicOfChinaCalendar() As String
 		  
 		  return Cocoa.StringConstant("NSRepublicOfChinaCalendar")
 		  
@@ -548,7 +546,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function PreferredLanguages() As String()
+		Shared Function PreferredLanguages() As String()
 		  
 		  #if TargetMacOS
 		    declare function preferredLanguages lib CocoaLib selector "preferredLanguages" (class_id as Ptr) as Ptr
@@ -568,7 +566,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function SystemLocale() As NSLocale
+		Shared Function SystemLocale() As NSLocale
 		  
 		  #if TargetMacOS
 		    declare function systemLocale lib CocoaLib selector "systemLocale" (class_id as Ptr) as Ptr
@@ -586,7 +584,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function WindowsLocaleCodeFromLocaleID(localeIdentifier as String) As UInt32
+		Shared Function WindowsLocaleCodeFromLocaleID(localeIdentifier as String) As UInt32
 		  
 		  #if TargetMacOS
 		    declare function windowsLocaleCodeFromLocaleIdentifier lib CocoaLib selector "windowsLocaleCodeFromLocaleIdentifier:" _

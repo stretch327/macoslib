@@ -4,7 +4,7 @@ Inherits CFDictionary
 	#tag Method, Flags = &h0
 		Sub Clear()
 		  #if targetMacOS
-		    declare sub CFDictionaryRemoveAllValues lib CoreFoundation.framework (theDict as Ptr)
+		    declare sub CFDictionaryRemoveAllValues lib CarbonLib (theDict as Ptr)
 		    
 		    if not ( self = nil ) then
 		      CFDictionaryRemoveAllValues me.Reference
@@ -16,7 +16,7 @@ Inherits CFDictionary
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  #if targetMacOS
-		    declare function CFDictionaryCreateMutable lib CoreFoundation.framework (allocator as Ptr, capacity as Integer, keyCallbacks as Ptr, valueCallbacks as Ptr) as Ptr
+		    declare function CFDictionaryCreateMutable lib CarbonLib (allocator as Ptr, capacity as Integer, keyCallbacks as Ptr, valueCallbacks as Ptr) as Ptr
 		    
 		    const kCFTypeDictionaryKeyCallBacks = "kCFTypeDictionaryKeyCallBacks"
 		    const kCFTypeDictionaryValueCallBacks = "kCFTypeDictionaryValueCallBacks"
@@ -32,7 +32,7 @@ Inherits CFDictionary
 		  // Creates a mutable version of the given CFDictionary
 		  
 		  #if TargetMacOS
-		    declare function CFDictionaryCreateMutableCopy lib CoreFoundation.framework (allocator as Ptr, capacity as Integer, theDict as Ptr) as Ptr
+		    declare function CFDictionaryCreateMutableCopy lib CarbonLib (allocator as Ptr, capacity as Integer, theDict as Ptr) as Ptr
 		    
 		    if not (theDictionary is nil) then
 		      super.Constructor CFDictionaryCreateMutableCopy(nil, 0, theDictionary.Reference), true
@@ -46,7 +46,7 @@ Inherits CFDictionary
 		  // Added by Kem Tekinay.
 		  
 		  #if targetMacOS
-		    declare function CFDictionaryCreateMutable lib CoreFoundation.framework (allocator as Ptr, capacity as Integer, keyCallbacks as Ptr, valueCallbacks as Ptr) as Ptr
+		    declare function CFDictionaryCreateMutable lib CarbonLib (allocator as Ptr, capacity as Integer, keyCallbacks as Ptr, valueCallbacks as Ptr) as Ptr
 		    
 		    const kCFTypeDictionaryKeyCallBacks = "kCFTypeDictionaryKeyCallBacks"
 		    const kCFTypeDictionaryValueCallBacks = "kCFTypeDictionaryValueCallBacks"
@@ -64,7 +64,7 @@ Inherits CFDictionary
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromPListFile(file as FolderItem) As CFMutableDictionary
+		 Shared Function CreateFromPListFile(file as FolderItem) As CFMutableDictionary
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListFile( file, CoreFoundation.kCFPropertyListMutableContainersAndLeaves )
@@ -81,7 +81,7 @@ Inherits CFDictionary
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function CreateFromPListString(plistString as String) As CFMutableDictionary
+		 Shared Function CreateFromPListString(plistString as String) As CFMutableDictionary
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListString( plistString, CoreFoundation.kCFPropertyListMutableContainersAndLeaves )
@@ -134,7 +134,7 @@ Inherits CFDictionary
 		Sub Remove(key as CFType)
 		  #if targetMacOS
 		    //this function would be more accurately named "RemoveIfPresent"; if the key is not found, it just returns
-		    declare sub CFDictionaryRemoveValue lib CoreFoundation.framework (theDict as ptr, key as Ptr)
+		    declare sub CFDictionaryRemoveValue lib CarbonLib (theDict as ptr, key as Ptr)
 		    
 		    if not ( self = nil ) and not (key is nil) then
 		      CFDictionaryRemoveValue me.Reference, key.Reference
@@ -148,7 +148,7 @@ Inherits CFDictionary
 	#tag Method, Flags = &h0
 		Sub Value(key as CFType, assigns value as CFType)
 		  #if targetMacOS
-		    declare sub CFDictionarySetValue lib CoreFoundation.framework (theDict as Ptr, key as Ptr, value as Ptr)
+		    declare sub CFDictionarySetValue lib CarbonLib (theDict as Ptr, key as Ptr, value as Ptr)
 		    
 		    if not ( self = nil ) and not (key is nil) and not (value is nil) then
 		      CFDictionarySetValue me.Reference, key.Reference, value.Reference
@@ -166,45 +166,46 @@ Inherits CFDictionary
 			Group="Behavior"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="CFDictionary"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Description"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

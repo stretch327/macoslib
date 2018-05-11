@@ -43,10 +43,8 @@ Inherits NSArray
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSMutableArray")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -123,23 +121,19 @@ Inherits NSArray
 		  #if targetMacOS
 		    declare function initWithObjects lib CocoaLib selector "initWithObjects:count:" (obj_id as Ptr, objects as Ptr, count as UInt32) as Ptr
 		    
-		        #if Target64Bit then
-		            const sizeOfPtr = 8
-		        #else
-		            const sizeOfPtr = 4
-		        #endif
+		    #if RBVersion > 2013.01
+		      #if Target64Bit
+		        #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		      #endif
+		    #endif
 		    
 		    dim uboundObject as UInt32 = objects.ubound
 		    dim objectCount as UInt32 = uboundObject+1
 		    if uboundObject > -1 then
 		      
-		      dim m as new MemoryBlock(sizeOfPtr*(objectCount))
+		      dim m as new MemoryBlock(SizeOfPointer*(objectCount))
 		      for i as integer = 0 to uboundObject
-		                #if Target64Bit then
-		                    m.UInt64Value(i*sizeOfPtr) = UInt64(objects(i).id)
-		                #else
-		                    m.UInt32Value(i*sizeOfPtr) = UInt32(objects(i).id)
-		                #endif
+		        m.UInt32Value(i*SizeOfPointer) = UInt32(objects(i).id)
 		      next
 		      
 		      super.Constructor(initWithObjects(Allocate("NSMutableArray"), m, objectCount), NSMutableArray.hasOwnership)
@@ -201,7 +195,7 @@ Inherits NSArray
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSMutableArray
+		Shared Function Create() As NSMutableArray
 		  
 		  #if TargetMacOS
 		    declare function array_ lib CocoaLib selector "array" (class_id as Ptr) as Ptr
@@ -217,7 +211,7 @@ Inherits NSArray
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithArray(anArray as NSArray) As NSMutableArray
+		Shared Function CreateWithArray(anArray as NSArray) As NSMutableArray
 		  
 		  #if TargetMacOS
 		    declare function arrayWithArray lib CocoaLib selector "arrayWithArray:" (class_id as Ptr, anArray as Ptr) as Ptr
@@ -241,7 +235,7 @@ Inherits NSArray
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithCapacity(capacity as UInt32) As NSMutableArray
+		Shared Function CreateWithCapacity(capacity as UInt32) As NSMutableArray
 		  
 		  #if TargetMacOS
 		    declare function arrayWithCapacity lib CocoaLib selector "arrayWithCapacity:" (class_id as Ptr, capacity as UInt32) as Ptr
@@ -261,7 +255,7 @@ Inherits NSArray
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithFile(file as FolderItem) As NSMutableArray
+		Shared Function CreateWithFile(file as FolderItem) As NSMutableArray
 		  
 		  #if TargetMacOS
 		    declare function arrayWithContentsOfFile lib CocoaLib selector "arrayWithContentsOfFile:" (class_id as Ptr, aPath as CFStringRef) as Ptr
@@ -282,7 +276,7 @@ Inherits NSArray
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObject(anObject as NSObject) As NSMutableArray
+		Shared Function CreateWithObject(anObject as NSObject) As NSMutableArray
 		  
 		  #if TargetMacOS
 		    declare function arrayWithObject lib CocoaLib selector "arrayWithObject:" (class_id as Ptr, anObject as Ptr) as Ptr
@@ -303,28 +297,24 @@ Inherits NSArray
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObjects(objects() as NSObject) As NSMutableArray
+		Shared Function CreateWithObjects(objects() as NSObject) As NSMutableArray
 		  
 		  #if TargetMacOS
 		    declare function arrayWithObjects lib CocoaLib selector "arrayWithObjects:count:" (class_id as Ptr, objects as Ptr, count as UInt32) as Ptr
 		    
-		        #if Target64Bit then
-		            const sizeOfPtr = 8
-		        #else
-		            const sizeOfPtr = 4
-		        #endif
+		    #if RBVersion > 2013.01
+		      #if Target64Bit
+		        #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		      #endif
+		    #endif
 		    
 		    dim uboundObject as UInt32 = objects.ubound
 		    dim objectCount as UInt32 = uboundObject+1
 		    if uboundObject > -1 then
 		      
-		      dim m as new MemoryBlock(sizeOfPtr*(objectCount))
+		      dim m as new MemoryBlock(SizeOfPointer*(objectCount))
 		      for i as integer = 0 to uboundObject
-		                #if Target64Bit then
-		                    m.UInt64Value(i*sizeOfPtr) = UInt64(objects(i).id)
-		                #else
-		                    m.UInt32Value(i*sizeOfPtr) = UInt32(objects(i).id)
-		                #endif
+		        m.UInt32Value(i*SizeOfPointer) = UInt32(objects(i).id)
 		      next
 		      
 		      dim arrayRef as Ptr = arrayWithObjects(ClassRef, m, objectCount)
@@ -342,7 +332,7 @@ Inherits NSArray
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithURL(aURL as NSURL) As NSMutableArray
+		Shared Function CreateWithURL(aURL as NSURL) As NSMutableArray
 		  
 		  #if TargetMacOS
 		    declare function arrayWithContentsOfURL lib CocoaLib selector "arrayWithContentsOfURL:" (class_id as Ptr, aURL as Ptr) as Ptr

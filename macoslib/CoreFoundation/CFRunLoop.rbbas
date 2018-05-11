@@ -19,7 +19,7 @@ Inherits CFType
 		  end if
 		  
 		  #if targetMacOS
-		    soft declare sub CFRunLoopAddSource lib CoreFoundation.framework (rl as Ptr, source as Ptr, mode as Ptr)
+		    soft declare sub CFRunLoopAddSource lib CarbonLib (rl as Ptr, source as Ptr, mode as Ptr)
 		    
 		    CFRunLoopAddSource me, source, CFRunLoopCommonModes
 		  #endif
@@ -38,9 +38,9 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function ClassID() As UInt32
+		 Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    soft declare function TypeID lib CoreFoundation.framework alias "CFRunLoopGetTypeID" () as UInt32
+		    soft declare function TypeID lib CarbonLib alias "CFRunLoopGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -50,7 +50,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Function ContainsSource(source as CFRunLoopSource) As Boolean
 		  #if targetMacOS
-		    soft declare function CFRunLoopContainsSource lib CoreFoundation.framework (rl as Ptr, source as Ptr, mode as Ptr) as Boolean
+		    soft declare function CFRunLoopContainsSource lib CarbonLib (rl as Ptr, source as Ptr, mode as Ptr) as Boolean
 		    
 		    return me <> nil and source <> nil  and CFRunLoopContainsSource(me, source, CFRunLoopCommonModes)
 		  #endif
@@ -58,9 +58,9 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Current() As CFRunLoop
+		 Shared Function Current() As CFRunLoop
 		  #if targetMacOS
-		    soft declare function CFRunLoopGetCurrent lib CoreFoundation.framework () as Ptr
+		    soft declare function CFRunLoopGetCurrent lib CarbonLib () as Ptr
 		    const hasOwnership = false
 		    return new CFRunLoop(CFRunLoopGetCurrent(), hasOwnership)
 		  #endif
@@ -68,7 +68,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function DefaultMode() As Ptr
+		 Shared Function DefaultMode() As Ptr
 		  dim p as Ptr = Carbon.Bundle.DataPointerNotRetained(kCFRunLoopDefaultMode)
 		  if p <> nil then
 		    return p.Ptr(0)
@@ -79,10 +79,10 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Main() As CFRunLoop
+		 Shared Function Main() As CFRunLoop
 		  #if targetMacOS
 		    //Available in Mac OS X v10.5 and later.
-		    soft declare function CFRunLoopGetMain lib CoreFoundation.framework () as Ptr
+		    soft declare function CFRunLoopGetMain lib CarbonLib () as Ptr
 		    const hasOwnership = false
 		    return new CFRunLoop(CFRunLoopGetMain(), hasOwnership)
 		  #endif
@@ -100,7 +100,7 @@ Inherits CFType
 		  end if
 		  
 		  #if targetMacOS
-		    soft declare sub CFRunLoopRemoveSource lib CoreFoundation.framework (rl as Ptr, source as Ptr, mode as Ptr)
+		    soft declare sub CFRunLoopRemoveSource lib CarbonLib (rl as Ptr, source as Ptr, mode as Ptr)
 		    
 		    CFRunLoopRemoveSource me, source, CFRunLoopCommonModes
 		  #endif
@@ -126,39 +126,40 @@ Inherits CFType
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

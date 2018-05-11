@@ -109,15 +109,6 @@ Class PowerSource
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return Self.StringValue(kIOPSPowerSourceStateKey) = kIOPSACPowerValue
-			End Get
-		#tag EndGetter
-		ACPowered As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
 			  return self.StringValue(kIOPSBatteryHealthKey)
 			End Get
 		#tag EndGetter
@@ -185,9 +176,6 @@ Class PowerSource
 	#tag EndComputedProperty
 
 
-	#tag Constant, Name = kIOPSACPowerValue, Type = String, Dynamic = False, Default = \"AC Power", Scope = Private
-	#tag EndConstant
-
 	#tag Constant, Name = kIOPSBatteryHealthKey, Type = String, Dynamic = False, Default = \"BatteryHealth", Scope = Private
 	#tag EndConstant
 
@@ -197,19 +185,11 @@ Class PowerSource
 	#tag Constant, Name = kIOPSNameKey, Type = String, Dynamic = False, Default = \"Name", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = kIOPSPowerSourceStateKey, Type = String, Dynamic = False, Default = \"Power Source State", Scope = Private
-	#tag EndConstant
-
 	#tag Constant, Name = kIOPSTypeKey, Type = String, Dynamic = False, Default = \"Type", Scope = Public
 	#tag EndConstant
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="ACPowered"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="BatteryHealth"
 			Group="Behavior"
@@ -221,33 +201,34 @@ Class PowerSource
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Type"

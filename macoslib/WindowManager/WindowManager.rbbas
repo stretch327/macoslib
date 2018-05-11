@@ -7,7 +7,7 @@ Module WindowManager
 		  end if
 		  
 		  #if TargetCarbon
-		    soft declare function GetWindowAlpha lib CarbonLib (Window as Integer, ByRef inAlpha as Single) as Integer
+		    soft declare function GetWindowAlpha lib CarbonLib (inWindow as WindowPtr, ByRef inAlpha as Single) as Integer
 		    
 		    dim alphaValue as Single
 		    dim OSError as Integer = GetWindowAlpha(w, alphaValue)
@@ -38,7 +38,7 @@ Module WindowManager
 		  end if
 		  
 		  #if TargetCarbon
-		    soft declare function SetWindowAlpha lib CarbonLib (Window as Integer, inAlpha as Single) as Integer
+		    soft declare function SetWindowAlpha lib CarbonLib (inWindow as WindowPtr, inAlpha as Single) as Integer
 		    
 		    dim OSError as Integer = SetWindowAlpha(w, value)
 		    #pragma unused OSError
@@ -82,8 +82,8 @@ Module WindowManager
 		  end
 		  
 		  #if TargetCarbon
-		    declare function ConstrainWindowToScreen lib CarbonLib (w as Ptr, inRegionCode as Integer, inOptions as Integer, rect as Ptr, ByRef out as MacRect) as Integer
-		    declare function GetWindowBounds lib CarbonLib (w as Ptr, inRegionCode as Integer, ByRef out as MacRect) as Integer
+		    declare function ConstrainWindowToScreen lib CarbonLib (w as WindowPtr, inRegionCode as Integer, inOptions as Integer, rect as Ptr, ByRef out as MacRect) as Integer
+		    declare function GetWindowBounds lib CarbonLib (w as WindowPtr, inRegionCode as Integer, ByRef out as MacRect) as Integer
 		    
 		    const kWindowStructureRgn = 32
 		    
@@ -117,12 +117,16 @@ Module WindowManager
 
 	#tag Method, Flags = &h0
 		Function DocumentFile(extends w as Window) As FolderItem
+		  // *** Attention ***
+		  // When using this in Carbon builds, windows may get restored by OpenDocument events!
+		  // To prevent that, see: https://forum.xojo.com/5784
+		  
 		  if w.Handle = 0 then
 		    return nil
 		  end if
 		  
 		  #if targetCarbon
-		    declare function GetWindowProxyAlias lib CarbonLib (Window as Integer, ByRef alias as Ptr) as Integer
+		    declare function GetWindowProxyAlias lib CarbonLib (inWindow as WindowPtr, ByRef alias as Ptr) as Integer
 		    
 		    dim theAlias as Ptr
 		    dim OSError as Integer = GetWindowProxyAlias(w, theAlias)
@@ -163,7 +167,7 @@ Module WindowManager
 		  
 		  #if targetCarbon
 		    if f is nil then
-		      declare function RemoveWindowProxy lib CarbonLib (Window as Integer) as Integer
+		      declare function RemoveWindowProxy lib CarbonLib (inWindow as WindowPtr) as Integer
 		      
 		      dim OSError as Integer = RemoveWindowProxy(w)
 		      #pragma unused OSError
@@ -177,7 +181,7 @@ Module WindowManager
 		        return
 		      end if
 		      
-		      declare function SetWindowProxyAlias lib CarbonLib (Window as Integer, inAlias as Ptr) as Integer
+		      declare function SetWindowProxyAlias lib CarbonLib (inWindow as WindowPtr, inAlias as Ptr) as Integer
 		      
 		      OSError = SetWindowProxyAlias(w, aliasHandle)
 		      if aliasHandle <> nil then
@@ -201,9 +205,9 @@ Module WindowManager
 		  
 		  #if TargetCocoa then
 		    if IsLion then // the CollectionBehavior selector is available since 10.5, but the behavior FullScreenPrimary is first introduced in 10.7
-		      declare function getCollectionBehavior lib CocoaLib Selector "collectionBehavior" (Window as Integer) as Integer
+		      declare function getCollectionBehavior lib CocoaLib Selector "collectionBehavior" (WindowRef as WindowPtr) as Integer
 		      
-		      return Bitwise.BitAnd( getCollectionBehavior(w.Handle), Integer(WindowCollectionBehavior.FullScreenPrimary) ) = Integer(WindowCollectionBehavior.FullScreenPrimary)
+		      return Bitwise.BitAnd( getCollectionBehavior(w), Integer(WindowCollectionBehavior.FullScreenPrimary) ) = Integer(WindowCollectionBehavior.FullScreenPrimary)
 		    end if
 		  #else
 		    #pragma Unused w
@@ -217,13 +221,13 @@ Module WindowManager
 		  
 		  #if TargetCocoa then
 		    if IsLion then // the CollectionBehavior selector is available since 10.5, but the behavior FullScreenPrimary is first introduced in 10.7
-		      declare function getCollectionBehavior lib CocoaLib Selector "collectionBehavior" (Window as Integer) as Integer
-		      declare sub setCollectionBehavior lib CocoaLib Selector "setCollectionBehavior:" (Window as Integer, inFlag as Integer)
+		      declare function getCollectionBehavior lib CocoaLib Selector "collectionBehavior" (WindowRef as WindowPtr) as Integer
+		      declare sub setCollectionBehavior lib CocoaLib Selector "setCollectionBehavior:" (WindowRef as WindowPtr, inFlag as Integer)
 		      
 		      if Value then
-		        setCollectionBehavior( w.handle, getCollectionBehavior(w.Handle) or Integer(WindowCollectionBehavior.FullScreenPrimary) )
+		        setCollectionBehavior( w, getCollectionBehavior(w) or Integer(WindowCollectionBehavior.FullScreenPrimary) )
 		      else
-		        setCollectionBehavior( w.handle, getCollectionBehavior(w.Handle) Xor Integer(WindowCollectionBehavior.FullScreenPrimary) )
+		        setCollectionBehavior( w, getCollectionBehavior(w) Xor Integer(WindowCollectionBehavior.FullScreenPrimary) )
 		      end if
 		    end if
 		  #else
@@ -236,9 +240,9 @@ Module WindowManager
 	#tag Method, Flags = &h0
 		Function IsCollapsed(extends w as Window) As Boolean
 		  #if TargetMacOS
-		    declare function IsWindowCollapsed lib CarbonLib (Window as Integer) as Boolean
+		    declare function IsWindowCollapsed lib CarbonLib (window as WindowPtr) as Boolean
 		    
-		    return IsWindowCollapsed(w.Handle)
+		    return IsWindowCollapsed(w)
 		  #endif
 		End Function
 	#tag EndMethod
@@ -246,9 +250,9 @@ Module WindowManager
 	#tag Method, Flags = &h0
 		Sub IsCollapsed(extends w as Window, assigns theValue as Boolean)
 		  #if TargetMacOS
-		    declare function CollapseWindow lib CarbonLib (Window as Integer, collapse as Boolean) as Integer
+		    declare function CollapseWindow lib CarbonLib (window as WindowPtr, collapse as Boolean) as Integer
 		    
-		    dim OSError as Integer = CollapseWindow(w.Handle, theValue)
+		    dim OSError as Integer = CollapseWindow(w, theValue)
 		    
 		    // Keep the compiler from complaining
 		    #pragma unused OSError
@@ -259,9 +263,9 @@ Module WindowManager
 	#tag Method, Flags = &h0
 		Function IsCollapsible(extends w as Window) As Boolean
 		  #if targetMacOS
-		    declare function IsWindowCollapsable lib CarbonLib (Window as Integer) as Boolean
+		    declare function IsWindowCollapsable lib CarbonLib (window as WindowPtr) as Boolean
 		    
-		    return IsWindowCollapsable(w.Handle)
+		    return IsWindowCollapsable(w)
 		  #endif
 		End Function
 	#tag EndMethod
@@ -272,10 +276,10 @@ Module WindowManager
 		  
 		  #if TargetCocoa then
 		    if IsLion then // the styleMask selector is available since 10.0, but the NSFullScreenWindowMask bit is introduced in 10.7
-		      declare function GetStyleMask lib CocoaLib selector "styleMask" (Window as Integer) as Integer
+		      declare function GetStyleMask lib CocoaLib selector "styleMask" (window as WindowPtr) as Integer
 		      
 		      if w <> nil then
-		        return ( GetStyleMask(w.Handle) and NSFullScreenWindowMask ) = NSFullScreenWindowMask
+		        return ( GetStyleMask(w) and NSFullScreenWindowMask ) = NSFullScreenWindowMask
 		      end if
 		    end if
 		  #else
@@ -291,7 +295,7 @@ Module WindowManager
 		  end if
 		  
 		  #if targetCarbon
-		    declare function IsWindowModified lib CarbonLib (w as Ptr) as Boolean
+		    declare function IsWindowModified lib CarbonLib (w as WindowPtr) as Boolean
 		    
 		    return IsWindowModified(w)
 		  #endif
@@ -311,7 +315,7 @@ Module WindowManager
 		  end if
 		  
 		  #if targetCarbon
-		    declare function SetWindowModified lib CarbonLib (w as Ptr, modified as Boolean) as Integer
+		    declare function SetWindowModified lib CarbonLib (w as WindowPtr, modified as Boolean) as Integer
 		    
 		    dim OSError as Integer = SetWindowModified(w, value)
 		    #pragma unused OSError
@@ -364,7 +368,7 @@ Module WindowManager
 		  #endif
 		  
 		  #if targetCarbon
-		    soft declare function ChangeWindowAttributes lib CarbonLib (w as Ptr, setTheseAttributes as UInt32, clearTheseAttributes as UInt32) as Integer
+		    soft declare function ChangeWindowAttributes lib CarbonLib (w as WindowPtr, setTheseAttributes as UInt32, clearTheseAttributes as UInt32) as Integer
 		    const kWindowNoAttributes = 0
 		    const kWindowResizableAttribute = 16
 		    
@@ -389,10 +393,10 @@ Module WindowManager
 		    return
 		  end if
 		  
-		  #if TargetCarbon
-		    declare sub SendBehind lib CarbonLib (Window as Integer, behindWindow as Integer)
+		  #if targetMacOS
+		    declare sub SendBehind lib CarbonLib (window as WindowPtr, behindWindow as WindowPtr)
 		    
-		    SendBehind w.Handle, behindWindow.Handle
+		    SendBehind w, behindWindow
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -406,21 +410,21 @@ Module WindowManager
 	#tag Method, Flags = &h0
 		Sub Slide(extends w as Window, newLeft as Integer, newTop as Integer)
 		  #if TargetMacOS
-		    declare function GetWindowBounds lib CarbonLib (Window as Integer, regionCode as UInt16, ByRef globalBounds as MacRect) as Integer
+		    declare function GetWindowBounds lib CarbonLib (window as WindowPtr, regionCode as UInt16, ByRef globalBounds as MacRect) as Integer
 		    
 		    dim bounds as MacRect
-		    dim OSError as Integer = GetWindowBounds(w.Handle, kWindowStructureRgn, bounds)
+		    dim OSError as Integer = GetWindowBounds(w, kWindowStructureRgn, bounds)
 		    if OSError <> 0 then
 		      return
 		    end if
 		    
-		    soft declare function TransitionWindow lib CarbonLib (Window as Integer, inEffect as UInt32, inAction as UInt32, ByRef inRect as MacRect) as Integer
+		    soft declare function TransitionWindow lib CarbonLib (inWindow as WindowPtr, inEffect as UInt32, inAction as UInt32, ByRef inRect as MacRect) as Integer
 		    
 		    bounds.top = bounds.top + (newTop- w.Top)
 		    bounds.left = bounds.left + (newLeft - w.Left)
 		    bounds.bottom = bounds.bottom + (newTop - w.Top)
 		    bounds.right = bounds.right + (newLeft - w.Left)
-		    OSError = TransitionWindow(w.Handle, kWindowSlideTransitionEffect, kWindowMoveTransitionAction, bounds)
+		    OSError = TransitionWindow(w, kWindowSlideTransitionEffect, kWindowMoveTransitionAction, bounds)
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -428,19 +432,19 @@ Module WindowManager
 	#tag Method, Flags = &h0
 		Sub SlideResize(extends w as Window, newWidth as Integer, newHeight as Integer)
 		  #if TargetMacOS
-		    declare function GetWindowBounds lib CarbonLib (Window as Integer, regionCode as UInt16, ByRef globalBounds as MacRect) as Integer
+		    declare function GetWindowBounds lib CarbonLib (window as WindowPtr, regionCode as UInt16, ByRef globalBounds as MacRect) as Integer
 		    
 		    dim bounds as MacRect
-		    dim OSError as Integer = GetWindowBounds(w.Handle, kWindowStructureRgn, bounds)
+		    dim OSError as Integer = GetWindowBounds(w, kWindowStructureRgn, bounds)
 		    if OSError <> 0 then
 		      return
 		    end if
 		    
-		    declare function TransitionWindow lib CarbonLib (Window as Integer, inEffect as UInt32, inAction as UInt32, ByRef inRect as MacRect) as Integer
+		    declare function TransitionWindow lib CarbonLib (inWindow as WindowPtr, inEffect as UInt32, inAction as UInt32, ByRef inRect as MacRect) as Integer
 		    
 		    bounds.bottom = bounds.bottom + (newHeight - w.Height)
 		    bounds.right = bounds.right + (newWidth - w.Width)
-		    OSError = TransitionWindow(w.Handle, kWindowSlideTransitionEffect, kWindowResizeTransitionAction, bounds)
+		    OSError = TransitionWindow(w, kWindowSlideTransitionEffect, kWindowResizeTransitionAction, bounds)
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -451,9 +455,9 @@ Module WindowManager
 		  
 		  #if TargetCocoa then
 		    if IsLion then
-		      declare sub toggleFullScreen lib CocoaLib selector "toggleFullScreen:" (Window as Integer, sender As Ptr)
+		      declare sub toggleFullScreen lib CocoaLib selector "toggleFullScreen:" (WindowRef as WindowPtr, sender As Ptr)
 		      
-		      toggleFullScreen(w.Handle,nil)
+		      toggleFullScreen(w,nil)
 		    end if
 		  #else
 		    #pragma Unused w
@@ -464,11 +468,11 @@ Module WindowManager
 	#tag Method, Flags = &h0
 		Sub UpdateDockTile(extends w as Window)
 		  #if targetMacOS
-		    declare function UpdateCollapsedWindowDockTile lib CarbonLib (Window as Integer) as Integer
+		    declare function UpdateCollapsedWindowDockTile lib CarbonLib (inWindow as WindowPtr) as Integer
 		    
 		    dim OSError as Integer
 		    If w.IsCollapsed then
-		      OSError = UpdateCollapsedWindowDockTile(w.Handle)
+		      OSError = UpdateCollapsedWindowDockTile(w)
 		    end if
 		    
 		    // Keep the compiler from complaining
@@ -639,33 +643,33 @@ Module WindowManager
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Module

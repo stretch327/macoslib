@@ -124,16 +124,14 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSRunLoop")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Current() As NSRunLoop
+		Shared Function Current() As NSRunLoop
 		  #if targetCocoa
 		    declare function currentRunLoop lib CocoaLib selector "currentRunLoop" (class_id as Ptr) as Ptr
 		    
@@ -174,7 +172,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Main() As NSRunLoop
+		Shared Function Main() As NSRunLoop
 		  #if targetCocoa
 		    declare function mainRunLoop lib CocoaLib selector "mainRunLoop" (class_id as Ptr) as Ptr
 		    
@@ -184,7 +182,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSDefaultRunLoopMode() As String
+		Shared Function NSDefaultRunLoopMode() As String
 		  
 		  return Cocoa.StringConstant("NSDefaultRunLoopMode")
 		  
@@ -192,7 +190,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSRunLoopCommonModes() As String
+		Shared Function NSRunLoopCommonModes() As String
 		  
 		  return Cocoa.StringConstant("NSRunLoopCommonModes")
 		  

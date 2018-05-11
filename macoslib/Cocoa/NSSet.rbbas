@@ -36,10 +36,8 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSSet")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -70,23 +68,19 @@ Inherits NSObject
 		  #if targetMacOS
 		    declare function initWithObjects lib CocoaLib selector "initWithObjects:count:" (obj_id as Ptr, objects as Ptr, count as UInt32) as Ptr
 		    
-		        #if Target64Bit then
-		            const sizeOfPtr = 8
-		        #else
-		            const sizeOfPtr = 4
-		        #endif
+		    #if RBVersion > 2013.01
+		      #if Target64Bit
+		        #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		      #endif
+		    #endif
 		    
 		    dim uboundObject as UInt32 = objects.ubound
 		    dim objectCount as UInt32 = uboundObject+1
 		    if uboundObject > -1 then
 		      
-		      dim m as new MemoryBlock(sizeOfPtr*objectCount)
+		      dim m as new MemoryBlock(SizeOfPointer*objectCount)
 		      for i as integer = 0 to uboundObject
-		                #if Target64Bit then
-		                    m.UInt64Value(i*sizeOfPtr) = UInt64(objects(i).id)
-		                #else
-		                    m.UInt32Value(i*sizeOfPtr) = UInt32(objects(i).id)
-		                #endif
+		        m.UInt32Value(i*SizeOfPointer) = UInt32(objects(i).id)
 		      next
 		      
 		      super.Constructor(initWithObjects(Allocate("NSSet"), m, objectCount), NSSet.hasOwnership)
@@ -174,7 +168,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSSet
+		Shared Function Create() As NSSet
 		  
 		  #if TargetMacOS
 		    declare function set_ lib CocoaLib selector "set" (class_id as Ptr) as Ptr
@@ -190,7 +184,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithArray(anArray as NSArray) As NSSet
+		Shared Function CreateWithArray(anArray as NSArray) As NSSet
 		  
 		  #if TargetMacOS
 		    declare function setWithArray lib CocoaLib selector "setWithArray:" (class_id as Ptr, anArray as Ptr) as Ptr
@@ -213,7 +207,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObject(anObject as NSObject) As NSSet
+		Shared Function CreateWithObject(anObject as NSObject) As NSSet
 		  
 		  #if TargetMacOS
 		    declare function setWithObject lib CocoaLib selector "setWithObject:" (class_id as Ptr, anObject as Ptr) as Ptr
@@ -236,28 +230,24 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithObjects(objects() as NSObject) As NSSet
+		Shared Function CreateWithObjects(objects() as NSObject) As NSSet
 		  
 		  #if TargetMacOS
 		    declare function setWithObjects lib CocoaLib selector "setWithObjects:count:" (class_id as Ptr, objects as Ptr, count as UInt32) as Ptr
 		    
-		        #if Target64Bit then
-		            const sizeOfPtr = 8
-		        #else
-		            const sizeOfPtr = 4
-		        #endif
+		    #if RBVersion > 2013.01
+		      #if Target64Bit
+		        #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		      #endif
+		    #endif
 		    
 		    dim uboundObject as UInt32 = objects.ubound
 		    dim objectCount as UInt32 = uboundObject+1
 		    if uboundObject > -1 then
 		      
-		      dim m as new MemoryBlock(sizeOfPtr*objectCount)
+		      dim m as new MemoryBlock(SizeOfPointer*objectCount)
 		      for i as integer = 0 to uboundObject
-		                #if Target64Bit then
-		                    m.UInt64Value(i*sizeOfPtr) = UInt64(objects(i).id)
-		                #else
-		                    m.UInt32Value(i*sizeOfPtr) = UInt32(objects(i).id)
-		                #endif
+		        m.UInt32Value(i*SizeOfPointer) = UInt32(objects(i).id)
 		      next
 		      
 		      dim setRef as Ptr = setWithObjects(ClassRef, m, objectCount)
@@ -274,7 +264,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithSet(aSet as NSSet) As NSSet
+		Shared Function CreateWithSet(aSet as NSSet) As NSSet
 		  
 		  #if TargetMacOS
 		    declare function setWithSet lib CocoaLib selector "setWithSet:" (class_id as Ptr, aSet as Ptr) as Ptr

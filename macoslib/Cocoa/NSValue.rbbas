@@ -4,10 +4,8 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSValue")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -143,7 +141,7 @@ Inherits NSObject
 	#tag Method, Flags = &h0
 		Function NSPointValue() As NSPoint
 		  #if targetMacOS
-		    declare function pointValue lib CocoaLib selector "pointerValue" (obj_id as Ptr) as NSPoint
+		    declare function pointValue lib CocoaLib selector "pointValue" (obj_id as Ptr) as NSPoint
 		    
 		    return pointValue(self)
 		  #endif
@@ -183,7 +181,7 @@ Inherits NSObject
 	#tag Method, Flags = &h0
 		Function PtrValue() As Ptr
 		  #if targetMacOS
-		    declare function pointerValue lib CocoaLib selector "pointerValue" (obj_id as Ptr) as Ptr
+		    declare function pointerValue lib CocoaLib selector "pointValue" (obj_id as Ptr) as Ptr
 		    
 		    return pointerValue(self)
 		  #endif

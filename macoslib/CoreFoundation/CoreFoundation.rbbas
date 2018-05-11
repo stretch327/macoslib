@@ -9,7 +9,7 @@ Module CoreFoundation
 		    
 		    Const kCFStringEncodingInvalidId = &hffffffff
 		    
-		    Declare Function CFStringGetListOfAvailableEncodings Lib CoreFoundation.framework () as Ptr
+		    Declare Function CFStringGetListOfAvailableEncodings Lib CarbonLib () as Ptr
 		    
 		    m = CFStringGetListOfAvailableEncodings
 		    
@@ -34,7 +34,7 @@ Module CoreFoundation
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CFBoolean(b as Boolean) As CFBoolean
+		Attributes( deprecated = "CFBoolean.Get" )  Function CFBoolean(b as Boolean) As CFBoolean
 		  if b then
 		    return CFBoolean.GetTrue
 		  end if
@@ -51,7 +51,7 @@ Module CoreFoundation
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h0
-		Declare Function CFCopyTypeIDDescription Lib CoreFoundation.framework (type_id as UInt32) As CFStringRef
+		Declare Function CFCopyTypeIDDescription Lib CarbonLib (type_id as UInt32) As CFStringRef
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h0
@@ -61,7 +61,7 @@ Module CoreFoundation
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Declare Function CFGetTypeID Lib CoreFoundation.framework (cf as Ptr) As UInt32
+		Private Declare Function CFGetTypeID Lib framework (cf as CFTypeRef) As UInt32
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h0
@@ -71,14 +71,14 @@ Module CoreFoundation
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CFNumber(int_32 as Int32) As CFNumber
-		  return new CFNumber(int_32)
+		Function CFNumber(int_64 as Int64) As CFNumber
+		  return new CFNumber(int_64)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CFNumber(int_64 as Int64) As CFNumber
-		  return new CFNumber(int_64)
+		Function CFNumber(int_32 as Integer) As CFNumber
+		  return new CFNumber(int_32)
 		End Function
 	#tag EndMethod
 
@@ -106,7 +106,7 @@ Module CoreFoundation
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Declare Function CFStringGetTypeID Lib CoreFoundation.framework () As Uint32
+		Private Declare Function CFStringGetTypeID Lib CarbonLib () As Uint32
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h0
@@ -123,7 +123,7 @@ Module CoreFoundation
 		    end if
 		    
 		    select case theValue.Type
-		    case  Variant.TypeInt32, Variant.TypeInt64, Variant.TypeDouble, Variant.TypeSingle
+		    case  Variant.TypeInteger, Variant.TypeLong, Variant.TypeDouble, Variant.TypeSingle
 		      Return   new CFNumber( theValue )
 		      
 		    case  Variant.TypeDate
@@ -159,6 +159,14 @@ Module CoreFoundation
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function CFTypeRefMake(p as Ptr) As CFTypeRef
+		  dim ref as CFTypeRef
+		  ref.value = p
+		  return ref
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function CFURL(f as FolderItem) As CFURL
 		  return new CFURL(f)
 		End Function
@@ -171,11 +179,11 @@ Module CoreFoundation
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Soft Declare Function CFURLCopyResourcePropertyForKey Lib CoreFoundation.framework (url as Ptr, key as CFStringRef, ByRef propertyValueTypeRefPtr as Ptr, ByRef errorRef as Ptr) As Boolean
+		Protected Soft Declare Function CFURLCopyResourcePropertyForKey Lib CarbonLib (url as Ptr, key as CFStringRef, ByRef propertyValueTypeRefPtr as Ptr, ByRef errorRef as Ptr) As Boolean
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Declare Function CFURLCreateWithFileSystemPath Lib CoreFoundation.framework (allocator as Ptr, filePath as CFStringRef, pathStyle as Integer, isDirectory as Boolean) As Ptr
+		Protected Declare Function CFURLCreateWithFileSystemPath Lib CarbonLib (allocator as Ptr, filePath as CFStringRef, pathStyle as Integer, isDirectory as Boolean) As Ptr
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h0
@@ -185,7 +193,7 @@ Module CoreFoundation
 		  dim pList as CFType
 		  
 		  #if TargetMacOS
-		    Declare Function CFPropertyListCreateDeepCopy Lib CoreFoundation.framework (allocator as Integer, propertyList as Ptr, mutabilityOption as Integer) as Ptr
+		    Declare Function CFPropertyListCreateDeepCopy Lib CarbonLib (allocator as Integer, propertyList as Ptr, mutabilityOption as Integer) as Ptr
 		    
 		    dim ref as Ptr
 		    ref = CFPropertyListCreateDeepCopy(0, propertyList.Reference, mutability)
@@ -224,7 +232,7 @@ Module CoreFoundation
 		  
 		  #if TargetMacOS
 		    // Introduced in MacOS X 10.2.
-		    Declare Function CFPropertyListIsValid Lib CoreFoundation.framework (cf as Ptr, fmt as Integer) as Boolean
+		    Declare Function CFPropertyListIsValid Lib CarbonLib (cf as Ptr, fmt as Integer) as Boolean
 		    
 		    return CFPropertyListIsValid(propertyList.Reference, listFormat)
 		    
@@ -259,7 +267,7 @@ Module CoreFoundation
 		  dim pList as CFType
 		  
 		  #if TargetMacOS
-		    declare function CFPropertyListCreateFromXMLData Lib CoreFoundation.framework (allocator as Ptr, xmlData as Ptr, mutabilityOptions as Integer, ByRef errMsg as CFStringRef) as Ptr
+		    declare function CFPropertyListCreateFromXMLData Lib CarbonLib (allocator as Ptr, xmlData as Ptr, mutabilityOptions as Integer, ByRef errMsg as CFStringRef) as Ptr
 		    
 		    dim theRef as Ptr
 		    
@@ -287,7 +295,7 @@ Module CoreFoundation
 		  dim pList as CFType
 		  
 		  #if TargetMacOS
-		    declare function CFPropertyListCreateFromStream Lib CoreFoundation.framework (allocator as Ptr, readStream as Ptr, streamLen as Integer, mutabilityOptions as Integer, ByRef format as Integer, ByRef errMsg as CFStringRef) as Ptr
+		    declare function CFPropertyListCreateFromStream Lib CarbonLib (allocator as Ptr, readStream as Ptr, streamLen as Integer, mutabilityOptions as Integer, ByRef format as Integer, ByRef errMsg as CFStringRef) as Ptr
 		    
 		    dim theRef as Ptr
 		    dim strRef as CFStringRef
@@ -321,15 +329,18 @@ Module CoreFoundation
 		      return ""
 		    end if
 		    
-		    if CFGetTypeID(p) <> CFStringGetTypeID then
+		    dim ref as CFTypeRef
+		    ref.value = p
+		    
+		    if CFGetTypeID(ref) <> CFStringGetTypeID then
 		      dim e as new TypeMismatchException
-		      e.Message = "CFTypeRef &h" + Hex(Integer(p)) + " has unexpected type " + CFCopyTypeIDDescription(CFGetTypeID(p)) + "."
+		      e.Message = "CFTypeRef &h" + Hex(Integer(p)) + " has unexpected type " + CFCopyTypeIDDescription(CFGetTypeID(ref)) + "."
 		      raise e
 		    end if
 		    
-		    soft declare function CFStringGetLength lib CoreFoundation.framework (cf as Ptr) as Integer
-		    soft declare function CFStringGetMaximumSizeForEncoding lib CoreFoundation.framework (length as Integer, enc as Integer) as Integer
-		    soft declare function CFStringGetCString lib CoreFoundation.framework (theString as Ptr, buffer as Ptr, bufferSize as Integer, enc as Integer) as Boolean
+		    soft declare function CFStringGetLength lib CarbonLib (cf as Ptr) as Integer
+		    soft declare function CFStringGetMaximumSizeForEncoding lib CarbonLib (length as Integer, enc as Integer) as Integer
+		    soft declare function CFStringGetCString lib CarbonLib (theString as Ptr, buffer as Ptr, bufferSize as Integer, enc as Integer) as Boolean
 		    
 		    dim maxSize as Integer = CFStringGetMaximumSizeForEncoding(CFStringGetLength(p), kCFStringEncodingUTF8)
 		    if maxSize <= 0 then
@@ -346,21 +357,6 @@ Module CoreFoundation
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub pTestAssert(b as Boolean, msg as String = "")
-		  #if DebugBuild
-		    if not b then
-		      break
-		      #if TargetDesktop
-		        MsgBox "Test in in CoreFoundation module failed: "+EndOfLine+EndOfLine+msg
-		      #else
-		        Print "Test in CoreFoundation module failed: "+msg
-		      #endif
-		    end
-		  #endif
-		End Sub
-	#tag EndMethod
-
 	#tag ExternalMethod, Flags = &h1
 		Protected Declare Sub Release Lib framework Alias "CFRelease" (cf as Ptr)
 	#tag EndExternalMethod
@@ -368,7 +364,7 @@ Module CoreFoundation
 	#tag Method, Flags = &h0
 		Function RetainedStringValue(p as Ptr) As String
 		  #if targetMacOS
-		    declare function CFRetain lib CoreFoundation.framework (cf as Ptr) as Ptr
+		    declare function CFRetain lib CarbonLib (cf as Ptr) as Ptr
 		    
 		    if p <> nil then
 		      return NotRetainedStringValue(CFRetain(p))
@@ -399,341 +395,6 @@ Module CoreFoundation
 		Protected Declare Sub StringNormalize Lib framework Alias "CFStringNormalize" (theString as Ptr, theForm as Integer)
 	#tag EndExternalMethod
 
-	#tag Method, Flags = &h1
-		Attributes( hidden ) Protected Sub TestSelf()
-		  // This is an incomplete set of tests to make sure nothing got screwed up too much
-		  
-		  #if DebugBuild
-		    
-		    // Flip the switches for the tests below here.
-		    // Use true and FALSE as values to help distinguish easily.
-		    const kTestCFArray = true
-		    const kTestCFNumber = true
-		    const kTestCFString = true
-		    const kTestCFBoolean = true
-		    const kTestCFPreferences = true
-		    const kTestCFURL = true
-		    const kTestCFDate = true
-		    const kTestCFTimeZone = true
-		    const kTestCFStream = true
-		    const kTestCFBundleAndCFPropertyList = FALSE
-		    'const kTestCFSocket = FALSE
-		    
-		    // Check our app's Bundle Identifier
-		    dim myBundleID as String = CFBundle.Application.Identifier
-		    pTestAssert myBundleID = "com.declaresub.macoslib"
-		    
-		    // Test creating new bundles
-		    dim s as String
-		    s = CFBundle.NewCFBundleFromID(BundleID).Identifier
-		    pTestAssert s = BundleID
-		    
-		    dim cft as CFType
-		    
-		    if kTestCFArray then
-		      dim vals() as CFString
-		      vals.Append "a"
-		      vals.Append "b"
-		      dim arr as new CFArray(vals)
-		      dim p as Ptr = arr.Reference
-		      arr = CFArray(CFType.NewObject(p, false, kCFPropertyListImmutable)) // here the ref needs to be retained
-		      p = arr.Reference
-		      arr = new CFArray(p, false) // here the ref needs to be retained
-		      pTestAssert arr.CFValue(1).Equals(new CFString("b"))
-		    end // at this point the CFString objects should all get deallocated
-		    
-		    // Test CFNumber operations
-		    if kTestCFNumber then
-		      dim cf1, cf2 as CFNumber
-		      cf1 = new CFNumber(1)
-		      pTestAssert cf2 is nil
-		      cf2 = new CFNumber(nil,false)
-		      pTestAssert not (cf2 is nil)
-		      pTestAssert cf2=nil
-		      cf2 = new CFNumber(0)
-		      pTestAssert (cf2 <> nil)
-		      pTestAssert cf1.IntegerValue > cf2.IntegerValue
-		      pTestAssert cf1.DoubleValue = 1
-		      pTestAssert cf1.Equals(new CFNumber(1.0))
-		      pTestAssert cf1 > cf2
-		      pTestAssert not( cf1 = cf2 )
-		      pTestAssert not( cf1 < cf2 )
-		      cf2 = 5
-		      pTestAssert cf2.IntegerValue = 5
-		      cf2 = 5.1
-		      pTestAssert cf2.DoubleValue = 5.1
-		      cf1 = cf2
-		      pTestAssert cf1 is cf2
-		    end
-		    
-		    // Test CFString operations
-		    if kTestCFString then
-		      dim s1 as CFString = "z"
-		      dim s2 as CFString = "a"
-		      pTestAssert s2 < s1
-		      pTestAssert s2 < "b"
-		      pTestAssert s1 > "y"
-		      pTestAssert s1 = "Z"
-		      s1 = new CFString( nil, CFType.HasOwnership )
-		      pTestAssert s2 < s1
-		      pTestAssert s1 = nil
-		      pTestAssert s1 < "a"
-		    end if
-		    
-		    // Test CFBoolean operations
-		    if kTestCFBoolean then
-		      dim cfbF as new CFBoolean( False )
-		      dim cfbT as CFBoolean = true
-		      pTestAssert cfbT = true
-		      pTestAssert cfbT <> false
-		      pTestAssert cfbT
-		      pTestAssert not( cfbF.BooleanValue )
-		      pTestAssert cfbT <> cfbF
-		      dim cfbN as CFBoolean // nil
-		      pTestAssert cfbT <> cfbN
-		    end if
-		    
-		    // Test the CFPreferences functionality
-		    if kTestCFPreferences then
-		      dim cf1 as CFNumber
-		      dim prefs as CFPreferences
-		      dim prefKeys() as String = prefs.Keys
-		      for each key as String in prefKeys
-		        dim desc as String = CFType(prefs.Value(key)).Description
-		        #pragma unused desc
-		      next
-		      cf1 = CFNumber(prefs.Value("RunCount"))
-		      dim runCount as Integer
-		      if cf1 <> nil then
-		        runCount = cf1.IntegerValue
-		      end if
-		      cf1 = new CFNumber (runCount + 1)
-		      prefs.Value("RunCount") = cf1
-		      call prefs.Sync // this writes back the changes to the prefs we made here
-		      cft = CFType(prefs.Value("RunCount"))
-		      pTestAssert cf1.Equals(CFType(prefs.Value("RunCount")))
-		    end
-		    
-		    // Test CFURL
-		    if kTestCFURL then
-		      dim url as new CFURL(SpecialFolder.System)
-		      pTestAssert url.Scheme = "file"
-		      pTestAssert url.NetLocation = "localhost"
-		      pTestAssert url.StringValue = "file://localhost"+url.Path+"/"
-		      pTestAssert url.Name.StringValue = SpecialFolder.System.Name
-		      pTestAssert url.IsAlias.VariantValue = SpecialFolder.System.Alias
-		      pTestAssert url.IsDirectory = true
-		      url = new CFURL( SpecialFolder.Temporary.Child( "SomethingThatDoesn'tExist" ) )
-		      pTestAssert url.FileSize is nil
-		    end
-		    
-		    // Test CFDate
-		    if kTestCFDate then
-		      dim d1 as new Date
-		      dim d2 as new Date
-		      dim d3 as date
-		      d2.TotalSeconds = d1.TotalSeconds - 5
-		      dim cfd1 as new CFDate( d1 )
-		      dim cfd2 as CFDate = d2
-		      pTestAssert cfd1 > cfd2
-		      pTestAssert( ( cfd1 - cfd2 ) = 5. )
-		      pTestAssert cfd1 = d1
-		      pTestAssert cfd1 > d3
-		      cfd1 = nil
-		      pTestAssert cfd1 = nil
-		    end if
-		    
-		    // Test CFTimeZone
-		    if kTestCFTimeZone then
-		      dim zonenames() as String = CFTimeZone.NameList()
-		      dim tzone as new CFTimeZone(zonenames(1))
-		      pTestAssert tzone.Name = zonenames(1)
-		    end
-		    
-		    // Test CFStreams
-		    if kTestCFStream then
-		      dim reader as CFReadStream
-		      'dim writer as CFWriteStream
-		      reader = new CFReadStream("12345")
-		      pTestAssert reader.Status = 0
-		      pTestAssert reader.Open()
-		      pTestAssert reader.Read(3,s)
-		      pTestAssert s = "123"
-		      pTestAssert not reader.IsAtEnd
-		      pTestAssert reader.Read(3,s)
-		      pTestAssert s = "45"
-		      pTestAssert reader.IsAtEnd
-		      pTestAssert reader.Read(3,s)
-		      pTestAssert reader.IsOpen
-		      reader.Close()
-		      pTestAssert not reader.IsOpen
-		      pTestAssert not reader.Open()
-		      pTestAssert not reader.IsOpen
-		      ' not usable due to bug(?) in OS 10.5:
-		      'if CFStream.NewBoundPair (reader, writer) then
-		      'pTestAssert reader.Open
-		      'pTestAssert writer.Open
-		      'pTestAssert writer.IsReady
-		      'pTestAssert not reader.HasDataAvailable
-		      'pTestAssert writer.Write("abcd") = 4
-		      'pTestAssert reader.HasDataAvailable
-		      'pTestAssert reader.Read(4,s)
-		      'pTestAssert s = "abcd"
-		      'end if
-		    end if
-		    
-		    // Test CFBundle and CFPropertyList
-		    if kTestCFBundleAndCFPropertyList then
-		      // get this app's Info.plist contents via CFBundle.InfoDictionary
-		      dim bndl as CFBundle = CFBundle.Application
-		      dim infodict as CFDictionary = bndl.InfoDictionary
-		      pTestAssert not CFPropertyList(infodict).IsValid(kCFPropertyListXMLFormat_v1_0) // it's a CFDictionary but not a true CFPropertyList
-		      pTestAssert infodict.Value(CFString("CFBundleIdentifier")) = bndl.InfoDictionaryValue("CFBundleIdentifier")
-		      // get this app's Info.plist contents again, this time by locating the file directly and opening it
-		      dim url as new CFURL (bndl.URL, "Contents/Info.plist") // create the path to the plist file by hand
-		      dim cfStr as CFString = CFString("CFBundleInfoPlistURL")
-		      dim url2 as CFURL = CFURL(infodict.Value(cfStr)) // get the same path by asking our App Bundle's info dictionary
-		      pTestAssert url.StringValue = url2.StringValue, url.StringValue+" <> "+url2.StringValue
-		      dim rs as new CFReadStream (url) // read the plist file directly
-		      pTestAssert rs.Open
-		      // read the plist file into a mutable CFPropertyList instance
-		      dim format as Integer, errorMessage as String
-		      dim plist as CFPropertyList = NewCFPropertyList (rs, kCFPropertyListMutableContainersAndLeaves, format, errorMessage)
-		      pTestAssert errorMessage="", errorMessage
-		      pTestAssert plist.IsValid (format)
-		      // get the xml representation of the plist dictionary, then recreate another mutable CFPropertyList instance from it
-		      dim xml as String
-		      xml = plist.XMLValue
-		      plist = NewCFPropertyList (xml, kCFPropertyListMutableContainersAndLeaves, errorMessage)
-		      pTestAssert errorMessage="", errorMessage
-		      pTestAssert plist.XMLValue = xml // make sure the two are identical in their xml representation
-		      // add a new element to the plist
-		      CFMutableDictionary(plist).Value(CFString("_AddedKVP_")) = CFString("test value")
-		      pTestAssert plist.XMLValue <> xml
-		      // write the plist back to a new temp file
-		      dim tmpFile as FolderItem = GetTemporaryFolderItem()
-		      dim url3 as new CFURL (tmpFile)
-		      dim ws as new CFWriteStream(url3)
-		      pTestAssert ws.Open
-		      pTestAssert plist.Write (ws, kCFPropertyListBinaryFormat_v1_0, errorMessage) // this should write a binary plist but it actually writes an xml one. Odd
-		      ws.Close
-		      // read the temp file back and see if it contains our added value
-		      rs = new CFReadStream (url3)
-		      pTestAssert rs.Open
-		      pTestAssert rs.Read(99999, s)
-		      pTestAssert s.InStr("test value") > 0
-		      tmpFile.Delete
-		    end
-		    
-		    '// Test CFSocket (TCP/IP)
-		    '#if kTestCFSocket then
-		    '// (TT 6 Dec 09) this is not working - at least not when reading and writing within same process
-		    'declare function CFRunLoopGetCurrent lib CoreFoundation.framework () as Ptr
-		    'declare sub CFReadStreamScheduleWithRunLoop lib CoreFoundation.framework (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
-		    'declare sub CFWriteStreamScheduleWithRunLoop lib CoreFoundation.framework (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
-		    '
-		    'dim serverSocket, clientSocket as CFSocket
-		    'dim serverReader, clientReader as CFReadStream
-		    'dim serverWriter, clientWriter as CFWriteStream
-		    '
-		    'dim myAddr as CFData = CFSocket.IP4Address("localhost", 26214)
-		    '
-		    '// set up the server streams
-		    'serverSocket = new CFSocket (CFSocket.PF_INET, CFSocket.SOCK_STREAM, CFSocket.IPPROTO_TCP, CFSocket.kAcceptCallBack)
-		    'pTestAssert serverSocket.Bind(myAddr), "bind" // -> listen on socket
-		    '
-		    '// set up the client streams
-		    'CFStream.NewBoundPairFromHostAddress ("localhost", 26214, clientReader, clientWriter)
-		    '
-		    'pTestAssert clientReader.Open
-		    'pTestAssert clientWriter.Open
-		    '
-		    'CFWriteStreamScheduleWithRunLoop (clientWriter, CFRunLoopGetCurrent(), CFConstant("kCFRunLoopCommonModes"))
-		    '
-		    'App.DoEvents
-		    '
-		    'dim n as Integer = clientWriter.Write("start")
-		    'pTestAssert n = 5
-		    '
-		    'do
-		    'App.DoEvents
-		    'if serverSocket.HasConnected and serverReader = nil then
-		    'CFStream.NewBoundPairFromNativeSocket (serverSocket.NativeHandle, serverReader, serverWriter)
-		    '
-		    'CFReadStreamScheduleWithRunLoop (serverReader, CFRunLoopGetCurrent(), CFConstant("kCFRunLoopCommonModes"))
-		    '
-		    'pTestAssert serverReader.Open
-		    'pTestAssert serverWriter.Open
-		    '
-		    'App.DoEvents
-		    '
-		    'pTestAssert clientWriter.Write("hello") = 5
-		    'end
-		    'if serverReader <> nil and serverReader.HasDataAvailable then
-		    'if serverReader.Read(4,s) then
-		    'break
-		    'end if
-		    'end if
-		    'loop
-		    '
-		    'break
-		    '#endif
-		    '
-		    '// Test CFSockets (Unix Domain Sockets)
-		    '#if kTestCFSocket then
-		    '// (TT 6 Dec 09) this is not working - at least not when reading and writing within same process
-		    'declare function CFRunLoopGetCurrent lib CoreFoundation.framework () as Ptr
-		    'declare sub CFReadStreamScheduleWithRunLoop lib CoreFoundation.framework (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
-		    'declare sub CFWriteStreamScheduleWithRunLoop lib CoreFoundation.framework (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
-		    '
-		    'dim serverSocket, clientSocket as CFSocket
-		    'dim serverReader, clientReader as CFReadStream
-		    'dim serverWriter, clientWriter as CFWriteStream
-		    '
-		    'dim path as String = "/var/tmp/cftest_socket_file"
-		    'dim f as FolderItem = GetFolderItem(path, FolderItem.PathTypeShell)
-		    'f.Delete
-		    'pTestAssert not f.Exists
-		    '
-		    'dim ssig as new CFSocketSignature (path)
-		    'serverSocket = new CFSocket (ssig, CFSocket.kNoCallBack, false)
-		    'pTestAssert not serverSocket.IsNULL
-		    'pTestAssert serverSocket.IsValid
-		    'pTestAssert f.Exists
-		    '
-		    ''pTestAssert serverSocket.Bind(ssig.address), "bind" // -> listen on socket
-		    '
-		    'clientSocket = new CFSocket (ssig, CFSocket.kNoCallBack, true)
-		    'pTestAssert not clientSocket.IsNULL
-		    'pTestAssert clientSocket.IsValid
-		    '
-		    ''not working: CFStream.NewBoundPairFromSocket ssig, reader, writer
-		    'CFStream.NewBoundPairFromNativeSocket (clientSocket.NativeHandle, clientReader, clientWriter)
-		    'CFStream.NewBoundPairFromNativeSocket (serverSocket.NativeHandle, serverReader, serverWriter)
-		    '
-		    'CFReadStreamScheduleWithRunLoop (serverReader, CFRunLoopGetCurrent(), CFConstant("kCFRunLoopCommonModes"))
-		    'CFWriteStreamScheduleWithRunLoop (clientWriter, CFRunLoopGetCurrent(), CFConstant("kCFRunLoopCommonModes"))
-		    '
-		    'pTestAssert serverReader.Open
-		    'pTestAssert clientWriter.Open
-		    '
-		    'App.DoEvents
-		    'pTestAssert not serverReader.HasDataAvailable
-		    ''pTestAssert clientWriter.IsReady
-		    'pTestAssert clientWriter.Write("abcd") = 4
-		    'App.DoEvents
-		    'pTestAssert serverReader.HasDataAvailable
-		    'pTestAssert serverReader.Read(4,s)
-		    'pTestAssert s = "abcd"
-		    '
-		    'f.Delete
-		    'pTestAssert not f.Exists
-		    '#endif
-		    
-		  #endif
-		End Sub
-	#tag EndMethod
-
 	#tag DelegateDeclaration, Flags = &h1
 		Protected Delegate Sub TimerActionDelegate()
 	#tag EndDelegateDeclaration
@@ -760,7 +421,7 @@ Module CoreFoundation
 		    static newFunctionNeedsCheck as boolean = true
 		    static newFunctionIsAvailable as boolean
 		    if newFunctionNeedsCheck then
-		      newFunctionIsAvailable = System.IsFunctionAvailable( "CFPropertyListWrite", CoreFoundation.framework )
+		      newFunctionIsAvailable = System.IsFunctionAvailable( "CFPropertyListWrite", CarbonLib )
 		      newFunctionNeedsCheck = false
 		    end if
 		    
@@ -768,12 +429,12 @@ Module CoreFoundation
 		    dim written as Integer
 		    if newFunctionIsAvailable then
 		      // Introduced in MacOS X 10.6.
-		      soft declare function CFPropertyListWrite lib CoreFoundation.framework (propertyList as Ptr, stream as Ptr, format as Integer, options as UInt32, ByRef errMsg as CFStringRef) as Integer
+		      soft declare function CFPropertyListWrite lib CarbonLib (propertyList as Ptr, stream as Ptr, format as Integer, options as UInt32, ByRef errMsg as CFStringRef) as Integer
 		      written = _
 		      CFPropertyListWrite (propertyList.Reference, openedWriteStream.Reference, format, 0, strRef)
 		    else
 		      // Introduced in MacOS X 10.2 (deprecated, use CFPropertyListWrite instead)
-		      declare function CFPropertyListWriteToStream lib CoreFoundation.framework (propertyList as Ptr, stream as Ptr, format as Integer, ByRef errMsg as CFStringRef) as Integer
+		      declare function CFPropertyListWriteToStream lib CarbonLib (propertyList as Ptr, stream as Ptr, format as Integer, ByRef errMsg as CFStringRef) as Integer
 		      written = _
 		      CFPropertyListWriteToStream (propertyList.Reference, openedWriteStream.Reference, format, strRef)
 		    end if
@@ -801,7 +462,7 @@ Module CoreFoundation
 		    static newFunctionNeedsCheck as boolean = true
 		    static newFunctionIsAvailable as boolean
 		    if newFunctionNeedsCheck then
-		      newFunctionIsAvailable = System.IsFunctionAvailable( "CFPropertyListCreateData", CoreFoundation.framework )
+		      newFunctionIsAvailable = System.IsFunctionAvailable( "CFPropertyListCreateData", CarbonLib )
 		      newFunctionNeedsCheck = false
 		    end if
 		    
@@ -809,7 +470,7 @@ Module CoreFoundation
 		    if newFunctionIsAvailable then
 		      
 		      // Introduced in MacOS X 10.6.
-		      soft declare function CFPropertyListCreateData lib CoreFoundation.framework _
+		      soft declare function CFPropertyListCreateData lib CarbonLib _
 		      ( allocator as Ptr, propertyList as Ptr, format as Integer, options as UInt32, ByRef err as Ptr ) as Ptr
 		      
 		      dim err as Ptr
@@ -821,7 +482,7 @@ Module CoreFoundation
 		    else
 		      
 		      // Introduced in MacOS X 10.2 (deprecated, use CFPropertyListCreateData instead).
-		      declare function CFPropertyListCreateXMLData lib CoreFoundation.framework (allocator as Ptr, propertyList as Ptr) as Ptr
+		      declare function CFPropertyListCreateXMLData lib CarbonLib (allocator as Ptr, propertyList as Ptr) as Ptr
 		      
 		      xmlDataRef = CFPropertyListCreateXMLData(nil, propertyList.Reference)
 		      
@@ -992,6 +653,10 @@ Module CoreFoundation
 		handle As Int32
 	#tag EndStructure
 
+	#tag Structure, Name = CFTypeRef, Flags = &h0
+		value as Ptr
+	#tag EndStructure
+
 
 	#tag ViewBehavior
 		#tag ViewProperty
@@ -999,33 +664,33 @@ Module CoreFoundation
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Module

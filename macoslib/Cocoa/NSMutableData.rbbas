@@ -55,10 +55,8 @@ Inherits NSData
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSMutableData")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -155,7 +153,7 @@ Inherits NSData
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function Create() As NSMutableData
+		Shared Function Create() As NSMutableData
 		  
 		  #if TargetMacOS
 		    declare function data_ lib CocoaLib selector "data" (class_id as Ptr) as Ptr
@@ -171,7 +169,7 @@ Inherits NSData
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithCapacity(capacity as UInt32) As NSMutableData
+		Shared Function CreateWithCapacity(capacity as UInt32) As NSMutableData
 		  
 		  #if TargetMacOS
 		    declare function dataWithCapacity lib CocoaLib selector "dataWithCapacity:" (class_id as Ptr, capacity as UInt32) as Ptr
@@ -189,7 +187,7 @@ Inherits NSData
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithData(aData as NSData) As NSMutableData
+		Shared Function CreateWithData(aData as NSData) As NSMutableData
 		  
 		  #if TargetMacOS
 		    declare function dataWithData lib CocoaLib selector "dataWithData:" (class_id as Ptr, aData as Ptr) as Ptr
@@ -209,7 +207,7 @@ Inherits NSData
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithFile(file as FolderItem) As NSMutableData
+		Shared Function CreateWithFile(file as FolderItem) As NSMutableData
 		  
 		  #if TargetMacOS
 		    declare function dataWithContentsOfFile lib CocoaLib selector "dataWithContentsOfFile:" (class_id as Ptr, path as CFStringRef) as Ptr
@@ -229,7 +227,7 @@ Inherits NSData
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithLength(length as UInt32) As NSMutableData
+		Shared Function CreateWithLength(length as UInt32) As NSMutableData
 		  
 		  #if TargetMacOS
 		    declare function dataWithLength lib CocoaLib selector "dataWithLength:" (class_id as Ptr, length as UInt32) as Ptr
@@ -247,7 +245,7 @@ Inherits NSData
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithMemoryBlock(dataBlock as MemoryBlock, length as UInt32) As NSMutableData
+		Shared Function CreateWithMemoryBlock(dataBlock as MemoryBlock, length as UInt32) As NSMutableData
 		  
 		  #if TargetMacOS
 		    declare function dataWithBytes lib CocoaLib selector "dataWithBytes:length:" (class_id as Ptr, bytes as Ptr, length as UInt32) as Ptr
@@ -276,7 +274,7 @@ Inherits NSData
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		 Shared Function CreateWithString(dataString as String) As NSMutableData
+		Shared Function CreateWithString(dataString as String) As NSMutableData
 		  
 		  return NSMutableData.CreateWithMemoryBlock(dataString, dataString.lenB)
 		End Function

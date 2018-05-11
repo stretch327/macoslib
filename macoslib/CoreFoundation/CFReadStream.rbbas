@@ -10,7 +10,7 @@ Inherits CFStream
 	#tag Event
 		Function GetStatus() As Integer
 		  #if TargetMacOS
-		    declare function CFReadStreamGetStatus lib CoreFoundation.framework (stream as Ptr) as Integer
+		    declare function CFReadStreamGetStatus lib CarbonLib (stream as Ptr) as Integer
 		    
 		    return CFReadStreamGetStatus (me.Reference)
 		  #endif
@@ -19,9 +19,9 @@ Inherits CFStream
 
 
 	#tag Method, Flags = &h0
-		Shared Function ClassID() As UInt32
+		 Shared Function ClassID() As UInt32
 		  #if TargetMacOS
-		    declare function TypeID lib CoreFoundation.framework alias "CFReadStreamGetTypeID" () as UInt32
+		    declare function TypeID lib CarbonLib alias "CFReadStreamGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -31,7 +31,7 @@ Inherits CFStream
 	#tag Method, Flags = &h0
 		Sub Close()
 		  #if TargetMacOS
-		    declare sub CFReadStreamClose lib CoreFoundation.framework (stream as Ptr)
+		    declare sub CFReadStreamClose lib CarbonLib (stream as Ptr)
 		    
 		    if not ( self = nil ) then
 		      CFReadStreamClose (me.Reference)
@@ -43,7 +43,7 @@ Inherits CFStream
 	#tag Method, Flags = &h0
 		Sub Constructor(socketHandle as CFSocketNativeHandle)
 		  #if TargetMacOS
-		    declare sub CFStreamCreatePairWithSocket lib CoreFoundation.framework (allocator as Ptr, sock as CFSocketNativeHandle, ByRef read as Ptr, null as Ptr)
+		    declare sub CFStreamCreatePairWithSocket lib CarbonLib (allocator as Ptr, sock as CFSocketNativeHandle, ByRef read as Ptr, null as Ptr)
 		    
 		    dim p as Ptr
 		    CFStreamCreatePairWithSocket (nil, socketHandle, p, nil)
@@ -55,7 +55,7 @@ Inherits CFStream
 	#tag Method, Flags = &h0
 		Sub Constructor(fileURL as CFURL)
 		  #if TargetMacOS
-		    declare function CFReadStreamCreateWithFile lib CoreFoundation.framework (allocator as Ptr, url as Ptr) as Ptr
+		    declare function CFReadStreamCreateWithFile lib CarbonLib (allocator as Ptr, url as Ptr) as Ptr
 		    
 		    super.Constructor CFReadStreamCreateWithFile (nil, fileURL.Reference), true
 		  #endif
@@ -65,7 +65,7 @@ Inherits CFStream
 	#tag Method, Flags = &h0
 		Sub Constructor(data as MemoryBlock)
 		  #if TargetMacOS
-		    declare function CFReadStreamCreateWithBytesNoCopy lib CoreFoundation.framework (allocator as Ptr, data as Ptr, size as Integer, deallocator as Ptr) as Ptr
+		    declare function CFReadStreamCreateWithBytesNoCopy lib CarbonLib (allocator as Ptr, data as Ptr, size as Integer, deallocator as Ptr) as Ptr
 		    
 		    mData = data // we need to keep a ref to the MemoryBlock as long as the stream exists
 		    super.Constructor CFReadStreamCreateWithBytesNoCopy (nil, data, data.Size, kCFAllocatorNull), hasOwnership
@@ -76,7 +76,7 @@ Inherits CFStream
 	#tag Method, Flags = &h0
 		Function GetProperty(name as String) As CFType
 		  #if TargetMacOS
-		    declare function CFReadStreamCopyProperty lib CoreFoundation.framework (stream as Ptr, name as CFStringRef) as Ptr
+		    declare function CFReadStreamCopyProperty lib CarbonLib (stream as Ptr, name as CFStringRef) as Ptr
 		    
 		    return CFType.NewObject (CFReadStreamCopyProperty (me.Reference, name), true, kCFPropertyListImmutable)
 		  #endif
@@ -86,7 +86,7 @@ Inherits CFStream
 	#tag Method, Flags = &h0
 		Function HasDataAvailable() As Boolean
 		  #if TargetMacOS
-		    declare function CFReadStreamHasBytesAvailable lib CoreFoundation.framework (stream as Ptr) as Boolean
+		    declare function CFReadStreamHasBytesAvailable lib CarbonLib (stream as Ptr) as Boolean
 		    
 		    return CFReadStreamHasBytesAvailable (me.Reference)
 		  #endif
@@ -96,7 +96,7 @@ Inherits CFStream
 	#tag Method, Flags = &h0
 		Function Open() As Boolean
 		  #if TargetMacOS
-		    declare function CFReadStreamOpen lib CoreFoundation.framework (stream as Ptr) as Boolean
+		    declare function CFReadStreamOpen lib CarbonLib (stream as Ptr) as Boolean
 		    
 		    return CFReadStreamOpen (me.Reference)
 		  #endif
@@ -114,10 +114,10 @@ Inherits CFStream
 		  end if
 		  
 		  #if TargetMacOS
-		    declare function CFReadStreamRead lib CoreFoundation.framework (stream as Ptr, buffer as Ptr, bufLen as Integer) as Integer
+		    declare function CFReadStreamRead lib CarbonLib (stream as Ptr, buffer as Ptr, bufLen as Integer) as Integer
 		    
 		    dim mb as MemoryBlock
-		    'mb = new memoryblock (maxBytes)
+		    'mb = NewMemoryBlock (maxBytes)
 		    mb = New MemoryBlock (maxBytes)
 		    dim n as Integer = CFReadStreamRead (me.Reference, mb, mb.Size)
 		    if n >= 0 then
@@ -133,7 +133,7 @@ Inherits CFStream
 	#tag Method, Flags = &h0
 		Function SetProperty(name as String, value as CFType) As Boolean
 		  #if TargetMacOS
-		    declare function CFReadStreamSetProperty lib CoreFoundation.framework (stream as Ptr, name as CFStringRef, value as Ptr) as Boolean
+		    declare function CFReadStreamSetProperty lib CarbonLib (stream as Ptr, name as CFStringRef, value as Ptr) as Boolean
 		    
 		    return CFReadStreamSetProperty (me.Reference, name, value.Reference)
 		  #endif
@@ -147,39 +147,40 @@ Inherits CFStream
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="CFType"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

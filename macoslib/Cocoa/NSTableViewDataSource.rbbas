@@ -123,7 +123,8 @@ Class NSTableViewDataSource
 
 	#tag Method, Flags = &h21
 		Private Shared Function impl_GetValue(id as Ptr, sel as Ptr, tableView as Ptr, columnView as Ptr, row as Integer) As Ptr
-		  #If TargetCocoa
+		  #if TargetCocoa
+		    
 		    dim theSource as NSTableViewDataSource = FindObjectByImpl_obj(id)
 		    if theSource is nil then
 		      return nil
@@ -138,10 +139,18 @@ Class NSTableViewDataSource
 		    declare function CFRetain lib CarbonLib (cf as CFStringRef) as Ptr
 		    return  CFRetain(v)
 		    
-		    // Keep the compiler from complaining
-		    #pragma unused sel
-		    #pragma unused tableView
+		  #else
+		    
+		    #pragma unused id
+		    #pragma unused columnView
+		    #pragma unused row
+		    
 		  #endif
+		  
+		  // Keep the compiler from complaining
+		  #pragma unused sel
+		  #pragma unused tableView
+		  
 		End Function
 	#tag EndMethod
 
@@ -161,7 +170,8 @@ Class NSTableViewDataSource
 
 	#tag Method, Flags = &h21
 		Private Shared Sub impl_SetValue(id as Ptr, sel as Ptr, aTableView as Ptr, value as Ptr, aTableColumn as Ptr, row as Integer)
-		  #If TargetMacOS
+		  #if TargetCocoa
+		    
 		    dim theSource as NSTableViewDataSource = FindObjectByImpl_obj(id)
 		    if theSource is nil then
 		      return
@@ -179,8 +189,18 @@ Class NSTableViewDataSource
 		    
 		    theSource.SetValue tableView, row, tableColumn, stringValue
 		    
-		    #pragma unused sel
+		  #else
+		    
+		    #pragma unused id
+		    #pragma unused aTableView
+		    #pragma unused value
+		    #pragma unused aTableColumn
+		    #pragma unused row
+		    
 		  #endif
+		  
+		  #pragma unused sel
+		  
 		End Sub
 	#tag EndMethod
 
@@ -316,33 +336,33 @@ Class NSTableViewDataSource
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

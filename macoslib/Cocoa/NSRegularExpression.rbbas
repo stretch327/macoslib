@@ -4,10 +4,8 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSRegularExpression")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -37,7 +35,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function EscapedPattern(forString As NSString) As NSString
+		Shared Function EscapedPattern(forString As NSString) As NSString
 		  #if TargetCocoa
 		    
 		    if forString = nil then
@@ -64,7 +62,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function EscapedTemplate(forString As NSString) As NSString
+		Shared Function EscapedTemplate(forString As NSString) As NSString
 		  #if TargetCocoa
 		    
 		    if forString = nil then
@@ -450,6 +448,16 @@ Inherits NSObject
 			Visible=true
 			Group="ID"
 			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="NumberOfCaptureGroups"
+			Group="Behavior"
+			Type="UInt32"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Options"
+			Group="Behavior"
+			Type="UInt32"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

@@ -3,12 +3,12 @@ Protected Module AppleEvents
 	#tag Method, Flags = &h0
 		Function PrintDesc(extends ae as AppleEvent, getReply as boolean = false) As string
 		  #if TargetMacOS
+		    
 		    Soft declare function AEPrintDescToHandle lib CarbonLib (theEvent as integer, hdl as Ptr) as integer
 		    Soft declare sub DisposeHandle lib CarbonLib (hdl as ptr)
 		    
 		    dim myHandle as MemoryBlock
 		    dim err as integer
-		    
 		    dim mb as MemoryBlock
 		    dim result as string
 		    
@@ -31,15 +31,24 @@ Protected Module AppleEvents
 		    DisposeHandle   myHandle.Ptr(0)  //We must free the handle to get memory back
 		    
 		    return result
-		  #Endif
+		    
+		  #else
+		    
+		    #pragma unused ae
+		    #pragma unused getReply
+		    
+		  #endif
+		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function RawData(extends ae as AppleEvent, param as string, byref type as string, inReply as boolean = false) As MemoryBlock
 		  //Get a binary data param in the reply AppleEvent
-		  #If TargetMacOS
-		    declare function AEGetParamPtr lib CarbonLib (AEPtr as integer, AEKeyword as OSType, inType as OSType, byref outType as OSType, data as Ptr, maxSize as integer, byref actSize as integer) as Int16
+		  
+		  #if TargetMacOS
+		    
+		    declare function AEGetParamPtr lib CarbonLib (AEPtr as integer, AEKeyword as OSType, inType as OSType, byref outType as OSType, data as Ptr, maxSize as integer, byref actSize as integer) as short
 		    
 		    dim data as MemoryBlock
 		    dim err as integer
@@ -71,15 +80,25 @@ Protected Module AppleEvents
 		      return data.StringValue( 0, aSize )
 		    end if
 		    
+		  #else
+		    
+		    #pragma unused ae
+		    #pragma unused param
+		    #pragma unused type
+		    #pragma unused inReply
+		    
 		  #endif
+		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub RawData(extends ae as AppleEvent, param as string, type as string, inReply as boolean = false, assigns data as MemoryBlock)
 		  //Add some binary data as a reply AppleEvent parameter
-		  #If TargetMacOS
-		    declare function AEPutParamPtr lib CarbonLib (AEPtr as integer, AEKey as OSType, dType as OSType, data as Ptr, dsize as integer) as Int16
+		  
+		  #if TargetMacOS
+		    
+		    declare function AEPutParamPtr lib CarbonLib (AEPtr as integer, AEKey as OSType, dType as OSType, data as Ptr, dsize as integer) as short
 		    
 		    dim err as integer
 		    dim p as integer
@@ -90,15 +109,27 @@ Protected Module AppleEvents
 		      p = ae.Ptr
 		    end if
 		    err = AEPutParamPtr( p, param, type, data, data.size )
+		    
+		  #else
+		    
+		    #pragma unused ae
+		    #pragma unused param
+		    #pragma unused type
+		    #pragma unused inReply
+		    #pragma unused data
+		    
 		  #endif
+		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub SizeAndTypeOfParam(extends ae as AppleEvent, param as string, inReply as boolean, byref size as integer, byref type as string)
 		  //Get the size and type of one parameter. Set inReply to true if you want to access the reply AppleEvent
-		  #If TargetMacOS
-		    declare function AESizeOfParam lib CarbonLib (evnt as integer, AEKeyword as OSType, byref oDesc as OSType, byref oSize as integer) as Int16
+		  
+		  #if TargetMacOS
+		    
+		    declare function AESizeOfParam lib CarbonLib (evnt as integer, AEKeyword as OSType, byref oDesc as OSType, byref oSize as integer) as short
 		    
 		    dim err as integer
 		    dim oDesc as OSType
@@ -117,7 +148,17 @@ Protected Module AppleEvents
 		      type = oDesc
 		      size = oSize
 		    end if
+		    
+		  #else
+		    
+		    #pragma unused ae
+		    #pragma unused param
+		    #pragma unused inReply
+		    #pragma unused size
+		    #pragma unused type
+		    
 		  #endif
+		  
 		End Sub
 	#tag EndMethod
 
@@ -148,33 +189,33 @@ Protected Module AppleEvents
 			Visible=true
 			Group="ID"
 			InitialValue="2147483648"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
+			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Module

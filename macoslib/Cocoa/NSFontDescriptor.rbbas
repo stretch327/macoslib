@@ -4,10 +4,8 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSFontDescriptor")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -121,7 +119,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function FontDescriptorWithFontAttributes(attribs as NSDictionary) As NSFontDescriptor
+		Shared Function FontDescriptorWithFontAttributes(attribs as NSDictionary) As NSFontDescriptor
 		  
 		  #if TargetMacOS
 		    declare function fontDescriptorWithFontAttributes lib CocoaLib selector "fontDescriptorWithFontAttributes:" (obj_id as Ptr, attribs as Ptr) as Ptr
@@ -173,7 +171,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function FontDescriptorWithName(name as String, matrix as NSAffineTransform) As NSFontDescriptor
+		Shared Function FontDescriptorWithName(name as String, matrix as NSAffineTransform) As NSFontDescriptor
 		  
 		  #if TargetMacOS
 		    declare function fontDescriptorWithName lib CocoaLib selector "fontDescriptorWithName:matrix:" (obj_id as Ptr, name as CFStringRef, matrix as Ptr) as Ptr
@@ -200,7 +198,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function FontDescriptorWithName(name as String, size as Single) As NSFontDescriptor
+		Shared Function FontDescriptorWithName(name as String, size as Single) As NSFontDescriptor
 		  
 		  #if TargetMacOS
 		    declare function fontDescriptorWithName lib CocoaLib selector "fontDescriptorWithName:size:" (obj_id as Ptr, name as CFStringRef, size as Single) as Ptr
@@ -280,20 +278,18 @@ Inherits NSObject
 		    dim arrayRef as Ptr = matchingFontDescriptorsWithMandatoryKeys(self, mandatoryKeysRef)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		          #if Target64Bit then
-		              const sizeOfPtr = 8
-		          #else
-		              const sizeOfPtr = 4
-		          #endif
+		      
+		      #if RBVersion > 2013.01
+		        #if Target64Bit
+		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		        #endif
+		      #endif
+		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        #if target64bit then
-		          retArray.append new NSFontDescriptor(Ptr(m.UInt64Value(i*sizeOfPtr)))
-		        #else
-		          retArray.append new NSFontDescriptor(Ptr(m.UInt32Value(i*sizeOfPtr)))
-		        #endif
+		        retArray.append new NSFontDescriptor(Ptr(m.UInt32Value(i*SizeOfPointer)))
 		      next
 		    end if
 		    
@@ -351,7 +347,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontCascadeListAttribute() As String
+		Shared Function NSFontCascadeListAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontCascadeListAttribute")
 		  
@@ -359,7 +355,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontCharacterSetAttribute() As String
+		Shared Function NSFontCharacterSetAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontCharacterSetAttribute")
 		  
@@ -367,7 +363,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontColorAttribute() As String
+		Shared Function NSFontColorAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontColorAttribute")
 		  
@@ -375,7 +371,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontFaceAttribute() As String
+		Shared Function NSFontFaceAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontFaceAttribute")
 		  
@@ -383,7 +379,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontFamilyAttribute() As String
+		Shared Function NSFontFamilyAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontFamilyAttribute")
 		  
@@ -391,7 +387,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontFeatureSettingsAttribute() As String
+		Shared Function NSFontFeatureSettingsAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontFeatureSettingsAttribute")
 		  
@@ -399,7 +395,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontFixedAdvanceAttribute() As String
+		Shared Function NSFontFixedAdvanceAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontFixedAdvanceAttribute")
 		  
@@ -407,7 +403,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontMatrixAttribute() As String
+		Shared Function NSFontMatrixAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontMatrixAttribute")
 		  
@@ -415,7 +411,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontNameAttribute() As String
+		Shared Function NSFontNameAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontNameAttribute")
 		  
@@ -423,7 +419,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontSizeAttribute() As String
+		Shared Function NSFontSizeAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontSizeAttribute")
 		  
@@ -431,7 +427,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontTraitsAttribute() As String
+		Shared Function NSFontTraitsAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontTraitsAttribute")
 		  
@@ -439,7 +435,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontVariationAttribute() As String
+		Shared Function NSFontVariationAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontVariationAttribute")
 		  
@@ -447,7 +443,7 @@ Inherits NSObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function NSFontVisibleNameAttribute() As String
+		Shared Function NSFontVisibleNameAttribute() As String
 		  
 		  return Cocoa.StringConstant("NSFontVisibleNameAttribute")
 		  

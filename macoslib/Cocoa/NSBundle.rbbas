@@ -13,20 +13,18 @@ Inherits NSObject
 		    dim arrayRef as Ptr = allBundles(ClassRef)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      #if Target64Bit then
-		        const sizeOfPtr = 8
-		      #else
-		        const sizeOfPtr = 4
+		      
+		      #if RBVersion > 2013.01
+		        #if Target64Bit
+		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		        #endif
 		      #endif
+		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        #if target64bit then
-		          retArray.append new NSBundle(Ptr(m.UInt64Value(i*sizeOfPtr)))
-		        #else
-		          retArray.append new NSBundle(Ptr(m.UInt32Value(i*sizeOfPtr)))
-		        #endif
+		        retArray.append new NSBundle(Ptr(m.UInt32Value(i*SizeOfPointer)))
 		      next
 		    end if
 		    
@@ -47,20 +45,18 @@ Inherits NSObject
 		    dim arrayRef as Ptr = allFrameworks(ClassRef)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      #if Target64Bit then
-		        const sizeOfPtr = 8
-		      #else
-		        const sizeOfPtr = 4
+		      
+		      #if RBVersion > 2013.01
+		        #if Target64Bit
+		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		        #endif
 		      #endif
+		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        #if target64bit then
-		          retArray.append new NSBundle(Ptr(m.UInt64Value(i*sizeOfPtr)))
-		        #else
-		          retArray.append new NSBundle(Ptr(m.UInt32Value(i*sizeOfPtr)))
-		        #endif
+		        retArray.append new NSBundle(Ptr(m.UInt32Value(i*SizeOfPointer)))
 		      next
 		    end if
 		    
@@ -221,10 +217,8 @@ Inherits NSObject
 	#tag Method, Flags = &h21
 		Private Shared Function ClassRef() As Ptr
 		  #if TargetCocoa
-		    
 		    static ref as Ptr = Cocoa.NSClassFromString("NSBundle")
 		    return ref
-		    
 		  #endif
 		End Function
 	#tag EndMethod
@@ -321,20 +315,18 @@ Inherits NSObject
 		    dim arrayRef as Ptr = executableArchitectures(self)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      #if Target64Bit then
-		        const sizeOfPtr = 8
-		      #else
-		        const sizeOfPtr = 4
+		      
+		      #if RBVersion > 2013.01
+		        #if Target64Bit
+		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		        #endif
 		      #endif
+		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        #if target64bit
-		          retArray.append new NSNumber(Ptr(m.UInt64Value(i*sizeOfPtr)))
-		        #else
-		          retArray.append new NSNumber(Ptr(m.UInt32Value(i*sizeOfPtr)))
-		        #endif
+		        retArray.append new NSNumber(Ptr(m.UInt32Value(i*SizeOfPointer)))
 		      next
 		    end if
 		    
@@ -1323,20 +1315,18 @@ Inherits NSObject
 		    dim arrayRef as Ptr = URLsForResourcesWithExtension(self, extension, subpath)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      #if Target64Bit then
-		        const sizeOfPtr = 8
-		      #else
-		        const sizeOfPtr = 4
+		      
+		      #if RBVersion > 2013.01
+		        #if Target64Bit
+		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		        #endif
 		      #endif
+		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        #if Target64Bit then
-		          retArray.append new NSURL(Ptr(m.UInt64Value(i*sizeOfPtr)))
-		        #else
-		          retArray.append new NSURL(Ptr(m.UInt32Value(i*sizeOfPtr)))
-		        #endif
+		        retArray.append new NSURL(Ptr(m.UInt32Value(i*SizeOfPointer)))
 		      next
 		    end if
 		    
@@ -1365,20 +1355,18 @@ Inherits NSObject
 		    dim arrayRef as Ptr = URLsForResources(ClassRef, extension, subpath, bundleURLRef)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      #if Target64Bit then
-		        const sizeOfPtr = 8
-		      #else
-		        const sizeOfPtr = 4
+		      
+		      #if RBVersion > 2013.01
+		        #if Target64Bit
+		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		        #endif
 		      #endif
+		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        #if target64bit then
-		          retArray.append new NSURL(Ptr(m.UInt64Value(i*sizeOfPtr)))
-		        #else
-		          retArray.append new NSURL(Ptr(m.UInt32Value(i*sizeOfPtr)))
-		        #endif
+		        retArray.append new NSURL(Ptr(m.UInt32Value(i*SizeOfPointer)))
 		      next
 		    end if
 		    
@@ -1403,20 +1391,18 @@ Inherits NSObject
 		    dim arrayRef as Ptr = URLsForResourcesWithExtension(self, extension, subpath, localizationName)
 		    if arrayRef <> nil then
 		      dim ns_array as new NSArray(arrayRef)
-		      #if Target64Bit then
-		        const sizeOfPtr = 8
-		      #else
-		        const sizeOfPtr = 4
+		      
+		      #if RBVersion > 2013.01
+		        #if Target64Bit
+		          #pragma warning "MACOSLIB: This method is not 64 bit-savvy"
+		        #endif
 		      #endif
+		      
 		      dim arrayRange as Cocoa.NSRange = Cocoa.NSMakeRange(0, ns_array.Count)
 		      dim m as MemoryBlock = ns_array.ValuesArray(arrayRange)
 		      dim n as UInt32 = arrayRange.length-1
 		      for i as integer = 0 to n
-		        #if target64bit then
-		          retArray.append new NSURL(Ptr(m.UInt64Value(i*sizeOfPtr)))
-		        #else
-		          retArray.append new NSURL(Ptr(m.UInt32Value(i*sizeOfPtr)))
-		        #endif
+		        retArray.append new NSURL(Ptr(m.UInt32Value(i*SizeOfPointer)))
 		      next
 		    end if
 		    
@@ -1494,6 +1480,14 @@ Inherits NSObject
 		#tag EndGetter
 		IsLoaded As Boolean
 	#tag EndComputedProperty
+
+
+	#tag Enum, Name = NSBundleExecutableArchitecture, Flags = &h0
+		NSBundleExecutableArchitectureI386 = &h00000007
+		  NSBundleExecutableArchitecturePPC = &h00000012
+		  NSBundleExecutableArchitectureX86_64 = &h01000007
+		NSBundleExecutableArchitecturePPC64 = &h01000012
+	#tag EndEnum
 
 
 	#tag ViewBehavior
