@@ -18,7 +18,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CarbonLib alias "CFStringGetTypeID" () as UInt32
+		    declare function TypeID lib CoreFoundation.framework alias "CFStringGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -28,7 +28,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h1000
 		Sub Constructor(s as String)
 		  #if targetMacOS
-		    declare function CFStringCreateWithCString lib CarbonLib (alloc as Ptr, cStr as CString, encoding as Integer) as Ptr
+		    declare function CFStringCreateWithCString lib CoreFoundation.framework (alloc as Ptr, cStr as CString, encoding as Integer) as Ptr
 		    
 		    dim p as Ptr
 		    if Encoding(s) <> nil then
@@ -47,7 +47,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Function CreateArrayWithFindResults(substring as CFStringRef, options as integer = 0, optional range as CFRange) As CFArray
 		  #if TargetMacOS
-		    soft declare function CFStringCreateArrayWithFindResults lib CarbonLib (alloc as Ptr, theString as Ptr, stringToFind as CFStringRef, range as CFRange, options as integer) as Ptr
+		    soft declare function CFStringCreateArrayWithFindResults lib CoreFoundation.framework (alloc as Ptr, theString as Ptr, stringToFind as CFStringRef, range as CFRange, options as integer) as Ptr
 		    
 		    dim searchRange as CFRange
 		    dim result as Ptr
@@ -115,7 +115,7 @@ Implements CFPropertyList
 		      
 		    else
 		      // Introduced in MacOS X 10.0.
-		      Declare Function CFStringCompare Lib CarbonLib ( theString1 As Ptr, theString2 As Ptr, compareOptions As Int32 ) As Int32
+		      Declare Function CFStringCompare Lib CoreFoundation.framework ( theString1 As Ptr, theString2 As Ptr, compareOptions As Int32 ) As Int32
 		      
 		      // Use case-insensitive to emulate default behavior in RB
 		      return CFStringCompare( me.Reference, stringToCompare.Reference, kCFCompareCaseInsensitive )
@@ -143,7 +143,7 @@ Implements CFPropertyList
 		      
 		    else
 		      // Introduced in MacOS X 10.0.
-		      Declare Function CFStringCompare Lib CarbonLib ( theString1 As Ptr, theString2 As CFStringRef, compareOptions As Int32 ) As Int32
+		      Declare Function CFStringCompare Lib CoreFoundation.framework ( theString1 As Ptr, theString2 As CFStringRef, compareOptions As Int32 ) As Int32
 		      
 		      // Use case-insensitive to emulate default behavior in RB
 		      return CFStringCompare( me.Reference, stringToCompare, kCFCompareCaseInsensitive )
@@ -173,7 +173,7 @@ Implements CFPropertyList
 		  #if TargetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFStringCompareWithOptions lib CarbonLib (string1 as Ptr, string2 as CFStringRef, range as CFRange, options as integer) as integer
+		    declare function CFStringCompareWithOptions lib CoreFoundation.framework (string1 as Ptr, string2 as CFStringRef, range as CFRange, options as integer) as integer
 		    
 		    return  CFStringCompareWithOptions( me.Reference, stringToCompare, CFRangeMake( 0, me.Length ), options )
 		    
@@ -187,7 +187,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Function StringFindWithOptions(substring as CFStringRef, options as integer = 0, optional range as CFRange) As CFRange
 		  #if TargetMacOS
-		    soft declare function CFStringFindWithOptions lib CarbonLib (theString as Ptr, stringToFind as CFStringRef, rangeToSearch as CFRange, searchOptions as integer, byref result as CFRange) as Boolean
+		    soft declare function CFStringFindWithOptions lib CoreFoundation.framework (theString as Ptr, stringToFind as CFStringRef, rangeToSearch as CFRange, searchOptions as integer, byref result as CFRange) as Boolean
 		    
 		    dim searchRange as CFRange
 		    dim result as CFRange
@@ -232,7 +232,7 @@ Implements CFPropertyList
 			  #if TargetMacOS
 			    
 			    // Introduced in MacOS X 10.0.
-			    declare function CFStringGetLength lib CarbonLib (theString as Ptr) as integer
+			    declare function CFStringGetLength lib CoreFoundation.framework (theString as Ptr) as integer
 			    
 			    return  CFStringGetLength( me.Reference )
 			    
@@ -251,9 +251,9 @@ Implements CFPropertyList
 			    end if
 			    
 			    // Introduced in MacOS X 10.0.
-			    declare function CFStringGetLength lib CarbonLib (theString as Ptr) as Integer
-			    declare function CFStringGetMaximumSizeForEncoding lib CarbonLib (length as Integer, enc as Integer) as Integer
-			    declare function CFStringGetCString lib CarbonLib (theString as Ptr, buffer as Ptr, bufferSize as Integer, enc as Integer) as Boolean
+			    declare function CFStringGetLength lib CoreFoundation.framework (theString as Ptr) as Integer
+			    declare function CFStringGetMaximumSizeForEncoding lib CoreFoundation.framework (length as Integer, enc as Integer) as Integer
+			    declare function CFStringGetCString lib CoreFoundation.framework (theString as Ptr, buffer as Ptr, bufferSize as Integer, enc as Integer) as Boolean
 			    
 			    dim stringLength as Integer = CFStringGetLength(self)
 			    if stringLength = 0 then

@@ -18,7 +18,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CarbonLib alias "CFBooleanGetTypeID" () as UInt32
+		    declare function TypeID lib CoreFoundation.framework alias "CFBooleanGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -160,7 +160,7 @@ Implements CFPropertyList
 			  #if TargetMacOS
 			    
 			    // Introduced in MacOS X 10.0
-			    declare function CFBooleanGetValue lib CarbonLib (cf as Ptr) as Boolean
+			    declare function CFBooleanGetValue lib CoreFoundation.framework (cf as Ptr) as Boolean
 			    
 			    dim p as Ptr = me.Reference
 			    return p <> nil and CFBooleanGetValue(p)

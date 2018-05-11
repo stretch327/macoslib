@@ -18,7 +18,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CarbonLib alias "CFDataGetTypeID" () as UInt32
+		    declare function TypeID lib CoreFoundation.framework alias "CFDataGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -30,7 +30,7 @@ Implements CFPropertyList
 		  // This one also takes Strings. No need for an extra constructor taking Strings therefore
 		  
 		  #if targetMacOS
-		    soft declare function CFDataCreate lib CarbonLib (allocator as Ptr, bytes as Ptr, length as Integer) as Ptr
+		    soft declare function CFDataCreate lib CoreFoundation.framework (allocator as Ptr, bytes as Ptr, length as Integer) as Ptr
 		    
 		    if not (theData is nil) then
 		      if theData.Size < 0 then
@@ -89,7 +89,7 @@ Implements CFPropertyList
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    soft declare sub CFDataGetBytes lib CarbonLib (theData as Ptr, range as CFRange, buffer as Ptr)
+			    soft declare sub CFDataGetBytes lib CoreFoundation.framework (theData as Ptr, range as CFRange, buffer as Ptr)
 			    
 			    if not ( self = nil ) then
 			      dim dataLength as Integer = me.Length
@@ -112,7 +112,7 @@ Implements CFPropertyList
 		#tag Getter
 			Get
 			  #if TargetMacOS
-			    soft declare function CFDataGetLength lib CarbonLib (theData as Ptr) as Integer
+			    soft declare function CFDataGetLength lib CoreFoundation.framework (theData as Ptr) as Integer
 			    
 			    return  CFDataGetLength( me.Reference )
 			  #endif

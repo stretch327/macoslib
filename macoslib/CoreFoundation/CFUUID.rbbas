@@ -17,7 +17,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CarbonLib alias "CFUUIDGetTypeID" () as UInt32
+		    declare function TypeID lib CoreFoundation.framework alias "CFUUIDGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -27,7 +27,7 @@ Inherits CFType
 	#tag Method, Flags = &h1000
 		Sub Constructor(mb as MemoryBlock)
 		  #if TargetMacOS
-		    soft declare function CFUUIDCreateFromUUIDBytes lib CarbonLib (alloc as Ptr, bytes as CFUUIDBytesStructure ) as Ptr
+		    soft declare function CFUUIDCreateFromUUIDBytes lib CoreFoundation.framework (alloc as Ptr, bytes as CFUUIDBytesStructure ) as Ptr
 		    
 		    dim bytes as CFUUIDBytesStructure
 		    bytes.StringValue( mb.LittleEndian ) = mb.StringValue( 0, 16 )
@@ -40,7 +40,7 @@ Inherits CFType
 	#tag Method, Flags = &h1000
 		Sub Constructor(uuid as String)
 		  #if TargetMacOS
-		    soft declare function CFUUIDCreateFromString lib CarbonLib (alloc as Ptr, uuidStr as CFStringRef ) as Ptr
+		    soft declare function CFUUIDCreateFromString lib CoreFoundation.framework (alloc as Ptr, uuidStr as CFStringRef ) as Ptr
 		    
 		    Super.Constructor   CFUUIDCreateFromString( nil, uuid ), true
 		  #endif
@@ -52,7 +52,7 @@ Inherits CFType
 		  //Get the UUID as a group of endianness-independent MemoryBlock
 		  
 		  #if TargetMacOS
-		    soft declare function CFUUIDGetUUIDBytes lib CarbonLib (ref as Ptr) as CFUUIDBytesStructure
+		    soft declare function CFUUIDGetUUIDBytes lib CoreFoundation.framework (ref as Ptr) as CFUUIDBytesStructure
 		    
 		    dim bytes as CFUUIDBytesStructure = CFUUIDGetUUIDBytes( me.Reference )
 		    dim mb as new MemoryBlock( 16 )
@@ -83,7 +83,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Function StringValue() As String
 		  #if TargetMacOS
-		    soft declare function CFUUIDCreateString lib CarbonLib (alloc as ptr, uuid as Ptr) as CFStringRef
+		    soft declare function CFUUIDCreateString lib CoreFoundation.framework (alloc as ptr, uuid as Ptr) as CFStringRef
 		    
 		    return   CFUUIDCreateString( nil, me.Reference )
 		  #endif

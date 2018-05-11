@@ -12,7 +12,7 @@ Inherits CFType
 		Shared Function AvailableIdentifiers() As String()
 		  #if targetMacOS
 		    //added in 10.4
-		    soft declare function CFLocaleCopyAvailableLocaleIdentifiers lib CarbonLib () as Ptr
+		    soft declare function CFLocaleCopyAvailableLocaleIdentifiers lib CoreFoundation.framework () as Ptr
 		    
 		    dim theArray as new CFArray(CFLocaleCopyAvailableLocaleIdentifiers(), CFType.hasOwnership)
 		    return theArray.StringValues
@@ -23,7 +23,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    soft declare function TypeID lib CarbonLib alias "CFLocaleGetTypeID" () as UInt32
+		    soft declare function TypeID lib CoreFoundation.framework alias "CFLocaleGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -33,7 +33,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Sub Constructor(locale as CFLocale)
 		  #if targetMacOS
-		    soft declare function CFLocaleCreateCopy lib CarbonLib (allocator as Ptr, locale as Ptr) as Ptr
+		    soft declare function CFLocaleCreateCopy lib CoreFoundation.framework (allocator as Ptr, locale as Ptr) as Ptr
 		    super.Constructor (CFLocaleCreateCopy(nil, locale.Reference), false)
 		  #endif
 		End Sub
@@ -42,7 +42,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Function Create(localeIdentifier as String) As CFLocale
 		  #if targetMacOS
-		    soft declare function CFLocaleCreate lib CarbonLib (allocator as Ptr, localeIdentifier as CFStringRef) as Ptr
+		    soft declare function CFLocaleCreate lib CoreFoundation.framework (allocator as Ptr, localeIdentifier as CFStringRef) as Ptr
 		    
 		    dim p as Ptr = CFLocaleCreate(nil, localeIdentifier)
 		    return new CFLocale(p, true)
@@ -53,7 +53,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Function CreateCanonicalLanguageIdentifierFromString(langIdentifier as String) As String
 		  #if targetMacOS
-		    soft declare function CFLocaleCreateCanonicalLanguageIdentifierFromString lib CarbonLib (allocator as Ptr, langIdentifier as CFStringRef) as CFStringRef
+		    soft declare function CFLocaleCreateCanonicalLanguageIdentifierFromString lib CoreFoundation.framework (allocator as Ptr, langIdentifier as CFStringRef) as CFStringRef
 		    
 		    return CFLocaleCreateCanonicalLanguageIdentifierFromString(nil, langIdentifier)
 		  #endif
@@ -63,7 +63,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Function CreateCanonicalLocaleIdentifierFromString(localeIdentifier as String) As String
 		  #if targetMacOS
-		    soft declare function CFLocaleCreateCanonicalLocaleIdentifierFromString lib CarbonLib (allocator as Ptr, localeIdentifier as CFStringRef) as CFStringRef
+		    soft declare function CFLocaleCreateCanonicalLocaleIdentifierFromString lib CoreFoundation.framework (allocator as Ptr, localeIdentifier as CFStringRef) as CFStringRef
 		    
 		    return CFLocaleCreateCanonicalLocaleIdentifierFromString(nil, localeIdentifier)
 		  #endif
@@ -83,7 +83,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Function DisplayName(key as String, value as String = "") As String
 		  #if targetMacOS
-		    soft declare function CFLocaleCopyDisplayNameForPropertyValue lib CarbonLib (displayLocale as Ptr, key as Ptr, value as CFStringRef) as CFStringRef
+		    soft declare function CFLocaleCopyDisplayNameForPropertyValue lib CoreFoundation.framework (displayLocale as Ptr, key as Ptr, value as CFStringRef) as CFStringRef
 		    
 		    if value = "" then
 		      value = CFString(me.Value(key))
@@ -100,7 +100,7 @@ Inherits CFType
 		Shared Function ISOCommonCurrencyCodes() As String()
 		  #if targetMacOS
 		    //added in 10.5
-		    soft declare function CFLocaleCopyCommonISOCurrencyCodes lib CarbonLib () as Ptr
+		    soft declare function CFLocaleCopyCommonISOCurrencyCodes lib CoreFoundation.framework () as Ptr
 		    
 		    dim theArray as new CFArray(CFLocaleCopyCommonISOCurrencyCodes(), CFType.hasOwnership)
 		    return theArray.StringValues
@@ -112,7 +112,7 @@ Inherits CFType
 		Shared Function ISOCountryCodes() As String()
 		  #if targetMacOS
 		    //added in 10.4
-		    soft declare function CFLocaleCopyISOCountryCodes lib CarbonLib () as Ptr
+		    soft declare function CFLocaleCopyISOCountryCodes lib CoreFoundation.framework () as Ptr
 		    
 		    dim theArray as new CFArray(CFLocaleCopyISOCountryCodes(), CFType.hasOwnership)
 		    return theArray.StringValues
@@ -124,7 +124,7 @@ Inherits CFType
 		Shared Function ISOCurrencyCodes() As String()
 		  #if targetMacOS
 		    //added in 10.4
-		    soft declare function CFLocaleCopyISOCurrencyCodes lib CarbonLib () as Ptr
+		    soft declare function CFLocaleCopyISOCurrencyCodes lib CoreFoundation.framework () as Ptr
 		    
 		    dim theArray as new CFArray(CFLocaleCopyISOCurrencyCodes(), CFType.hasOwnership)
 		    return theArray.StringValues
@@ -136,7 +136,7 @@ Inherits CFType
 		Shared Function PreferredLanguages() As String()
 		  #if targetMacOS
 		    //added in 10.5
-		    soft declare function CFLocaleCopyPreferredLanguages lib CarbonLib () as Ptr
+		    soft declare function CFLocaleCopyPreferredLanguages lib CoreFoundation.framework () as Ptr
 		    
 		    dim theArray as new CFArray(CFLocaleCopyPreferredLanguages(), CFType.hasOwnership)
 		    return theArray.StringValues
@@ -147,7 +147,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Function SystemLocale() As CFLocale
 		  #if targetMacOS
-		    soft declare function CFLocaleGetSystem lib CarbonLib () as Ptr
+		    soft declare function CFLocaleGetSystem lib CoreFoundation.framework () as Ptr
 		    return new CFLocale(CFLocaleGetSystem(), false)
 		  #endif
 		  
@@ -157,7 +157,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Function UserLocale() As CFLocale
 		  #if targetMacOS
-		    soft declare function CFLocaleCopyCurrent lib CarbonLib () as Ptr
+		    soft declare function CFLocaleCopyCurrent lib CoreFoundation.framework () as Ptr
 		    return new CFLocale(CFLocaleCopyCurrent(), true)
 		  #endif
 		End Function
@@ -166,7 +166,7 @@ Inherits CFType
 	#tag Method, Flags = &h21
 		Private Function Value(key as String) As CFType
 		  #if targetMacOS
-		    soft declare function CFLocaleGetValue lib CarbonLib (locale as Ptr, key as Ptr) as Ptr
+		    soft declare function CFLocaleGetValue lib CoreFoundation.framework (locale as Ptr, key as Ptr) as Ptr
 		    
 		    dim p as Ptr = DataPointer(key)
 		    if p <> nil then
@@ -338,7 +338,7 @@ Inherits CFType
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    soft declare function CFLocaleGetIdentifier lib CarbonLib (locale as Ptr) as Ptr
+			    soft declare function CFLocaleGetIdentifier lib CoreFoundation.framework (locale as Ptr) as Ptr
 			    
 			    if self <> nil then
 			      return RetainedStringValue(CFLocaleGetIdentifier(self))

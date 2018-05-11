@@ -97,7 +97,7 @@ Inherits CFType
 		  // ... and it crashes under 10.5.6, hence it's currently unusable
 		  
 		  '#if TargetMacOS
-		  'soft declare sub CFStreamCreateBoundPair lib CarbonLib (allocator as Ptr, ByRef read as Ptr, ByRef write as Ptr, bufSize as Integer)
+		  'soft declare sub CFStreamCreateBoundPair lib CoreFoundation.framework (allocator as Ptr, ByRef read as Ptr, ByRef write as Ptr, bufSize as Integer)
 		  'try
 		  'dim rd, wr as Ptr
 		  'CFStreamCreateBoundPair (nil, rd, wr, transferBufferSize)
@@ -120,7 +120,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Sub NewBoundPairFromHostAddress(address as String, port as Integer, ByRef reader as CFReadStream, ByRef writer as CFWriteStream)
 		  #if TargetMacOS
-		    declare sub CFStreamCreatePairWithSocketToHost lib CarbonLib (allocator as Ptr, host as CFStringRef, port as Integer, ByRef read as Ptr, ByRef write as Ptr)
+		    declare sub CFStreamCreatePairWithSocketToHost lib CoreFoundation.framework (allocator as Ptr, host as CFStringRef, port as Integer, ByRef read as Ptr, ByRef write as Ptr)
 		    
 		    dim rd, wr as Ptr
 		    CFStreamCreatePairWithSocketToHost (nil, address.ConvertEncoding(Encodings.UTF8), port, rd, wr)
@@ -134,7 +134,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Sub NewBoundPairFromNativeSocket(socketHandle as CFSocketNativeHandle, ByRef reader as CFReadStream, ByRef writer as CFWriteStream)
 		  #if TargetMacOS
-		    declare sub CFStreamCreatePairWithSocket lib CarbonLib (allocator as Ptr, sock as CFSocketNativeHandle, ByRef read as Ptr, ByRef write as Ptr)
+		    declare sub CFStreamCreatePairWithSocket lib CoreFoundation.framework (allocator as Ptr, sock as CFSocketNativeHandle, ByRef read as Ptr, ByRef write as Ptr)
 		    
 		    dim rd, wr as Ptr
 		    CFStreamCreatePairWithSocket (nil, socketHandle, rd, wr)
@@ -148,7 +148,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Sub NewBoundPairFromSocket(signature as CFSocketSignature, ByRef reader as CFReadStream, ByRef writer as CFWriteStream)
 		  #if TargetMacOS
-		    declare sub CFStreamCreatePairWithPeerSocketSignature lib CarbonLib (allocator as Ptr, signature as Ptr, ByRef read as Ptr, ByRef write as Ptr)
+		    declare sub CFStreamCreatePairWithPeerSocketSignature lib CoreFoundation.framework (allocator as Ptr, signature as Ptr, ByRef read as Ptr, ByRef write as Ptr)
 		    
 		    dim rd, wr as Ptr
 		    CFStreamCreatePairWithPeerSocketSignature (nil, signature.Reference, rd, wr)

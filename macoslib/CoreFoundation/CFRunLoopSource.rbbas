@@ -9,9 +9,9 @@ Inherits CFType
 
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    soft declare function TypeID lib CarbonLib alias "CFRunLoopSourceGetTypeID" () as UInt32
+		    soft declare function TypeID lib CoreFoundation.framework alias "CFRunLoopSourceGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif

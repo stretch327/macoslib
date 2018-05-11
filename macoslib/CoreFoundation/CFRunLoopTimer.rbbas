@@ -11,7 +11,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    soft declare function TypeID lib CarbonLib alias "CFRunLoopTimerGetTypeID" () as UInt32
+		    soft declare function TypeID lib CoreFoundation.framework alias "CFRunLoopTimerGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -33,7 +33,7 @@ Inherits CFType
 	#tag Method, Flags = &h1
 		Protected Sub Destructor()
 		  #if targetMacOS
-		    soft declare sub CFRunLoopTimerInvalidate lib CarbonLib (t as Ptr)
+		    soft declare sub CFRunLoopTimerInvalidate lib CoreFoundation.framework (t as Ptr)
 		    
 		    dim p as Ptr = me.Reference
 		    if p <> nil then
@@ -62,7 +62,7 @@ Inherits CFType
 		  //perhaps we should add a separate CFRunLoop class.
 		  
 		  #if targetMacOS
-		    soft declare function CFRunLoopGetMain lib CarbonLib () as Ptr
+		    soft declare function CFRunLoopGetMain lib CoreFoundation.framework () as Ptr
 		    
 		    return CFRunLoopGetMain
 		  #endif
@@ -81,8 +81,8 @@ Inherits CFType
 		  //period is the time in seconds between invocations of the callback.  fireTime is the time of the first invocation.
 		  
 		  #if targetMacOS
-		    soft declare function CFRunLoopTimerCreate lib CarbonLib (allocator as Ptr, fireDate as Double, interval as Double, flags as Uint32, order as Uint32, callout as Ptr, context as Ptr) as Ptr
-		    soft declare function CFAbsoluteTimeGetCurrent lib CarbonLib () as Double
+		    soft declare function CFRunLoopTimerCreate lib CoreFoundation.framework (allocator as Ptr, fireDate as Double, interval as Double, flags as Uint32, order as Uint32, callout as Ptr, context as Ptr) as Ptr
+		    soft declare function CFAbsoluteTimeGetCurrent lib CoreFoundation.framework () as Double
 		    
 		    dim fireDate as Double
 		    if fireTime is nil then
@@ -156,7 +156,7 @@ Inherits CFType
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    soft declare function CFRunLoopContainsTimer lib CarbonLib (rl as Ptr, t as Ptr, mode as CFStringRef) as Boolean
+			    soft declare function CFRunLoopContainsTimer lib CoreFoundation.framework (rl as Ptr, t as Ptr, mode as CFStringRef) as Boolean
 			    
 			    dim p as Ptr = me.Reference
 			    if p <> nil then
@@ -179,11 +179,11 @@ Inherits CFType
 			    end
 			    
 			    if value then
-			      soft declare sub CFRunLoopAddTimer lib CarbonLib (rl as Ptr, t as Ptr, mode as CFStringRef)
+			      soft declare sub CFRunLoopAddTimer lib CoreFoundation.framework (rl as Ptr, t as Ptr, mode as CFStringRef)
 			      
 			      CFRunLoopAddTimer MainRunLoop, me.Reference, Carbon.Bundle.StringPointerRetained(kCFRunLoopCommonModes)
 			    else
-			      soft declare sub CFRunLoopRemoveTimer lib CarbonLib (rl as Ptr, t as Ptr, mode as CFStringRef)
+			      soft declare sub CFRunLoopRemoveTimer lib CoreFoundation.framework (rl as Ptr, t as Ptr, mode as CFStringRef)
 			      
 			      CFRunLoopRemoveTimer MainRunLoop, me.Reference, Carbon.Bundle.StringPointerRetained(kCFRunLoopCommonModes)
 			    end if
@@ -200,7 +200,7 @@ Inherits CFType
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    soft declare function CFRunLoopTimerDoesRepeat lib CarbonLib ( t as Ptr) as Boolean
+			    soft declare function CFRunLoopTimerDoesRepeat lib CoreFoundation.framework ( t as Ptr) as Boolean
 			    
 			    return CFRunLoopTimerDoesRepeat(me.Reference)
 			  #endif
@@ -213,7 +213,7 @@ Inherits CFType
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    soft declare function CFRunLoopTimerIsValid lib CarbonLib (t as Ptr) as Boolean
+			    soft declare function CFRunLoopTimerIsValid lib CoreFoundation.framework (t as Ptr) as Boolean
 			    return CFRunLoopTimerIsValid(me.Reference)
 			  #endif
 			End Get
@@ -225,7 +225,7 @@ Inherits CFType
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    soft declare function CFRunLoopTimerGetInterval lib CarbonLib (t as Ptr) as Double
+			    soft declare function CFRunLoopTimerGetInterval lib CoreFoundation.framework (t as Ptr) as Double
 			    return CFRunLoopTimerGetInterval(me.Reference)
 			  #endif
 			End Get

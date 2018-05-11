@@ -104,7 +104,7 @@ Class CFType
 		  end if
 		  
 		  #if TargetMacOS
-		    soft declare function CFEqual lib CarbonLib (cf1 as Ptr, cf2 as Ptr) as Boolean
+		    soft declare function CFEqual lib CoreFoundation.framework (cf1 as Ptr, cf2 as Ptr) as Boolean
 		    
 		    return CFEqual(me.mRef, theObj.Reference)
 		  #endif
@@ -126,7 +126,7 @@ Class CFType
 	#tag Method, Flags = &h0
 		Function Hash() As UInt32
 		  #if TargetMacOS
-		    soft declare function CFHash lib CarbonLib (cf as Ptr) as UInt32
+		    soft declare function CFHash lib CoreFoundation.framework (cf as Ptr) as UInt32
 		    
 		    if me.mRef <> nil then
 		      return CFHash(me.mRef)
@@ -236,9 +236,9 @@ Class CFType
 		      #if false
 		        // this is not needed but remains in here in case someone wants it back:
 		        #if DebugBuild
-		          soft declare function CFCopyTypeIDDescription lib CarbonLib (cfid as UInt32) as CFStringRef
-		          soft declare function CFCopyDescription lib CarbonLib (cf as Ptr) as CFStringRef
-		          soft declare sub CFShow lib CarbonLib ( obj as Ptr )
+		          soft declare function CFCopyTypeIDDescription lib CoreFoundation.framework (cfid as UInt32) as CFStringRef
+		          soft declare function CFCopyDescription lib CoreFoundation.framework (cf as Ptr) as CFStringRef
+		          soft declare sub CFShow lib CoreFoundation.framework ( obj as Ptr )
 		          
 		          dim cfs as CFStringRef = CFCopyTypeIDDescription ( theTypeID )
 		          dim cfd as CFStringRef = CFCopyDescription ( p )
@@ -303,7 +303,7 @@ Class CFType
 	#tag Method, Flags = &h0
 		Shared Function RefCount(ref as Ptr) As Integer
 		  #if TargetMacOS
-		    soft declare function CFGetRetainCount lib CarbonLib (cf as Ptr) as Integer
+		    soft declare function CFGetRetainCount lib CoreFoundation.framework (cf as Ptr) as Integer
 		    if ref <> nil then
 		      return CFGetRetainCount(ref)
 		    end if
@@ -326,7 +326,7 @@ Class CFType
 	#tag Method, Flags = &h0
 		Shared Sub Release(ref as Ptr)
 		  #if TargetMacOS
-		    soft declare sub CFRelease lib CarbonLib (cf as Ptr)
+		    soft declare sub CFRelease lib CoreFoundation.framework (cf as Ptr)
 		    
 		    '#if DebugBuild
 		    'dim cnt as Integer = RefCount(ref)
@@ -350,7 +350,7 @@ Class CFType
 	#tag Method, Flags = &h0
 		Shared Sub Retain(ref as Ptr)
 		  #if TargetMacOS
-		    soft declare function CFRetain lib CarbonLib (cf as Ptr) as Integer
+		    soft declare function CFRetain lib CoreFoundation.framework (cf as Ptr) as Integer
 		    
 		    '#if DebugBuild
 		    'dim cnt as Integer = RefCount(ref)
@@ -368,7 +368,7 @@ Class CFType
 	#tag Method, Flags = &h0
 		Sub Show()
 		  #if TargetMacOS
-		    soft declare sub CFShow lib CarbonLib (obj as Ptr)
+		    soft declare sub CFShow lib CoreFoundation.framework (obj as Ptr)
 		    
 		    if me.mRef <> nil then
 		      CFShow me.mRef
@@ -380,7 +380,7 @@ Class CFType
 	#tag Method, Flags = &h0
 		Shared Function TypeDescription(id as UInt32) As String
 		  #if TargetMacOS
-		    declare function CFCopyTypeIDDescription lib CarbonLib (id as UInt32) as CFStringRef
+		    declare function CFCopyTypeIDDescription lib CoreFoundation.framework (id as UInt32) as CFStringRef
 		    
 		    if id <> 0 then
 		      return CFCopyTypeIDDescription(id)
@@ -420,7 +420,7 @@ Class CFType
 		    if ref = nil or (RaiseEvent ClassID()) = CFGetTypeID(ref) then
 		      return ref
 		    else
-		      declare function CFCopyTypeIDDescription lib CarbonLib (id as Integer) as CFStringRef
+		      declare function CFCopyTypeIDDescription lib CoreFoundation.framework (id as Integer) as CFStringRef
 		      dim e as new TypeMismatchException
 		      e.Message = "CFTypeRef &h" + Hex(ref) + " has ID " + CFCopyTypeIDDescription(CFGetTypeID(ref)) + " but " + CFCopyTypeIDDescription(RaiseEvent ClassID()) + " was expected."
 		      raise e
@@ -504,7 +504,7 @@ Class CFType
 		#tag Getter
 			Get
 			  #if TargetMacOS
-			    soft declare function CFCopyDescription lib CarbonLib (cf as Ptr) as Ptr
+			    soft declare function CFCopyDescription lib CoreFoundation.framework (cf as Ptr) as Ptr
 			    // Caution: If this would return a CFStringRef, we'd have to Retain its value!
 			    // Instead, "new CFString()" takes care of that below
 			    

@@ -5,7 +5,7 @@ Inherits CFArray
 		Sub Append(theItem as CFType)
 		  #if TargetMacOS
 		    
-		    declare Sub CFArrayAppendValue lib CarbonLib (theArray as Ptr, theValue as Ptr)
+		    declare Sub CFArrayAppendValue lib CoreFoundation.framework (theArray as Ptr, theValue as Ptr)
 		    
 		    CFArrayAppendValue me.Reference, theItem.Reference
 		    
@@ -23,7 +23,7 @@ Inherits CFArray
 		  
 		  #if TargetMacOS
 		    
-		    declare function CFArrayCreateMutable lib CarbonLib (allocator as Ptr, capacity as Integer, callbacks as Ptr) as Ptr
+		    declare function CFArrayCreateMutable lib CoreFoundation.framework (allocator as Ptr, capacity as Integer, callbacks as Ptr) as Ptr
 		    
 		    super.Constructor CFArrayCreateMutable (nil, capacity, me.DefaultCallbacks), true
 		    
@@ -36,7 +36,7 @@ Inherits CFArray
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListFile(file as FolderItem) As CFMutableArray
+		Shared Function CreateFromPListFile(file as FolderItem) As CFMutableArray
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListFile( file, CoreFoundation.kCFPropertyListMutableContainersAndLeaves )
@@ -53,7 +53,7 @@ Inherits CFArray
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function CreateFromPListString(plistString as String) As CFMutableArray
+		Shared Function CreateFromPListString(plistString as String) As CFMutableArray
 		  #if TargetMacOS
 		    
 		    dim plist as CFPropertyList = CFType.CreateFromPListString( plistString, CoreFoundation.kCFPropertyListMutableContainersAndLeaves )
@@ -94,7 +94,7 @@ Inherits CFArray
 		Sub Value(index as Integer, Assigns theValue as CFType)
 		  #if TargetMacOS
 		    
-		    declare Sub CFArraySetValueAtIndex lib CarbonLib (theArray as Ptr, idx as Integer, theVal as Ptr)
+		    declare Sub CFArraySetValueAtIndex lib CoreFoundation.framework (theArray as Ptr, idx as Integer, theVal as Ptr)
 		    
 		    if index < 0 or index >= me.Count() then
 		      raise new OutOfBoundsException

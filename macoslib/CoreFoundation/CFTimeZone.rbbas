@@ -11,7 +11,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Function Abbreviation(d as Date) As CFString
 		  #if TargetMacOS
-		    soft declare function CFTimeZoneCopyAbbreviation lib CarbonLib (tz as Ptr, at as Double) as Ptr
+		    soft declare function CFTimeZoneCopyAbbreviation lib CoreFoundation.framework (tz as Ptr, at as Double) as Ptr
 		    // Caution: If this would return a CFStringRef, we'd have to Retain its value!
 		    // Instead, using "CFString" takes care of that automagically
 		    
@@ -24,7 +24,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CarbonLib alias "CFTimeZoneGetTypeID" () as UInt32
+		    declare function TypeID lib CoreFoundation.framework alias "CFTimeZoneGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -36,7 +36,7 @@ Inherits CFType
 		  // This gives the current system's time zone
 		  
 		  #if TargetMacOS
-		    soft declare function CFTimeZoneCopySystem lib CarbonLib () as Ptr
+		    soft declare function CFTimeZoneCopySystem lib CoreFoundation.framework () as Ptr
 		    
 		    super.Constructor CFTimeZoneCopySystem(), true
 		  #endif
@@ -46,7 +46,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Sub Constructor(timeZoneName as String)
 		  #if TargetMacOS
-		    soft declare function CFTimeZoneCreateWithName lib CarbonLib (allocator as Ptr, name as CFStringRef, tryAbbrev as Boolean) as Ptr
+		    soft declare function CFTimeZoneCreateWithName lib CoreFoundation.framework (allocator as Ptr, name as CFStringRef, tryAbbrev as Boolean) as Ptr
 		    
 		    super.Constructor CFTimeZoneCreateWithName(nil, timeZoneName, true), true
 		  #endif
@@ -56,7 +56,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Function IsDST(d as Date) As Boolean
 		  #if TargetMacOS
-		    soft declare function CFTimeZoneIsDaylightSavingsTime lib CarbonLib (tz as Ptr, at as Double) as Boolean
+		    soft declare function CFTimeZoneIsDaylightSavingsTime lib CoreFoundation.framework (tz as Ptr, at as Double) as Boolean
 		    
 		    dim theDate as new CFDate(d)
 		    return CFTimeZoneIsDaylightSavingsTime(me.Reference, theDate.AbsoluteTime)
@@ -67,7 +67,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Function NameList() As String()
 		  #if TargetMacOS
-		    soft declare function CFTimeZoneCopyKnownNames lib CarbonLib () as Ptr
+		    soft declare function CFTimeZoneCopyKnownNames lib CoreFoundation.framework () as Ptr
 		    
 		    dim nameArray as new CFArray(CFTimeZoneCopyKnownNames, CFType.HasOwnership)
 		    return nameArray.StringValues
@@ -80,7 +80,7 @@ Inherits CFType
 		  // returned unit: seconds
 		  
 		  #if TargetMacOS
-		    soft declare function CFTimeZoneGetSecondsFromGMT lib CarbonLib (tz as Ptr, at as Double) as Double
+		    soft declare function CFTimeZoneGetSecondsFromGMT lib CoreFoundation.framework (tz as Ptr, at as Double) as Double
 		    
 		    dim theDate as new CFDate(d)
 		    return CFTimeZoneGetSecondsFromGMT(me.Reference, theDate.AbsoluteTime)
@@ -93,7 +93,7 @@ Inherits CFType
 		#tag Getter
 			Get
 			  #if TargetMacOS
-			    soft declare function CFTimeZoneGetName lib CarbonLib (tz as Ptr) as Ptr
+			    soft declare function CFTimeZoneGetName lib CoreFoundation.framework (tz as Ptr) as Ptr
 			    // Caution: If this would return a CFStringRef, we'd have to Retain its value!
 			    // Instead, using "CFString" takes care of that automagically
 			    

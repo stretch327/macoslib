@@ -18,7 +18,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Function AbsoluteTime() As Double
 		  #if TargetMacOS
-		    declare function CFDateGetAbsoluteTime lib CarbonLib (theDate as Ptr) as Double
+		    declare function CFDateGetAbsoluteTime lib CoreFoundation.framework (theDate as Ptr) as Double
 		    
 		    return CFDateGetAbsoluteTime(me.Reference)
 		  #endif
@@ -28,7 +28,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CarbonLib alias "CFDateGetTypeID" () as UInt32
+		    declare function TypeID lib CoreFoundation.framework alias "CFDateGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -59,7 +59,7 @@ Implements CFPropertyList
 		  #if TargetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFDateCreate lib CarbonLib (allocator as Ptr, at as Double) as Ptr
+		    declare function CFDateCreate lib CoreFoundation.framework (allocator as Ptr, at as Double) as Ptr
 		    
 		    super.Constructor CFDateCreate(nil, absTime), true
 		  #endif
@@ -117,7 +117,7 @@ Implements CFPropertyList
 		  #if TargetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    declare function CFAbsoluteTimeGetCurrent lib CarbonLib () as Double
+		    declare function CFAbsoluteTimeGetCurrent lib CoreFoundation.framework () as Double
 		    
 		    return CFAbsoluteTimeGetCurrent()
 		  #endif
@@ -135,7 +135,7 @@ Implements CFPropertyList
 		      
 		    else
 		      // Introduced in MacOS X 10.0.
-		      Declare Function CFDateCompare Lib CarbonLib ( theDate As Ptr, otherDate As Ptr, context As Ptr ) As Int32
+		      Declare Function CFDateCompare Lib CoreFoundation.framework ( theDate As Ptr, otherDate As Ptr, context As Ptr ) As Int32
 		      
 		      return CFDateCompare( me.Reference, d.Reference, nil )
 		      
@@ -190,7 +190,7 @@ Implements CFPropertyList
 		  #if TargetMacOS
 		    
 		    // Introduced in MacOS X 10.0.
-		    Declare Function CFDateGetTimeIntervalSinceDate Lib CarbonLib ( theDate As Ptr, otherDate As Ptr ) As Double
+		    Declare Function CFDateGetTimeIntervalSinceDate Lib CoreFoundation.framework ( theDate As Ptr, otherDate As Ptr ) As Double
 		    
 		    return CFDateGetTimeIntervalSinceDate ( me.Reference, d.Reference )
 		    

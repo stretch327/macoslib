@@ -26,7 +26,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CarbonLib alias "CFArrayGetTypeID" () as UInt32
+		    declare function TypeID lib CoreFoundation.framework alias "CFArrayGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -36,7 +36,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Function Clone() As CFArray
 		  #if TargetMacOS
-		    declare function CFArrayCreateCopy lib CarbonLib (allocator as Ptr, theArray as Ptr) as Ptr
+		    declare function CFArrayCreateCopy lib CoreFoundation.framework (allocator as Ptr, theArray as Ptr) as Ptr
 		    
 		    if self <> nil then
 		      return new CFArray(CFArrayCreateCopy(nil, self), CFType.hasOwnership)
@@ -50,7 +50,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Sub Constructor(theList() as CFType)
 		  #if targetMacOS
-		    declare function CFArrayCreate lib CarbonLib (allocator as Ptr, values as Ptr, numValues as Integer, callbacks as Ptr) as Ptr
+		    declare function CFArrayCreate lib CoreFoundation.framework (allocator as Ptr, values as Ptr, numValues as Integer, callbacks as Ptr) as Ptr
 		    
 		    if theList.Ubound >= 0 then
 		      super.Constructor CFArrayCreate(nil, me.GetValuesAsCArray(theList), UBound(theList) + 1, me.DefaultCallbacks), true
@@ -97,7 +97,7 @@ Implements CFPropertyList
 		        end if
 		      next
 		      
-		    case Variant.TypeInteger
+		    Case Variant.TypeInteger, Variant.TypeInt32, Variant.TypeInt64
 		      dim ari() as Integer = theArray
 		      for each i as integer in ari
 		        cfma.Append   new CFNumber( i )
@@ -212,8 +212,8 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Function Value(index as Integer) As Ptr
 		  #if TargetMacOS
-		    declare function CFArrayGetCount lib CarbonLib (theArray as Ptr) as Integer
-		    declare function CFArrayGetValueAtIndex lib CarbonLib (theArray as Ptr, idx as Integer) as Ptr
+		    declare function CFArrayGetCount lib CoreFoundation.framework (theArray as Ptr) as Integer
+		    declare function CFArrayGetValueAtIndex lib CoreFoundation.framework (theArray as Ptr, idx as Integer) as Ptr
 		    
 		    if self <> nil then
 		      if index < 0 or index >= CFArrayGetCount(self) then
@@ -242,7 +242,7 @@ Implements CFPropertyList
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    declare function CFArrayGetCount lib CarbonLib (theArray as Ptr) as Integer
+			    declare function CFArrayGetCount lib CoreFoundation.framework (theArray as Ptr) as Integer
 			    
 			    dim p as Ptr = me.Reference
 			    if p <> nil then

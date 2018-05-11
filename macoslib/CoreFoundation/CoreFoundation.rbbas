@@ -9,7 +9,7 @@ Module CoreFoundation
 		    
 		    Const kCFStringEncodingInvalidId = &hffffffff
 		    
-		    Declare Function CFStringGetListOfAvailableEncodings Lib CarbonLib () as Ptr
+		    Declare Function CFStringGetListOfAvailableEncodings Lib CoreFoundation.framework () as Ptr
 		    
 		    m = CFStringGetListOfAvailableEncodings
 		    
@@ -51,7 +51,7 @@ Module CoreFoundation
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h0
-		Declare Function CFCopyTypeIDDescription Lib CarbonLib (type_id as UInt32) As CFStringRef
+		Declare Function CFCopyTypeIDDescription Lib CoreFoundation.framework (type_id as UInt32) As CFStringRef
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h0
@@ -61,7 +61,7 @@ Module CoreFoundation
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Declare Function CFGetTypeID Lib CarbonLib (cf as Ptr) As UInt32
+		Private Declare Function CFGetTypeID Lib CoreFoundation.framework (cf as Ptr) As UInt32
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h0
@@ -106,7 +106,7 @@ Module CoreFoundation
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Declare Function CFStringGetTypeID Lib CarbonLib () As Uint32
+		Private Declare Function CFStringGetTypeID Lib CoreFoundation.framework () As Uint32
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h0
@@ -171,11 +171,11 @@ Module CoreFoundation
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Soft Declare Function CFURLCopyResourcePropertyForKey Lib CarbonLib (url as Ptr, key as CFStringRef, ByRef propertyValueTypeRefPtr as Ptr, ByRef errorRef as Ptr) As Boolean
+		Protected Soft Declare Function CFURLCopyResourcePropertyForKey Lib CoreFoundation.framework (url as Ptr, key as CFStringRef, ByRef propertyValueTypeRefPtr as Ptr, ByRef errorRef as Ptr) As Boolean
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Declare Function CFURLCreateWithFileSystemPath Lib CarbonLib (allocator as Ptr, filePath as CFStringRef, pathStyle as Integer, isDirectory as Boolean) As Ptr
+		Protected Declare Function CFURLCreateWithFileSystemPath Lib CoreFoundation.framework (allocator as Ptr, filePath as CFStringRef, pathStyle as Integer, isDirectory as Boolean) As Ptr
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h0
@@ -185,7 +185,7 @@ Module CoreFoundation
 		  dim pList as CFType
 		  
 		  #if TargetMacOS
-		    Declare Function CFPropertyListCreateDeepCopy Lib CarbonLib (allocator as Integer, propertyList as Ptr, mutabilityOption as Integer) as Ptr
+		    Declare Function CFPropertyListCreateDeepCopy Lib CoreFoundation.framework (allocator as Integer, propertyList as Ptr, mutabilityOption as Integer) as Ptr
 		    
 		    dim ref as Ptr
 		    ref = CFPropertyListCreateDeepCopy(0, propertyList.Reference, mutability)
@@ -224,7 +224,7 @@ Module CoreFoundation
 		  
 		  #if TargetMacOS
 		    // Introduced in MacOS X 10.2.
-		    Declare Function CFPropertyListIsValid Lib CarbonLib (cf as Ptr, fmt as Integer) as Boolean
+		    Declare Function CFPropertyListIsValid Lib CoreFoundation.framework (cf as Ptr, fmt as Integer) as Boolean
 		    
 		    return CFPropertyListIsValid(propertyList.Reference, listFormat)
 		    
@@ -259,7 +259,7 @@ Module CoreFoundation
 		  dim pList as CFType
 		  
 		  #if TargetMacOS
-		    declare function CFPropertyListCreateFromXMLData Lib CarbonLib (allocator as Ptr, xmlData as Ptr, mutabilityOptions as Integer, ByRef errMsg as CFStringRef) as Ptr
+		    declare function CFPropertyListCreateFromXMLData Lib CoreFoundation.framework (allocator as Ptr, xmlData as Ptr, mutabilityOptions as Integer, ByRef errMsg as CFStringRef) as Ptr
 		    
 		    dim theRef as Ptr
 		    
@@ -287,7 +287,7 @@ Module CoreFoundation
 		  dim pList as CFType
 		  
 		  #if TargetMacOS
-		    declare function CFPropertyListCreateFromStream Lib CarbonLib (allocator as Ptr, readStream as Ptr, streamLen as Integer, mutabilityOptions as Integer, ByRef format as Integer, ByRef errMsg as CFStringRef) as Ptr
+		    declare function CFPropertyListCreateFromStream Lib CoreFoundation.framework (allocator as Ptr, readStream as Ptr, streamLen as Integer, mutabilityOptions as Integer, ByRef format as Integer, ByRef errMsg as CFStringRef) as Ptr
 		    
 		    dim theRef as Ptr
 		    dim strRef as CFStringRef
@@ -327,9 +327,9 @@ Module CoreFoundation
 		      raise e
 		    end if
 		    
-		    soft declare function CFStringGetLength lib CarbonLib (cf as Ptr) as Integer
-		    soft declare function CFStringGetMaximumSizeForEncoding lib CarbonLib (length as Integer, enc as Integer) as Integer
-		    soft declare function CFStringGetCString lib CarbonLib (theString as Ptr, buffer as Ptr, bufferSize as Integer, enc as Integer) as Boolean
+		    soft declare function CFStringGetLength lib CoreFoundation.framework (cf as Ptr) as Integer
+		    soft declare function CFStringGetMaximumSizeForEncoding lib CoreFoundation.framework (length as Integer, enc as Integer) as Integer
+		    soft declare function CFStringGetCString lib CoreFoundation.framework (theString as Ptr, buffer as Ptr, bufferSize as Integer, enc as Integer) as Boolean
 		    
 		    dim maxSize as Integer = CFStringGetMaximumSizeForEncoding(CFStringGetLength(p), kCFStringEncodingUTF8)
 		    if maxSize <= 0 then
@@ -368,7 +368,7 @@ Module CoreFoundation
 	#tag Method, Flags = &h0
 		Function RetainedStringValue(p as Ptr) As String
 		  #if targetMacOS
-		    declare function CFRetain lib CarbonLib (cf as Ptr) as Ptr
+		    declare function CFRetain lib CoreFoundation.framework (cf as Ptr) as Ptr
 		    
 		    if p <> nil then
 		      return NotRetainedStringValue(CFRetain(p))
@@ -628,9 +628,9 @@ Module CoreFoundation
 		    '// Test CFSocket (TCP/IP)
 		    '#if kTestCFSocket then
 		    '// (TT 6 Dec 09) this is not working - at least not when reading and writing within same process
-		    'declare function CFRunLoopGetCurrent lib CarbonLib () as Ptr
-		    'declare sub CFReadStreamScheduleWithRunLoop lib CarbonLib (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
-		    'declare sub CFWriteStreamScheduleWithRunLoop lib CarbonLib (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
+		    'declare function CFRunLoopGetCurrent lib CoreFoundation.framework () as Ptr
+		    'declare sub CFReadStreamScheduleWithRunLoop lib CoreFoundation.framework (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
+		    'declare sub CFWriteStreamScheduleWithRunLoop lib CoreFoundation.framework (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
 		    '
 		    'dim serverSocket, clientSocket as CFSocket
 		    'dim serverReader, clientReader as CFReadStream
@@ -682,9 +682,9 @@ Module CoreFoundation
 		    '// Test CFSockets (Unix Domain Sockets)
 		    '#if kTestCFSocket then
 		    '// (TT 6 Dec 09) this is not working - at least not when reading and writing within same process
-		    'declare function CFRunLoopGetCurrent lib CarbonLib () as Ptr
-		    'declare sub CFReadStreamScheduleWithRunLoop lib CarbonLib (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
-		    'declare sub CFWriteStreamScheduleWithRunLoop lib CarbonLib (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
+		    'declare function CFRunLoopGetCurrent lib CoreFoundation.framework () as Ptr
+		    'declare sub CFReadStreamScheduleWithRunLoop lib CoreFoundation.framework (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
+		    'declare sub CFWriteStreamScheduleWithRunLoop lib CoreFoundation.framework (streamRef as Ptr, runLoopRef as Ptr, mode as CFStringRef)
 		    '
 		    'dim serverSocket, clientSocket as CFSocket
 		    'dim serverReader, clientReader as CFReadStream
@@ -760,7 +760,7 @@ Module CoreFoundation
 		    static newFunctionNeedsCheck as boolean = true
 		    static newFunctionIsAvailable as boolean
 		    if newFunctionNeedsCheck then
-		      newFunctionIsAvailable = System.IsFunctionAvailable( "CFPropertyListWrite", CarbonLib )
+		      newFunctionIsAvailable = System.IsFunctionAvailable( "CFPropertyListWrite", CoreFoundation.framework )
 		      newFunctionNeedsCheck = false
 		    end if
 		    
@@ -768,12 +768,12 @@ Module CoreFoundation
 		    dim written as Integer
 		    if newFunctionIsAvailable then
 		      // Introduced in MacOS X 10.6.
-		      soft declare function CFPropertyListWrite lib CarbonLib (propertyList as Ptr, stream as Ptr, format as Integer, options as UInt32, ByRef errMsg as CFStringRef) as Integer
+		      soft declare function CFPropertyListWrite lib CoreFoundation.framework (propertyList as Ptr, stream as Ptr, format as Integer, options as UInt32, ByRef errMsg as CFStringRef) as Integer
 		      written = _
 		      CFPropertyListWrite (propertyList.Reference, openedWriteStream.Reference, format, 0, strRef)
 		    else
 		      // Introduced in MacOS X 10.2 (deprecated, use CFPropertyListWrite instead)
-		      declare function CFPropertyListWriteToStream lib CarbonLib (propertyList as Ptr, stream as Ptr, format as Integer, ByRef errMsg as CFStringRef) as Integer
+		      declare function CFPropertyListWriteToStream lib CoreFoundation.framework (propertyList as Ptr, stream as Ptr, format as Integer, ByRef errMsg as CFStringRef) as Integer
 		      written = _
 		      CFPropertyListWriteToStream (propertyList.Reference, openedWriteStream.Reference, format, strRef)
 		    end if
@@ -801,7 +801,7 @@ Module CoreFoundation
 		    static newFunctionNeedsCheck as boolean = true
 		    static newFunctionIsAvailable as boolean
 		    if newFunctionNeedsCheck then
-		      newFunctionIsAvailable = System.IsFunctionAvailable( "CFPropertyListCreateData", CarbonLib )
+		      newFunctionIsAvailable = System.IsFunctionAvailable( "CFPropertyListCreateData", CoreFoundation.framework )
 		      newFunctionNeedsCheck = false
 		    end if
 		    
@@ -809,7 +809,7 @@ Module CoreFoundation
 		    if newFunctionIsAvailable then
 		      
 		      // Introduced in MacOS X 10.6.
-		      soft declare function CFPropertyListCreateData lib CarbonLib _
+		      soft declare function CFPropertyListCreateData lib CoreFoundation.framework _
 		      ( allocator as Ptr, propertyList as Ptr, format as Integer, options as UInt32, ByRef err as Ptr ) as Ptr
 		      
 		      dim err as Ptr
@@ -821,7 +821,7 @@ Module CoreFoundation
 		    else
 		      
 		      // Introduced in MacOS X 10.2 (deprecated, use CFPropertyListCreateData instead).
-		      declare function CFPropertyListCreateXMLData lib CarbonLib (allocator as Ptr, propertyList as Ptr) as Ptr
+		      declare function CFPropertyListCreateXMLData lib CoreFoundation.framework (allocator as Ptr, propertyList as Ptr) as Ptr
 		      
 		      xmlDataRef = CFPropertyListCreateXMLData(nil, propertyList.Reference)
 		      

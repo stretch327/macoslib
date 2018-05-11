@@ -4,7 +4,7 @@ Inherits CFData
 	#tag Method, Flags = &h0
 		Sub Append(p as Ptr, length as Integer)
 		  #if targetMacOS
-		    soft declare sub CFDataAppendBytes lib CarbonLib (theData as Ptr, bytes as Ptr, length as Integer)
+		    soft declare sub CFDataAppendBytes lib CoreFoundation.framework (theData as Ptr, bytes as Ptr, length as Integer)
 		    
 		    if not ( self = nil ) and p <> nil then
 		      CFDataAppendBytes me.Reference, p, length
@@ -16,7 +16,7 @@ Inherits CFData
 	#tag Method, Flags = &h0
 		Sub Append(s as String)
 		  #if targetMacOS
-		    soft declare sub CFDataAppendBytes lib CarbonLib (theData as Ptr, bytes as CString, length as Integer)
+		    soft declare sub CFDataAppendBytes lib CoreFoundation.framework (theData as Ptr, bytes as CString, length as Integer)
 		    
 		    dim slen as Integer = LenB(s)
 		    if not ( self = nil ) and slen > 0 then
@@ -29,7 +29,7 @@ Inherits CFData
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  #if targetMacOS
-		    soft declare function CFDataCreateMutable lib CarbonLib (allocator as Ptr, capacity as Integer) as Ptr
+		    soft declare function CFDataCreateMutable lib CoreFoundation.framework (allocator as Ptr, capacity as Integer) as Ptr
 		    
 		    const capacity = 0 // can use all of available memory
 		    super.Constructor CFDataCreateMutable(nil, capacity), true
@@ -45,7 +45,7 @@ Inherits CFData
 		  end if
 		  
 		  #if targetMacOS
-		    soft declare function CFDataCreateMutableCopy lib CarbonLib (allocator as Ptr, capacity as Integer, theData as Ptr) as Ptr
+		    soft declare function CFDataCreateMutableCopy lib CoreFoundation.framework (allocator as Ptr, capacity as Integer, theData as Ptr) as Ptr
 		    
 		    const capacity = 0 //can use all of available memory
 		    super.Constructor CFDataCreateMutableCopy(nil, capacity, data.Reference), true
@@ -90,7 +90,7 @@ Inherits CFData
 	#tag Method, Flags = &h0
 		Sub Delete(start as Integer, length as Integer)
 		  #if targetMacOS
-		    soft declare sub CFDataDeleteBytes lib CarbonLib (theData as Ptr, range as CFRange)
+		    soft declare sub CFDataDeleteBytes lib CoreFoundation.framework (theData as Ptr, range as CFRange)
 		    
 		    if not ( self = nil ) then
 		      CFDataDeleteBytes me.Reference, CFRangeMake(start, length)
@@ -106,7 +106,7 @@ Inherits CFData
 		      me.Delete start, length
 		    else
 		      #if targetMacOS
-		        soft declare sub CFDataReplaceBytes lib CarbonLib (theData as Ptr, range as CFRange, newBytes as Ptr, newLength as Integer)
+		        soft declare sub CFDataReplaceBytes lib CoreFoundation.framework (theData as Ptr, range as CFRange, newBytes as Ptr, newLength as Integer)
 		        
 		        CFDataReplaceBytes me.Reference, CFRangeMake(start, length), newData, newLength
 		      #endif

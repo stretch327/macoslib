@@ -9,9 +9,9 @@ Inherits CFType
 
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    soft declare function TypeID lib CarbonLib alias "CFCalendarGetTypeID" () as UInt32
+		    soft declare function TypeID lib CoreFoundation.framework alias "CFCalendarGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -23,7 +23,7 @@ Inherits CFType
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    soft declare function CFCalendarGetIdentifier lib CarbonLib (calendar as Ptr) as Ptr
+			    soft declare function CFCalendarGetIdentifier lib CoreFoundation.framework (calendar as Ptr) as Ptr
 			    
 			    if self <> nil then
 			      return RetainedStringValue(CFCalendarGetIdentifier(self))

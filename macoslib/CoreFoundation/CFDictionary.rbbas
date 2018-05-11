@@ -51,7 +51,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function TypeID lib CarbonLib alias "CFDictionaryGetTypeID" () as UInt32
+		    declare function TypeID lib CoreFoundation.framework alias "CFDictionaryGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -63,7 +63,7 @@ Implements CFPropertyList
 		  // The Copy Constructor
 		  
 		  #if TargetMacOS
-		    declare function CFDictionaryCreateCopy lib CarbonLib (allocator as Ptr, theDict as Ptr) as Ptr
+		    declare function CFDictionaryCreateCopy lib CoreFoundation.framework (allocator as Ptr, theDict as Ptr) as Ptr
 		    
 		    if not (theDictionary is nil) then
 		      super.Constructor CFDictionaryCreateCopy(nil, theDictionary.Reference), true
@@ -83,16 +83,22 @@ Implements CFPropertyList
 		    dim keyCallbacks as Ptr = me.DefaultCallbacks("kCFTypeDictionaryKeyCallBacks")
 		    dim valueCallbacks as Ptr = me.DefaultCallbacks("kCFTypeDictionaryValueCallBacks")
 		    
-		    declare function CFDictionaryCreate lib CarbonLib (allocator as Ptr, keys as Ptr, values as Ptr, numValues as Integer, keyCallBacks as Ptr, valueCallBacks as Ptr) as Ptr
+		    declare function CFDictionaryCreate lib CoreFoundation.framework (allocator as Ptr, keys as Ptr, values as Ptr, numValues as Integer, keyCallBacks as Ptr, valueCallBacks as Ptr) as Ptr
+		    
+		    #if Target64Bit
+		      const sizeOfPtr = 8
+		    #else
+		      const sizeOfPtr = 4
+		    #endif
 		    
 		    if UBound(theKeys) >= 0 then
-		      dim keyBlock as new MemoryBlock(4*(1 + UBound(theKeys)))
-		      dim valueBlock as new MemoryBlock(4*(1 + UBound(theValues)))
+		      dim keyBlock as new MemoryBlock(sizeOfPtr*(1 + UBound(theKeys)))
+		      dim valueBlock as new MemoryBlock(sizeOfPtr*(1 + UBound(theValues)))
 		      dim offset as Integer = 0
 		      for i as Integer = 0 to UBound(theKeys)
 		        keyBlock.Ptr(offset) = theKeys(i).Reference
 		        valueBlock.Ptr(offset) = theValues(i).Reference
-		        offset = offset + 4
+		        offset = offset + sizeOfPtr
 		      next
 		      // create with presets
 		      super.Constructor CFDictionaryCreate(nil, keyBlock, valueBlock, 1 + UBound(theKeys), keyCallbacks, valueCallbacks), true
@@ -174,7 +180,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Function HasKey(key as CFType) As Boolean
 		  #if TargetMacOS
-		    declare function CFDictionaryContainsKey lib CarbonLib (theDict as Ptr, key as Ptr) as Boolean
+		    declare function CFDictionaryContainsKey lib CoreFoundation.framework (theDict as Ptr, key as Ptr) as Boolean
 		    
 		    if not ( self = nil ) and not (key is nil) then
 		      return CFDictionaryContainsKey(me.Reference, key.Reference)
@@ -186,7 +192,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Function HasValue(value as CFType) As Boolean
 		  #if TargetMacOS
-		    declare function CFDictionaryContainsValue lib CarbonLib (theDict as Ptr, value as Ptr) as Boolean
+		    declare function CFDictionaryContainsValue lib CoreFoundation.framework (theDict as Ptr, value as Ptr) as Boolean
 		    
 		    if not ( self = nil ) and not (value is nil) then
 		      return CFDictionaryContainsValue(me.Reference, value.Reference)
@@ -202,9 +208,13 @@ Implements CFPropertyList
 		    if not ( self = nil ) then
 		      dim dictCount as Integer = me.Count
 		      if dictCount > 0 then
-		        declare sub CFDictionaryGetKeysAndValues lib CarbonLib (theDict as Ptr, keys as Ptr, values as Ptr)
+		        Declare Sub CFDictionaryGetKeysAndValues Lib CoreFoundation.framework (theDict As Ptr, keys As Ptr, values As Ptr)
 		        
-		        const sizeOfCFTypeRef = 4
+		        #If Target64Bit
+		          Const sizeOfCFTypeRef = 8
+		        #Else
+		          Const sizeOfCFTypeRef = 4
+		        #EndIf
 		        dim keyList as new MemoryBlock(sizeOfCFTypeRef*dictCount)
 		        CFDictionaryGetKeysAndValues me.Reference, keyList, nil
 		        
@@ -224,7 +234,7 @@ Implements CFPropertyList
 	#tag Method, Flags = &h0
 		Function Lookup(key as CFType, fallbackValue as CFType) As CFType
 		  #if TargetMacOS
-		    declare function CFDictionaryGetValueIfPresent lib CarbonLib (theDict as Ptr, key as Ptr, ByRef value as Ptr) as Boolean
+		    declare function CFDictionaryGetValueIfPresent lib CoreFoundation.framework (theDict as Ptr, key as Ptr, ByRef value as Ptr) as Boolean
 		    
 		    if not ( self = nil ) and not (key is nil) then
 		      dim theValue as Ptr
@@ -260,7 +270,7 @@ Implements CFPropertyList
 		  // Note: this function may actually return nil - that's if the key does not exist in the dictionary
 		  
 		  #if TargetMacOS
-		    declare function CFDictionaryGetValueIfPresent lib CarbonLib (theDict as Ptr, key as Ptr, ByRef value as Ptr) as Boolean
+		    declare function CFDictionaryGetValueIfPresent lib CoreFoundation.framework (theDict as Ptr, key as Ptr, ByRef value as Ptr) as Boolean
 		    
 		    if not ( self = nil ) and not (key is nil) then
 		      dim theValue as Ptr
@@ -283,7 +293,7 @@ Implements CFPropertyList
 		#tag Getter
 			Get
 			  #if TargetMacOS
-			    declare function CFDictionaryGetCount lib CarbonLib (theDict as Ptr) as Integer
+			    declare function CFDictionaryGetCount lib CoreFoundation.framework (theDict as Ptr) as Integer
 			    
 			    if not ( self = nil ) then
 			      return CFDictionaryGetCount(me.Reference)

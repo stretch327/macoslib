@@ -9,9 +9,9 @@ Inherits CFType
 
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if targetMacOS
-		    declare function CFErrorGetTypeID lib CarbonLib () as UInt32
+		    declare function CFErrorGetTypeID lib CoreFoundation.framework () as UInt32
 		    
 		    return CFErrorGetTypeID
 		  #endif
@@ -43,7 +43,7 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub RaiseExceptionAndRelease(CFErrorRef As Ptr)
+		Shared Sub RaiseExceptionAndRelease(CFErrorRef As Ptr)
 		  // Added by Kem Tekinay.
 		  
 		  // This convenience method is really here as a demonstration of the right way to handle the CFErrorRef
@@ -64,7 +64,7 @@ Inherits CFType
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    soft declare function CFErrorGetCode lib CarbonLib (err as Ptr) as Integer
+			    soft declare function CFErrorGetCode lib CoreFoundation.framework (err as Ptr) as Integer
 			    
 			    if (self <> nil) then
 			      return CFErrorGetCode(self)
@@ -81,7 +81,7 @@ Inherits CFType
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    soft declare function CFErrorCopyDescription lib CarbonLib (err as Ptr) as CFStringRef
+			    soft declare function CFErrorCopyDescription lib CoreFoundation.framework (err as Ptr) as CFStringRef
 			    
 			    if (self <> nil) then
 			      return CFErrorCopyDescription(self)
@@ -98,7 +98,7 @@ Inherits CFType
 		#tag Getter
 			Get
 			  #if targetMacOS
-			    soft declare function CFErrorGetDomain lib CarbonLib (err as Ptr) as Ptr
+			    soft declare function CFErrorGetDomain lib CoreFoundation.framework (err as Ptr) as Ptr
 			    
 			    if (self <> nil) then
 			      return RetainedStringValue(CFErrorGetDomain(self))

@@ -31,10 +31,10 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function ClassID() As UInt32
+		Shared Function ClassID() As UInt32
 		  #if targetMacOS
 		    
-		    declare function TypeID lib CarbonLib alias "CFNotificationCenterGetTypeID" () as UInt32
+		    declare function TypeID lib CoreFoundation.framework alias "CFNotificationCenterGetTypeID" () as UInt32
 		    
 		    static id as UInt32 = TypeID
 		    return id
@@ -45,9 +45,9 @@ Inherits CFType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function LocalCenter() As CFNotificationCenter
+		Shared Function LocalCenter() As CFNotificationCenter
 		  #if targetMacOS
-		    soft declare function CFNotificationCenterGetLocalCenter lib CarbonLib () as Ptr
+		    soft declare function CFNotificationCenterGetLocalCenter lib CoreFoundation.framework () as Ptr
 		    try
 		      dim theCenter as new CFNotificationCenter(CFNotificationCenterGetLocalCenter, false)
 		      return theCenter

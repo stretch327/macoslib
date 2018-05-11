@@ -11,7 +11,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Function Bind(address as CFData) As Boolean
 		  #if TargetMacOS
-		    declare function CFSocketSetAddress lib CarbonLib (socketRef as Ptr, addr as Ptr) as Integer
+		    declare function CFSocketSetAddress lib CoreFoundation.framework (socketRef as Ptr, addr as Ptr) as Integer
 		    
 		    if not ( self = nil ) then
 		      dim errCode as Integer = CFSocketSetAddress (me.Reference, address.Reference)
@@ -24,7 +24,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Shared Function ClassID() As UInt32
 		  #if TargetMacOS
-		    declare function TypeID lib CarbonLib alias "CFSocketGetTypeID" () as UInt32
+		    declare function TypeID lib CoreFoundation.framework alias "CFSocketGetTypeID" () as UInt32
 		    static id as UInt32 = TypeID
 		    return id
 		  #endif
@@ -34,8 +34,8 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Sub Close()
 		  #if TargetMacOS
-		    declare sub CFSocketInvalidate lib CarbonLib (socketRef as Ptr)
-		    declare sub CFRunLoopRemoveSource lib CarbonLib (runLoopRef as Ptr, source as Ptr, mode as CFStringRef)
+		    declare sub CFSocketInvalidate lib CoreFoundation.framework (socketRef as Ptr)
+		    declare sub CFRunLoopRemoveSource lib CoreFoundation.framework (runLoopRef as Ptr, source as Ptr, mode as CFStringRef)
 		    
 		    CFSocketInvalidate (me.Reference)
 		    
@@ -59,8 +59,8 @@ Inherits CFType
 		  // Note: timeoutSeconds only matters if connect=true
 		  
 		  #if TargetMacOS
-		    declare function CFSocketCreateWithSocketSignature lib CarbonLib (allocator as Ptr, ssig as Ptr, cbTypes as Integer, callBack as Ptr, contextRef as Ptr) as Ptr
-		    declare function CFSocketCreateConnectedToSocketSignature lib CarbonLib (allocator as Ptr, ssig as Ptr, cbTypes as Integer, callBack as Ptr, contextRef as Ptr, timeout as Double) as Ptr
+		    declare function CFSocketCreateWithSocketSignature lib CoreFoundation.framework (allocator as Ptr, ssig as Ptr, cbTypes as Integer, callBack as Ptr, contextRef as Ptr) as Ptr
+		    declare function CFSocketCreateConnectedToSocketSignature lib CoreFoundation.framework (allocator as Ptr, ssig as Ptr, cbTypes as Integer, callBack as Ptr, contextRef as Ptr, timeout as Double) as Ptr
 		    
 		    prepareCallback()
 		    if connect then
@@ -76,7 +76,7 @@ Inherits CFType
 	#tag Method, Flags = &h1000
 		Sub Constructor(sock as integer, cbTypes as integer)
 		  #if TargetMacOS
-		    declare function CFSocketCreateWithNative lib CarbonLib (allocator as Ptr, sock as integer, cbTypes as Integer, callBack as Ptr, contextRef as Ptr) as Ptr
+		    declare function CFSocketCreateWithNative lib CoreFoundation.framework (allocator as Ptr, sock as integer, cbTypes as Integer, callBack as Ptr, contextRef as Ptr) as Ptr
 		    
 		    myContext = new MemoryBlock(20) // = size of CFSocketContext
 		    
@@ -91,7 +91,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Sub Constructor(protocolFamily as Integer, socketType as Integer, protocol as Integer, callbackTypes as Integer)
 		  #if TargetMacOS
-		    declare function CFSocketCreate lib CarbonLib (allocator as Ptr, protocolFamily as Integer, socketType as Integer, protocol as Integer, cbTypes as Integer, callBack as Ptr, contextRef as Ptr) as Ptr
+		    declare function CFSocketCreate lib CoreFoundation.framework (allocator as Ptr, protocolFamily as Integer, socketType as Integer, protocol as Integer, cbTypes as Integer, callBack as Ptr, contextRef as Ptr) as Ptr
 		    
 		    prepareCallback()
 		    dim p as Ptr = CFSocketCreate (nil, protocolFamily, socketType, protocol, callbackTypes, AddressOf m_socketCallBack, myContext)
@@ -111,9 +111,9 @@ Inherits CFType
 	#tag Method, Flags = &h21
 		Private Sub installRunLoopHandler()
 		  #If TargetMacOS
-		    declare function CFRunLoopGetCurrent lib CarbonLib () as Ptr
-		    declare function CFSocketCreateRunLoopSource lib CarbonLib (allocator as Ptr, socketRef as Ptr, order as Integer) as Ptr
-		    declare sub CFRunLoopAddSource lib CarbonLib (runLoopRef as Ptr, source as Ptr, mode as CFStringRef)
+		    declare function CFRunLoopGetCurrent lib CoreFoundation.framework () as Ptr
+		    declare function CFSocketCreateRunLoopSource lib CoreFoundation.framework (allocator as Ptr, socketRef as Ptr, order as Integer) as Ptr
+		    declare sub CFRunLoopAddSource lib CoreFoundation.framework (runLoopRef as Ptr, source as Ptr, mode as CFStringRef)
 		    
 		    me.theRunLoop = CFRunLoopGetCurrent()
 		    me.theRLSrc = CFSocketCreateRunLoopSource (nil, me.Reference, 0)
@@ -145,7 +145,7 @@ Inherits CFType
 	#tag Method, Flags = &h0
 		Function IsValid() As Boolean
 		  #if TargetMacOS
-		    declare function CFSocketIsValid lib CarbonLib (socketRef as Ptr) as Boolean
+		    declare function CFSocketIsValid lib CoreFoundation.framework (socketRef as Ptr) as Boolean
 		    
 		    if not ( self = nil ) then
 		      return CFSocketIsValid (me.Reference)
@@ -292,7 +292,7 @@ Inherits CFType
 		#tag Getter
 			Get
 			  #if TargetMacOS
-			    declare function CFSocketGetNative lib CarbonLib (socketRef as Ptr) as CFSocketNativeHandle
+			    declare function CFSocketGetNative lib CoreFoundation.framework (socketRef as Ptr) as CFSocketNativeHandle
 			    
 			    if not ( self = nil ) then
 			      return CFSocketGetNative (me.Reference)
